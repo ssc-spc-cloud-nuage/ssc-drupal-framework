@@ -1,6 +1,6 @@
 {
-    "name": "drupalwxt/myssc",
-    "description": "MySSC Intranet site built using Drupal WxT",
+    "name": "ssc-spc-cloud-nuage/ssc-drupal-framework",
+    "description": "Drupal framework for use with SSC projects.",
     "type": "project",
     "license": "GPL-2.0+",
     "minimum-stability": "dev",
