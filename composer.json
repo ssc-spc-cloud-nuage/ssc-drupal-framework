@@ -374,9 +374,6 @@
                 "3068944 - paragraphs to follow translation setting for showing fields": "https://www.drupal.org/files/issues/2021-05-05/paragraphWidget-multilanguage-enable-buton.patch",
                 "2887353 - module to sync paragraph translations": "https://www.drupal.org/files/issues/2022-07-26/paragraphs-translation-sync-2887353-54.patch"
             },
-            "drupal/entity_field_condition": {
-                "3091898 - provides field condition when context is available (LB)": "https://www.drupal.org/files/issues/2021-07-28/entity_field_condition-generic-fieldable-entity-field-value-plugin-3091898-19.patch"
-            },
             "drupal/smtp": {
                 "3063886 - fix debugging": "https://www.drupal.org/files/issues/2022-11-21/3063886-83.patch"
             },

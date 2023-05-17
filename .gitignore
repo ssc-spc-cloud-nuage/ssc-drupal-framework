@@ -1,1 +1,81 @@
+# Drupal
+test-results
+scripts/local
+scripts/drupal
+files_private/
+
+# Composer files
+vendor
+*/*/*/vendor
+*/*/vendor
+
+# Custom modules and themes
+/html/*
+!/html/modules/
+!/html/themes/
+
+!/html/robot.txt
+!/html/modules/custom/**
+!/html/themes/custom/**
+
+html/themes/contrib
+html/modules/contrib
+
+# Local settings.php
+!/html/sites/
+/html/sites/*
+!/html/sites/default/
+/html/sites/default/*
+!/html/sites/default/settings.php
+
+# Custom libraries
+!/html/libraries
+/html/libraries/*
+!/html/libraries/btbutton/
+
+# Ignore Development Files
+compass_app_log.txt
+*.DS_Store
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.vi
+*.sass-cache
+
+# Node
+node_modules/
+bower_components/
+
+# PhpStorm
 .idea
+
+# SASS
+.sass-cache
+*.sass-cache*
+**/sass/*.css
+
+# Docker scaffold
+docker/
+
+# Local backup files
+bak/*.gz
+bak/*.sql
+
+# Ignore actual decrypted password
+helm/passwords/values-azure-passwords-sand.yaml
+helm/passwords/values-azure-passwords-dev.yaml
+helm/passwords/values-azure-passwords-prod.yaml
+helm/passwords/values-azure-passwords-test.yaml
+
+# Peter's Example modules
+/html/modules/custom/add_venue/
+/html/modules/custom/message_subscribe_anon/
+/html/modules/custom/search_subscribe/
+/html/modules/custom/sia_general/
+docker-compose.base.yml
+docker-compose.ci.yml
+docker-compose.yml
