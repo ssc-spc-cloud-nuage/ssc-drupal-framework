@@ -1,0 +1,13 @@
+diff --git a/modules/custom/wxt_core/wxt_core.install b/modules/custom/wxt_core/wxt_core.install
+index 73962d0..be98c8f 100644
+--- a/modules/custom/wxt_core/wxt_core.install
++++ b/modules/custom/wxt_core/wxt_core.install
+@@ -563,7 +563,7 @@ function wxt_core_update_8433() {
+ 
+     $module_installer->install([
+       'wxt_core',
+-      'wxt_ext_page',
++      //'wxt_ext_page',
+     ]);
+   }
+ 

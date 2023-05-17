@@ -1,0 +1,33 @@
+diff --git a/js/frontUi.js b/js/frontUi.js
+index d74a026..6477ae1 100644
+--- a/js/frontUi.js
++++ b/js/frontUi.js
+@@ -58,17 +58,22 @@
+ 
+     bindCheckboxes: function () {
+       var selectionObject = this;
+-      var checkboxes = $('.form-checkbox', this.vbo_form);
++      var vbo_form = this.vbo_form;
++      var checkboxes = $('.form-checkbox', vbo_form);
+       checkboxes.on('change', function (event) {
+-        selectionObject.toggleButtonsState();
++        selectionObject.toggleButtonsState(vbo_form);
+       });
+     },
+ 
+-    toggleButtonsState: function() {
++    toggleButtonsState: function(vbo_form) {
++      // If no form passed in; use this.form
++      if (typeof vbo_form === 'undefined') {
++        vbo_form = this.vbo_form;
++      }
+       // If no rows are checked, disable any form submit actions.
+-      var checkedCheckboxes = $('.form-checkbox:checked', this.vbo_form);
+-      var buttons = $('[id^="edit-actions"] input[type="submit"], [id^="edit-actions"] button[type="submit"]', this.vbo_form);
+-      var selectedAjaxItems = $('.vbo-info-list-wrapper li', this.vbo_form);
++      var checkedCheckboxes = $('.form-checkbox:checked', vbo_form);
++      var buttons = $('[id^="edit-actions"] input[type="submit"], [id^="edit-actions"] button[type="submit"]', vbo_form);
++      var selectedAjaxItems = $('.vbo-info-list-wrapper li', vbo_form);
+       var anyItemsSelected = selectedAjaxItems.length || checkedCheckboxes.length;
+       if (this.$actionSelect.length) {
+         var has_selection = anyItemsSelected && this.$actionSelect.val() !== '';

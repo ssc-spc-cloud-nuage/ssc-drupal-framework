@@ -1,0 +1,2285 @@
+diff --git a/core/lib/Drupal/Core/Datetime/Element/Datetime.php b/core/lib/Drupal/Core/Datetime/Element/Datetime.php
+index 845fe259b4..0ffacf2935 100644
+--- a/core/lib/Drupal/Core/Datetime/Element/Datetime.php
++++ b/core/lib/Drupal/Core/Datetime/Element/Datetime.php
+@@ -70,6 +70,7 @@ public function getInfo() {
+       '#date_time_callbacks' => [],
+       '#date_year_range' => '1900:2050',
+       '#date_increment' => 1,
++      '#expose_timezone' => FALSE,
+     ];
+   }
+
+@@ -85,6 +86,11 @@ public static function valueCallback(&$element, $input, FormStateInterface $form
+       $date_format = $element['#date_date_element'] != 'none' ? static::getHtml5DateFormat($element) : '';
+       $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
+
++      // Time zone.
++      if (!empty($element['#expose_timezone']) && $input['timezone']) {
++        $element['#date_timezone'] = $input['timezone'];
++      }
++
+       // Seconds will be omitted in a post in case there's no entry.
+       if (!empty($time_input) && strlen($time_input) == 5) {
+         $time_input .= ':00';
+@@ -101,6 +107,7 @@ public static function valueCallback(&$element, $input, FormStateInterface $form
+       $input = [
+         'date'   => $date_input,
+         'time'   => $time_input,
++        'timezone' => $element['#date_timezone'],
+         'object' => $date,
+       ];
+     }
+@@ -111,6 +118,7 @@ public static function valueCallback(&$element, $input, FormStateInterface $form
+         $input = [
+           'date'   => $date->format($element['#date_date_format']),
+           'time'   => $date->format($element['#date_time_format']),
++          'timezone' => $date->getTimezone()->getName(),
+           'object' => $date,
+         ];
+       }
+@@ -118,6 +126,7 @@ public static function valueCallback(&$element, $input, FormStateInterface $form
+         $input = [
+           'date'   => '',
+           'time'   => '',
++          'timezone' => '',
+           'object' => NULL,
+         ];
+       }
+@@ -199,6 +208,8 @@ public static function valueCallback(&$element, $input, FormStateInterface $form
+    *   - #date_timezone: The Time Zone Identifier (TZID) to use when displaying
+    *     or interpreting dates, i.e: 'Asia/Kolkata'. Defaults to the value
+    *     returned by date_default_timezone_get().
++   *   - #expose_timezone: a boolean that if TRUE, will expose a time zone
++   *     select list. Defaults to FALSE.
+    *
+    * Example usage:
+    * @code
+@@ -329,6 +340,18 @@ public static function processAjaxForm(&$element, FormStateInterface $form_state
+       }
+     }
+
++    // Expose a time zone selector.
++    if (!empty($element['#expose_timezone']) && $element['#expose_timezone']) {
++
++      $element['timezone'] = [
++        '#type' => 'select',
++        '#options' => system_time_zones(FALSE, TRUE),
++        // Default to user's time zone.
++        '#default_value' => $element['#date_timezone'],
++        '#required' => $element['#required'],
++      ];
++    }
++
+     return $element;
+   }
+
+diff --git a/core/modules/datetime/config/schema/datetime.schema.yml b/core/modules/datetime/config/schema/datetime.schema.yml
+index 44783bdbef..be177c2302 100644
+--- a/core/modules/datetime/config/schema/datetime.schema.yml
++++ b/core/modules/datetime/config/schema/datetime.schema.yml
+@@ -7,6 +7,9 @@ field.storage_settings.datetime:
+     datetime_type:
+       type: string
+       label: 'Date type'
++    timezone_storage:
++      type: boolean
++      label: 'Time zone storage'
+
+ field.field_settings.datetime:
+   type: mapping
+@@ -26,9 +29,15 @@ field.value.datetime:
+ field.formatter.settings.datetime_base:
+   type: mapping
+   mapping:
++    timezone_default:
++      type: string
++      label: 'Time zone default'
+     timezone_override:
+       type: string
+       label: 'Time zone override'
++    timezone_per_date:
++      type: boolean
++      label: 'Time zone per date'
+
+ field.formatter.settings.datetime_default:
+   type: field.formatter.settings.datetime_base
+@@ -64,8 +73,21 @@ field.formatter.settings.datetime_time_ago:
+       type: integer
+       label: 'Granularity'
+
+-field.widget.settings.datetime_datelist:
++field.widget.settings.datetime_base:
+   type: mapping
++  mapping:
++    timezone_default:
++      type: string
++      label: 'Time zone default'
++    timezone_override:
++      type: string
++      label: 'Time zone override'
++    timezone_per_date:
++      type: boolean
++      label: 'Time zone per date'
++
++field.widget.settings.datetime_datelist:
++  type: field.widget.settings.datetime_base
+   label: 'Datetime select list display format settings'
+   mapping:
+     increment:
+@@ -79,5 +101,5 @@ field.widget.settings.datetime_datelist:
+       label: 'Time type'
+
+ field.widget.settings.datetime_default:
+-  type: mapping
++  type: field.widget.settings.datetime_base
+   label: 'Datetime default display format settings'
+diff --git a/core/modules/datetime/datetime.install b/core/modules/datetime/datetime.install
+new file mode 100644
+index 0000000000..8905e6bae2
+--- /dev/null
++++ b/core/modules/datetime/datetime.install
+@@ -0,0 +1,98 @@
++<?php
++
++/**
++ * @file
++ * Update hooks for the Datetime module.
++ */
++
++use Drupal\Core\Database\Database;
++use Drupal\Core\Entity\Schema\DynamicallyFieldableEntityStorageSchemaInterface;
++use Drupal\field\Entity\FieldStorageConfig;
++
++/**
++ * Add the 'timezone' field to all datetime field tables.
++ */
++function datetime_update_8001(array &$sandbox) {
++
++  if (!isset($sandbox['progress'])) {
++    $sandbox['progress'] = 0;
++    $sandbox['current_id'] = '';
++    $sandbox['processed'] = [];
++
++    // Find all required updates.
++    $change_list = [];
++    foreach (\Drupal::entityTypeManager()->getDefinitions() as $entity_type_id => $entity_type) {
++      $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
++      if ($storage instanceof DynamicallyFieldableEntityStorageSchemaInterface) {
++        $field_changes = [];
++        $field_storage_definitions = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions($entity_type_id);
++        $original_storage_definitions = \Drupal::service('entity.last_installed_schema.repository')->getLastInstalledFieldStorageDefinitions($entity_type_id);
++        foreach (array_intersect_key($field_storage_definitions, $original_storage_definitions) as $field_name => $storage_definition) {
++          if ($storage_definition->getType() === 'datetime' && $storage->requiresFieldStorageSchemaChanges($storage_definition, $original_storage_definitions[$field_name])) {
++            /** @var \Drupal\Core\Entity\Sql\DefaultTableMapping $table_mapping */
++            $table_mapping = $storage->getTableMapping();
++            $field_changes[$field_name] = [
++              'table' => $table_mapping->getFieldTableName($field_name),
++              'revision_table' => $table_mapping->getDedicatedRevisionTableName($storage_definition),
++            ];
++          }
++        }
++
++        if (!empty($field_changes)) {
++          $change_list[$entity_type_id] = $field_changes;
++        }
++      }
++    }
++
++    $sandbox['change_list'] = $change_list;
++    $sandbox['max'] = count($change_list);
++  }
++
++  $remaining = array_diff(array_keys($sandbox['change_list']), $sandbox['processed']);
++  if (!empty($remaining)) {
++    $entity_type_id = array_pop($remaining);
++    $field_changes = $sandbox['change_list'][$entity_type_id];
++
++    $field_spec = [
++      'description' => 'The date time zone.',
++      'type' => 'varchar',
++      'length' => 50,
++    ];
++    $schema = Database::getConnection()->schema();
++
++    foreach ($field_changes as $field_name => $field_tables) {
++      $timezone_field_name = $field_name . '_timezone';
++      $field_schema = [
++        'fields' => [
++          // Include the 'value' field in order to properly create the index.
++          $field_name . '_value' => [
++            'description' => 'The date value.',
++            'type' => 'varchar',
++            'length' => 20,
++          ],
++          $timezone_field_name => $field_spec,
++        ],
++        'indexes' => [
++          'value_timezone' => [$field_name . '_value', $timezone_field_name],
++        ],
++      ];
++      $schema->addField($field_tables['table'], $timezone_field_name, $field_spec);
++      $schema->addIndex($field_tables['table'], 'value_timezone', $field_schema['indexes']['value_timezone'], $field_schema);
++
++      if ($field_tables['revision_table']) {
++        $schema->addField($field_tables['revision_table'], $timezone_field_name, $field_spec);
++        $schema->addIndex($field_tables['revision_table'], 'value_timezone', $field_schema['indexes']['value_timezone'], $field_schema);
++      }
++
++      // Set time zone storage to FALSE, which is the behavior prior to the
++      // introduction of configurable per-date time zone storage.
++      $field_storage = FieldStorageConfig::load($entity_type_id . '.' . $field_name);
++      $field_storage->setSetting('timezone_storage', FALSE);
++      $field_storage->save();
++      \Drupal::entityDefinitionUpdateManager()->updateFieldStorageDefinition($field_storage);
++    }
++    $sandbox['processed'][] = $entity_type_id;
++  }
++
++  $sandbox['#finished'] = empty($remaining);
++}
+diff --git a/core/modules/datetime/src/Plugin/Field/ConfigurableTimezoneInterface.php b/core/modules/datetime/src/Plugin/Field/ConfigurableTimezoneInterface.php
+new file mode 100644
+index 0000000000..c2ab7099af
+--- /dev/null
++++ b/core/modules/datetime/src/Plugin/Field/ConfigurableTimezoneInterface.php
+@@ -0,0 +1,42 @@
++<?php
++
++namespace Drupal\datetime\Plugin\Field;
++
++/**
++ * Interface definition for field formatters and widgets that allow configuring
++ * the timezone used.
++ */
++interface ConfigurableTimezoneInterface {
++
++  /**
++   * Timezone uses the site's timezone, regardless of the user's timezone.
++   */
++  const TIMEZONE_SITE = 'site';
++
++  /**
++   * Timezone uses the user's timezone.
++   *
++   * @see date_default_timezone_get()
++   */
++  const TIMEZONE_USER = 'user';
++
++  /**
++   * A fixed timezone is used.
++   */
++  const TIMEZONE_FIXED = 'none';
++
++  /**
++   * Get the time zone used as the default by a widget or formatter.
++   *
++   * This is determined using the widget or formatter settings and (if there
++   * is one) the preferred time zone stored with the date item.
++   *
++   * @param string $itemTimezone
++   *   A time zone stored in the field for this item, or NULL.
++   *
++   * @return string
++   *   The default time zone.
++   */
++  public function getDefaultTimezone($itemTimezone);
++
++}
+diff --git a/core/modules/datetime/src/Plugin/Field/ConfigurableTimezoneTrait.php b/core/modules/datetime/src/Plugin/Field/ConfigurableTimezoneTrait.php
+new file mode 100644
+index 0000000000..d4182205dd
+--- /dev/null
++++ b/core/modules/datetime/src/Plugin/Field/ConfigurableTimezoneTrait.php
+@@ -0,0 +1,113 @@
++<?php
++
++namespace Drupal\datetime\Plugin\Field;
++
++use Drupal\datetime\Plugin\Field\FieldType\DateTimeItem;
++use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
++
++/**
++ * Time zone settings common to datetime widgets and formatters.
++ */
++trait ConfigurableTimezoneTrait {
++
++  /**
++   * Add time zone settings to a widget or formatter settings form.
++   *
++   * @return array
++   *   The form structure with time zone settings elements added.
++   */
++  protected function timezoneSettingsForm() {
++    $form = [];
++
++    // Timezone display is only applicable to datetime items.
++    $datetime_type = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('datetime_type');
++    if ($datetime_type === DateTimeItem::DATETIME_TYPE_DATETIME) {
++      $form['timezone_default'] = [
++        '#type' => 'select',
++        '#title' => $this->t('Default time zone'),
++        '#description' => $this->t('The time zone to use by default when displaying this date.'),
++        '#options' => [
++          ConfigurableTimezoneInterface::TIMEZONE_USER => $this->t("The user's account time zone"),
++          ConfigurableTimezoneInterface::TIMEZONE_SITE => $this->t("The site's default time zone"),
++          ConfigurableTimezoneInterface::TIMEZONE_FIXED => $this->t('A fixed time zone'),
++        ],
++        '#default_value' => $this->getSetting('timezone_default'),
++      ];
++
++      $form['timezone_override'] = [
++        '#type' => 'select',
++        '#title' => $this->t('Fixed time zone'),
++        '#options' => system_time_zones(TRUE),
++        '#default_value' => $this->getSetting('timezone_override'),
++        '#states' => ['visible' => [':input[name="fields[' . $this->fieldDefinition->getName() . '][settings_edit_form][settings][timezone_default]"]' => ['value' => ConfigurableTimezoneInterface::TIMEZONE_FIXED]]],
++      ];
++
++      // If this field is using per-date time zone storage, give the option of
++      // allowing that to override the default.
++      $timezone_storage = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('timezone_storage');
++      if ($timezone_storage) {
++        $form['timezone_per_date'] = [
++          '#type' => 'checkbox',
++          '#title' => $this->t('Preferred time zone for each date'),
++          '#default_value' => $this->getSetting('timezone_per_date'),
++        ];
++      }
++    }
++
++    return $form;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getDefaultTimezone($item_timezone = NULL) {
++    if ($this->getFieldSetting('datetime_type') === DateTimeItem::DATETIME_TYPE_DATE) {
++      // A date without time has no time zone conversion.
++      $timezone = DateTimeItemInterface::STORAGE_TIMEZONE;
++    }
++    else {
++      $timezone_default = $this->getSetting('timezone_default');
++      $timezone_override = $this->getSetting('timezone_override');
++      if ($this->getSetting('timezone_per_date') && !empty($item_timezone)) {
++        $timezone = $item_timezone;
++      }
++      elseif ($timezone_override && $timezone_default === ConfigurableTimezoneInterface::TIMEZONE_FIXED) {
++        $timezone = $timezone_override;
++      }
++      elseif ($timezone_default === ConfigurableTimezoneInterface::TIMEZONE_SITE) {
++        $timezone = $this->config->get('system.date')->get('timezone.default');
++      }
++      else {
++        $timezone = date_default_timezone_get();
++      }
++    }
++    return $timezone;
++  }
++
++  /**
++   * Text explaining the default time zone.
++   *
++   * @return string
++   *   A string describing the default time zone.
++   */
++  protected function getDefaultTimezoneText() {
++    $datetime_type = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('datetime_type');
++    if ($datetime_type === DateTimeItem::DATETIME_TYPE_DATETIME) {
++      // Determine the default time zone summary text.
++      $timezone_default = $this->getSetting('timezone_default');
++      $timezone_override = $this->getSetting('timezone_override');
++      if ($timezone_override && $timezone_default === ConfigurableTimezoneInterface::TIMEZONE_FIXED) {
++        return $timezone_override;
++      }
++      elseif ($timezone_default === ConfigurableTimezoneInterface::TIMEZONE_SITE) {
++        return $this->t("the site's default time zone");
++      }
++      else {
++        return $this->t("the user's account time zone");
++      }
++    }
++
++    return '';
++  }
++
++}
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeCustomFormatter.php b/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeCustomFormatter.php
+index a80cda0a83..07dffcb1bf 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeCustomFormatter.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeCustomFormatter.php
+@@ -43,7 +43,7 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+         /** @var \Drupal\Core\Datetime\DrupalDateTime $date */
+         $date = $item->date;
+
+-        $elements[$delta] = $this->buildDate($date);
++        $elements[$delta] = $this->buildDate($date, $item->timezone);
+       }
+     }
+
+@@ -55,8 +55,7 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+    */
+   protected function formatDate($date) {
+     $format = $this->getSetting('date_format');
+-    $timezone = $this->getSetting('timezone_override') ?: $date->getTimezone()->getName();
+-    return $this->dateFormatter->format($date->getTimestamp(), 'custom', $format, $timezone != '' ? $timezone : NULL);
++    return $this->dateFormatter->format($date->getTimestamp(), 'custom', $format, $date->getTimezone()->getName());
+   }
+
+   /**
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeDefaultFormatter.php b/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeDefaultFormatter.php
+index fa6549665a..4fca0d6038 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeDefaultFormatter.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeDefaultFormatter.php
+@@ -32,8 +32,7 @@ public static function defaultSettings() {
+    */
+   protected function formatDate($date) {
+     $format_type = $this->getSetting('format_type');
+-    $timezone = $this->getSetting('timezone_override') ?: $date->getTimezone()->getName();
+-    return $this->dateFormatter->format($date->getTimestamp(), $format_type, '', $timezone != '' ? $timezone : NULL);
++    return $this->dateFormatter->format($date->getTimestamp(), $format_type, '', $date->getTimezone()->getName());
+   }
+
+   /**
+@@ -68,6 +67,7 @@ public function settingsSummary() {
+     $summary = parent::settingsSummary();
+
+     $date = new DrupalDateTime();
++    $this->setTimeZone($date);
+     $summary[] = t('Format: @display', ['@display' => $this->formatDate($date)]);
+
+     return $summary;
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeFormatterBase.php b/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeFormatterBase.php
+index b45c4e66f8..55fb2e6c37 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeFormatterBase.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimeFormatterBase.php
+@@ -2,6 +2,8 @@
+
+ namespace Drupal\datetime\Plugin\Field\FieldFormatter;
+
++use Drupal\Component\Utility\NestedArray;
++use Drupal\Core\Config\ConfigFactoryInterface;
+ use Drupal\Core\Datetime\DateFormatterInterface;
+ use Drupal\Core\Datetime\DrupalDateTime;
+ use Drupal\Core\Entity\EntityStorageInterface;
+@@ -9,14 +11,16 @@
+ use Drupal\Core\Field\FieldItemListInterface;
+ use Drupal\Core\Field\FormatterBase;
+ use Drupal\Core\Form\FormStateInterface;
+-use Drupal\datetime\Plugin\Field\FieldType\DateTimeItem;
+-use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+ use Symfony\Component\DependencyInjection\ContainerInterface;
++use Drupal\datetime\Plugin\Field\ConfigurableTimezoneTrait;
++use Drupal\datetime\Plugin\Field\ConfigurableTimezoneInterface;
+
+ /**
+  * Base class for 'DateTime Field formatter' plugin implementations.
+  */
+-abstract class DateTimeFormatterBase extends FormatterBase {
++abstract class DateTimeFormatterBase extends FormatterBase implements ConfigurableTimezoneInterface {
++
++  use ConfigurableTimezoneTrait;
+
+   /**
+    * The date formatter service.
+@@ -32,6 +36,13 @@ abstract class DateTimeFormatterBase extends FormatterBase {
+    */
+   protected $dateFormatStorage;
+
++  /**
++   * A config factory for retrieving required config settings.
++   *
++   * @var \Drupal\Core\Config\ConfigFactoryInterface
++   */
++  protected $config;
++
+   /**
+    * Constructs a new DateTimeDefaultFormatter.
+    *
+@@ -53,12 +64,19 @@ abstract class DateTimeFormatterBase extends FormatterBase {
+    *   The date formatter service.
+    * @param \Drupal\Core\Entity\EntityStorageInterface $date_format_storage
+    *   The date format entity storage.
++   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
++   *   The factory for configuration objects.
+    */
+-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, DateFormatterInterface $date_formatter, EntityStorageInterface $date_format_storage) {
++  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, DateFormatterInterface $date_formatter, EntityStorageInterface $date_format_storage, ConfigFactoryInterface $config_factory = NULL) {
+     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
+
+     $this->dateFormatter = $date_formatter;
+     $this->dateFormatStorage = $date_format_storage;
++    if (!$config_factory) {
++      @trigger_error('The config.factory service must be passed to DateTimeFormatterBase::__construct(), it is required before Drupal 9.0.0. See https://www.drupal.org/node/2632040.', E_USER_DEPRECATED);
++      $config_factory = \Drupal::service('config.factory');
++    }
++    $this->config = $config_factory;
+   }
+
+   /**
+@@ -74,7 +92,8 @@ public static function create(ContainerInterface $container, array $configuratio
+       $configuration['view_mode'],
+       $configuration['third_party_settings'],
+       $container->get('date.formatter'),
+-      $container->get('entity_type.manager')->getStorage('date_format')
++      $container->get('entity_type.manager')->getStorage('date_format'),
++      $container->get('config.factory')
+     );
+   }
+
+@@ -83,7 +102,9 @@ public static function create(ContainerInterface $container, array $configuratio
+    */
+   public static function defaultSettings() {
+     return [
++      'timezone_default' => ConfigurableTimezoneInterface::TIMEZONE_USER,
+       'timezone_override' => '',
++      'timezone_per_date' => FALSE,
+     ] + parent::defaultSettings();
+   }
+
+@@ -91,7 +112,8 @@ public static function defaultSettings() {
+    * {@inheritdoc}
+    */
+   public function settingsForm(array $form, FormStateInterface $form_state) {
+-    $form = parent::settingsForm($form, $form_state);
++    $form = NestedArray::mergeDeep($this->timezoneSettingsForm(), parent::settingsForm($form, $form_state));
++    $form['timezone_per_date']['#description'] = $this->t('Where a time zone has been specified for a particular date value, use that instead of the default selected above.');
+
+     $form['timezone_override'] = [
+       '#type' => 'select',
+@@ -110,9 +132,16 @@ public function settingsForm(array $form, FormStateInterface $form_state) {
+   public function settingsSummary() {
+     $summary = parent::settingsSummary();
+
+-    if ($override = $this->getSetting('timezone_override')) {
+-      $summary[] = $this->t('Time zone: @timezone', ['@timezone' => $override]);
++    $summary = [];
++    $default_timezone_text = $this->getDefaultTimezoneText();
++    if ($this->getSetting('timezone_per_date')) {
++      $summary[] = $this->t('Use time zones from individual dates');
++      $summary[] = $this->t('Use @timezone if no individual time zone specified', ['@timezone' => $default_timezone_text]);
+     }
++    else {
++      $summary[] = $this->t('Time zone: @timezone', ['@timezone' => $default_timezone_text]);
++    }
++    $summary = NestedArray::mergeDeep($summary, parent::settingsSummary());
+
+     return $summary;
+   }
+@@ -127,7 +156,7 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+       if ($item->date) {
+         /** @var \Drupal\Core\Datetime\DrupalDateTime $date */
+         $date = $item->date;
+-        $elements[$delta] = $this->buildDateWithIsoAttribute($date);
++        $elements[$delta] = $this->buildDateWithIsoAttribute($date, $item->timezone);
+
+         if (!empty($item->_attributes)) {
+           $elements[$delta]['#attributes'] += $item->_attributes;
+@@ -153,23 +182,19 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+   abstract protected function formatDate($date);
+
+   /**
+-   * Sets the proper time zone on a DrupalDateTime object for the current user.
++   * Sets the proper time zone on a DrupalDateTime object.
+    *
+    * A DrupalDateTime object loaded from the database will have the UTC time
+-   * zone applied to it.  This method will apply the time zone for the current
+-   * user, based on system and user settings.
++   * zone applied to it. This method applies the proper timezone based on
++   * the formatter configuration.
+    *
+    * @param \Drupal\Core\Datetime\DrupalDateTime $date
+    *   A DrupalDateTime object.
++   * @param string $date_instance_timezone
++   *   (Optional) Time zone associated with the specific date field instance.
+    */
+-  protected function setTimeZone(DrupalDateTime $date) {
+-    if ($this->getFieldSetting('datetime_type') === DateTimeItem::DATETIME_TYPE_DATE) {
+-      // A date without time has no timezone conversion.
+-      $timezone = DateTimeItemInterface::STORAGE_TIMEZONE;
+-    }
+-    else {
+-      $timezone = date_default_timezone_get();
+-    }
++  protected function setTimeZone(DrupalDateTime $date, $date_instance_timezone = NULL) {
++    $timezone = $this->getDefaultTimezone($date_instance_timezone);
+     $date->setTimeZone(timezone_open($timezone));
+   }
+
+@@ -182,7 +207,7 @@ protected function setTimeZone(DrupalDateTime $date) {
+   protected function getFormatSettings() {
+     $settings = [];
+
+-    if ($this->getSetting('timezone_override') != '') {
++    if (!$this->getSetting('timezone_per_date') && $this->getSetting('timezone_override') != '') {
+       $settings['timezone'] = $this->getSetting('timezone_override');
+     }
+
+@@ -194,12 +219,14 @@ protected function getFormatSettings() {
+    *
+    * @param \Drupal\Core\Datetime\DrupalDateTime $date
+    *   A date object.
++   * @param string $timezone
++   *   (Optional) A time zone to explicitly set the date to.
+    *
+    * @return array
+    *   A render array.
+    */
+-  protected function buildDate(DrupalDateTime $date) {
+-    $this->setTimeZone($date);
++  protected function buildDate(DrupalDateTime $date, $timezone = NULL) {
++    $this->setTimeZone($date, $timezone);
+
+     $build = [
+       '#markup' => $this->formatDate($date),
+@@ -218,15 +245,17 @@ protected function buildDate(DrupalDateTime $date) {
+    *
+    * @param \Drupal\Core\Datetime\DrupalDateTime $date
+    *   A date object.
++   * @param string $timezone
++   *   (Optional) A time zone to explicitly set the date to.
+    *
+    * @return array
+    *   A render array.
+    */
+-  protected function buildDateWithIsoAttribute(DrupalDateTime $date) {
++  protected function buildDateWithIsoAttribute(DrupalDateTime $date, $timezone = NULL) {
+     // Create the ISO date in Universal Time.
+     $iso_date = $date->format("Y-m-d\TH:i:s") . 'Z';
+
+-    $this->setTimeZone($date);
++    $this->setTimeZone($date, $timezone);
+
+     $build = [
+       '#theme' => 'time',
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimePlainFormatter.php b/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimePlainFormatter.php
+index 3569cd025e..e3a710b303 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimePlainFormatter.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldFormatter/DateTimePlainFormatter.php
+@@ -30,7 +30,7 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+         /** @var \Drupal\Core\Datetime\DrupalDateTime $date */
+         $date = $item->date;
+
+-        $elements[$delta] = $this->buildDate($date);
++        $elements[$delta] = $this->buildDate($date, $item->timezone);
+       }
+     }
+
+@@ -42,8 +42,7 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+    */
+   protected function formatDate($date) {
+     $format = $this->getFieldSetting('datetime_type') == DateTimeItem::DATETIME_TYPE_DATE ? DateTimeItemInterface::DATE_STORAGE_FORMAT : DateTimeItemInterface::DATETIME_STORAGE_FORMAT;
+-    $timezone = $this->getSetting('timezone_override') ?: $date->getTimezone()->getName();
+-    return $this->dateFormatter->format($date->getTimestamp(), 'custom', $format, $timezone != '' ? $timezone : NULL);
++    return $this->dateFormatter->format($date->getTimestamp(), 'custom', $format, $date->getTimezone()->getName());
+   }
+
+ }
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldType/DateTimeItem.php b/core/modules/datetime/src/Plugin/Field/FieldType/DateTimeItem.php
+index 3264069008..81269b4187 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldType/DateTimeItem.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldType/DateTimeItem.php
+@@ -29,6 +29,7 @@ class DateTimeItem extends FieldItemBase implements DateTimeItemInterface {
+   public static function defaultStorageSettings() {
+     return [
+       'datetime_type' => 'datetime',
++      'timezone_storage' => FALSE,
+     ] + parent::defaultStorageSettings();
+   }
+
+@@ -57,6 +58,9 @@ public static function propertyDefinitions(FieldStorageDefinitionInterface $fiel
+       ->setClass('\Drupal\datetime\DateTimeComputed')
+       ->setSetting('date source', 'value');
+
++    $properties['timezone'] = DataDefinition::create('string')
++      ->setLabel(t('Timezone'));
++
+     return $properties;
+   }
+
+@@ -71,9 +75,15 @@ public static function schema(FieldStorageDefinitionInterface $field_definition)
+           'type' => 'varchar',
+           'length' => 20,
+         ],
++        'timezone' => [
++          'description' => 'The date timezone',
++          'type' => 'varchar',
++          'length' => 50,
++        ],
+       ],
+       'indexes' => [
+         'value' => ['value'],
++        'value_timezone' => ['value', 'timezone'],
+       ],
+     ];
+   }
+@@ -96,6 +106,23 @@ public function storageSettingsForm(array &$form, FormStateInterface $form_state
+       '#disabled' => $has_data,
+     ];
+
++    $element['timezone_storage'] = [
++      '#type' => 'checkbox',
++      '#title' => t('Store a time zone'),
++      '#description' => 'Allow storing a preferred time zone with each date and time',
++      '#default_value' => $this->getSetting('timezone_storage'),
++      '#states' => [
++        // Hide the field if this is a date-only field.
++        'visible' => [
++          ':input[name="settings[datetime_type]"]' => ['value' => static::DATETIME_TYPE_DATETIME],
++        ],
++        'disabled' => [
++          ':input[name="settings[datetime_type]"]' => ['value' => static::DATETIME_TYPE_DATE],
++        ],
++      ],
++      '#disabled' => $has_data,
++    ];
++
+     return $element;
+   }
+
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeDefaultWidget.php b/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeDefaultWidget.php
+index f811fa9acc..91e0c963c9 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeDefaultWidget.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeDefaultWidget.php
+@@ -2,6 +2,7 @@
+
+ namespace Drupal\datetime\Plugin\Field\FieldWidget;
+
++use Drupal\Core\Config\ConfigFactoryInterface;
+ use Drupal\Core\Entity\EntityStorageInterface;
+ use Drupal\Core\Field\FieldItemListInterface;
+ use Drupal\Core\Field\FieldDefinitionInterface;
+@@ -32,8 +33,12 @@ class DateTimeDefaultWidget extends DateTimeWidgetBase {
+   /**
+    * {@inheritdoc}
+    */
+-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityStorageInterface $date_storage) {
+-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
++  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityStorageInterface $date_storage, ConfigFactoryInterface $config_factory = NULL) {
++    if (!$config_factory) {
++      @trigger_error('The config.factory service must be passed to DateTimeDefaultWidget::__construct(), it is required before Drupal 9.0.0. See https://www.drupal.org/node/2632040.', E_USER_DEPRECATED);
++      $config_factory = \Drupal::service('config.factory');
++    }
++    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings, $config_factory);
+
+     $this->dateStorage = $date_storage;
+   }
+@@ -48,7 +53,8 @@ public static function create(ContainerInterface $container, array $configuratio
+       $configuration['field_definition'],
+       $configuration['settings'],
+       $configuration['third_party_settings'],
+-      $container->get('entity_type.manager')->getStorage('date_format')
++      $container->get('entity_type.manager')->getStorage('date_format'),
++      $container->get('config.factory')
+     );
+   }
+
+diff --git a/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeWidgetBase.php b/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeWidgetBase.php
+index a5cbcece15..5324517773 100644
+--- a/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeWidgetBase.php
++++ b/core/modules/datetime/src/Plugin/Field/FieldWidget/DateTimeWidgetBase.php
+@@ -2,17 +2,108 @@
+
+ namespace Drupal\datetime\Plugin\Field\FieldWidget;
+
++use Drupal\Component\Utility\NestedArray;
++use Drupal\Core\Config\ConfigFactoryInterface;
+ use Drupal\Core\Datetime\DrupalDateTime;
++use Drupal\Core\Field\FieldDefinitionInterface;
+ use Drupal\Core\Field\FieldItemListInterface;
+ use Drupal\Core\Field\WidgetBase;
+ use Drupal\Core\Form\FormStateInterface;
++use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
++use Drupal\datetime\Plugin\Field\ConfigurableTimezoneInterface;
++use Drupal\datetime\Plugin\Field\ConfigurableTimezoneTrait;
+ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItem;
+ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
++use Symfony\Component\DependencyInjection\ContainerInterface;
+
+ /**
+  * Base class for the 'datetime_*' widgets.
+  */
+-class DateTimeWidgetBase extends WidgetBase {
++class DateTimeWidgetBase extends WidgetBase implements ConfigurableTimezoneInterface, ContainerFactoryPluginInterface {
++
++  use ConfigurableTimezoneTrait;
++
++  /**
++   * A config factory for retrieving required config settings.
++   *
++   * @var \Drupal\Core\Config\ConfigFactoryInterface
++   */
++  protected $config;
++
++  /**
++   * Constructs a new DateTimeDefaultFormatter.
++   *
++   * @param string $plugin_id
++   *   The plugin_id for the formatter.
++   * @param mixed $plugin_definition
++   *   The plugin implementation definition.
++   * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
++   *   The definition of the field to which the formatter is associated.
++   * @param array $settings
++   *   The formatter settings.
++   * @param array $third_party_settings
++   *   Third party settings.
++   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
++   *   The factory for configuration objects.
++   */
++  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, ConfigFactoryInterface $config_factory = NULL) {
++    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
++    if (!$config_factory) {
++      @trigger_error('The config.factory service must be passed to DateTimeWidgetBase::__construct(), it is required before Drupal 9.0.0. See https://www.drupal.org/node/2632040.', E_USER_DEPRECATED);
++      $config_factory = \Drupal::service('config.factory');
++    }
++    $this->config = $config_factory;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
++    return new static(
++      $plugin_id,
++      $plugin_definition,
++      $configuration['field_definition'],
++      $configuration['settings'],
++      $configuration['third_party_settings'],
++      $container->get('config.factory')
++    );
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function defaultSettings() {
++    return [
++      'timezone_default' => ConfigurableTimezoneInterface::TIMEZONE_USER,
++      'timezone_override' => '',
++      'timezone_per_date' => FALSE,
++    ] + parent::defaultSettings();
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function settingsForm(array $form, FormStateInterface $form_state) {
++    $form = NestedArray::mergeDeep($this->timezoneSettingsForm(), parent::settingsForm($form, $form_state));
++    $form['timezone_per_date']['#description'] = "Allow users to specify a time zone when entering a date, and store this as the preferred time zone for that date.";
++    return $form;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function settingsSummary() {
++    $default_timezone_text = $this->getDefaultTimezoneText();
++    if ($this->getSetting('timezone_per_date')) {
++      $summary[] = $this->t('Allow users to choose a time zone');
++      $summary[] = $this->t('Default to @timezone', ['@timezone' => $default_timezone_text]);
++    }
++    else {
++      $summary[] = $this->t('Time zone: @timezone', ['@timezone' => $default_timezone_text]);
++    }
++    $summary = NestedArray::mergeDeep($summary, parent::settingsSummary());
++    return $summary;
++  }
+
+   /**
+    * {@inheritdoc}
+@@ -22,14 +113,12 @@ public function formElement(FieldItemListInterface $items, $delta, array $elemen
+       '#type' => 'datetime',
+       '#default_value' => NULL,
+       '#date_increment' => 1,
+-      '#date_timezone' => date_default_timezone_get(),
++      '#date_timezone' => $this->getDefaultTimezone($items[$delta]->timezone),
+       '#required' => $element['#required'],
+     ];
+
+-    if ($this->getFieldSetting('datetime_type') == DateTimeItem::DATETIME_TYPE_DATE) {
+-      // A date-only field should have no timezone conversion performed, so
+-      // use the same timezone as for storage.
+-      $element['value']['#date_timezone'] = DateTimeItemInterface::STORAGE_TIMEZONE;
++    if ($this->getSetting('timezone_per_date') && $this->getFieldSetting('timezone_storage') === TRUE) {
++      $element['value']['#expose_timezone'] = TRUE;
+     }
+
+     if ($items[$delta]->date) {
+@@ -43,9 +132,10 @@ public function formElement(FieldItemListInterface $items, $delta, array $elemen
+    * {@inheritdoc}
+    */
+   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
+-    // The widget form element type has transformed the value to a
+-    // DrupalDateTime object at this point. We need to convert it back to the
+-    // storage timezone and format.
++    // The widget form element type has transformed the date value to a
++    // DrupalDateTime object at this point. We need to extract the time zone
++    // and store it separately, and then convert the date to Drupal's storage
++    // time zone and format.
+
+     $datetime_type = $this->getFieldSetting('datetime_type');
+     if ($datetime_type === DateTimeItem::DATETIME_TYPE_DATE) {
+@@ -62,13 +152,34 @@ public function massageFormValues(array $values, array $form, FormStateInterface
+         /** @var \Drupal\Core\Datetime\DrupalDateTime $date */
+         $date = $item['value'];
+
++        // Store the time zone if appropriate.
++        $item['timezone'] = '';
++        if ($this->shouldStoreTimezone($date, $form, $form_state) && $this->getFieldSetting('timezone_storage') === TRUE) {
++          $item['timezone'] = $date->getTimezone()->getName();
++        }
++
++        // Adjust the date for storage once validation is complete.
++        if ($form_state->isValidationComplete()) {
++          $date->setTimezone($storage_timezone);
++        }
++
+         // Adjust the date for storage.
+-        $item['value'] = $date->setTimezone($storage_timezone)->format($storage_format);
++        $item['value'] = $date->format($storage_format);
+       }
+     }
+     return $values;
+   }
+
++  /**
++   * Determines whether the time zone should be stored.
++   *
++   * @return bool
++   *   Whether the time zone should be stored.
++   */
++  protected function shouldStoreTimezone() {
++    return $this->fieldDefinition->getFieldStorageDefinition()->getSetting('timezone_storage');
++  }
++
+   /**
+    * Creates a date object for use as a default value.
+    *
+diff --git a/core/modules/datetime/src/Plugin/Validation/Constraint/DateTimeFormatConstraint.php b/core/modules/datetime/src/Plugin/Validation/Constraint/DateTimeFormatConstraint.php
+index 5ed340d44a..4f53d73424 100644
+--- a/core/modules/datetime/src/Plugin/Validation/Constraint/DateTimeFormatConstraint.php
++++ b/core/modules/datetime/src/Plugin/Validation/Constraint/DateTimeFormatConstraint.php
+@@ -35,4 +35,18 @@ class DateTimeFormatConstraint extends Constraint {
+    */
+   public $badValue = "The datetime value '@value' did not parse properly for the format '@format'";
+
++  /**
++   * Message for when the value isn't a string.
++   *
++   * @var string
++   */
++  public $badTimezoneType = "The time zone value must be a string.";
++
++  /**
++   * Message for when the value did not parse properly.
++   *
++   * @var string
++   */
++  public $badTimezoneValue = "The time zone value '@timezone' was not recognized as a valid time zone.";
++
+ }
+diff --git a/core/modules/datetime/src/Plugin/Validation/Constraint/DateTimeFormatConstraintValidator.php b/core/modules/datetime/src/Plugin/Validation/Constraint/DateTimeFormatConstraintValidator.php
+index 4eb6f556e6..8996d2134b 100644
+--- a/core/modules/datetime/src/Plugin/Validation/Constraint/DateTimeFormatConstraintValidator.php
++++ b/core/modules/datetime/src/Plugin/Validation/Constraint/DateTimeFormatConstraintValidator.php
+@@ -51,6 +51,23 @@ public function validate($item, Constraint $constraint) {
+           ]);
+         }
+       }
++      if ($item->getFieldDefinition()->getSetting('timezone_storage')) {
++        $value = $item->getValue();
++        $timezone = isset($value['timezone']) ? $value['timezone'] : '';
++        if (!is_string($timezone)) {
++          $this->context->addViolation($constraint->badTimezoneType);
++        }
++        else {
++          try {
++            new \DateTimeZone($timezone);
++          }
++          catch (\Exception $e) {
++            $this->context->addViolation($constraint->badTimezoneValue, [
++              '@timezone' => $timezone,
++            ]);
++          }
++        }
++      }
+     }
+   }
+
+diff --git a/core/modules/datetime/src/Plugin/migrate/field/DateField.php b/core/modules/datetime/src/Plugin/migrate/field/DateField.php
+index f6a33434d1..05cfbf1a5f 100644
+--- a/core/modules/datetime/src/Plugin/migrate/field/DateField.php
++++ b/core/modules/datetime/src/Plugin/migrate/field/DateField.php
+@@ -93,6 +93,11 @@ public function defineValueProcessPipeline(MigrationInterface $migration, $field
+         'to_format' => $to_format,
+         'source' => 'value',
+       ],
++      'timezone' => [
++        'plugin' => 'default_value',
++        'default_value' => '',
++        'source' => 'timezone',
++      ],
+     ];
+
+     // If the 'todate' setting is specified the field is now a 'daterange' and
+diff --git a/core/modules/datetime/tests/fixtures/update/field.field.node.page.field_date_1.yml b/core/modules/datetime/tests/fixtures/update/field.field.node.page.field_date_1.yml
+new file mode 100644
+index 0000000000..6fd580c88e
+--- /dev/null
++++ b/core/modules/datetime/tests/fixtures/update/field.field.node.page.field_date_1.yml
+@@ -0,0 +1,21 @@
++uuid: 2eaa16eb-0542-4b82-b590-4143798f2088
++langcode: en
++status: true
++dependencies:
++  config:
++    - field.storage.node.field_date_1
++    - node.type.page
++  module:
++    - datetime
++id: node.page.field_date_1
++field_name: field_date_1
++entity_type: node
++bundle: page
++label: date_1
++description: ''
++required: false
++translatable: false
++default_value: {  }
++default_value_callback: ''
++settings: {  }
++field_type: datetime
+diff --git a/core/modules/datetime/tests/fixtures/update/field.storage.node.field_date_1.yml b/core/modules/datetime/tests/fixtures/update/field.storage.node.field_date_1.yml
+new file mode 100644
+index 0000000000..2a771e9328
+--- /dev/null
++++ b/core/modules/datetime/tests/fixtures/update/field.storage.node.field_date_1.yml
+@@ -0,0 +1,20 @@
++uuid: 8bb2593a-bb3d-4ceb-81c9-a992a883a3cc
++langcode: en
++status: true
++dependencies:
++  module:
++    - datetime
++    - node
++id: node.field_date_1
++field_name: field_date_1
++entity_type: node
++type: datetime
++settings:
++  datetime_type: datetime
++module: datetime
++locked: false
++cardinality: -1
++translatable: true
++indexes: {  }
++persist_with_no_fields: false
++custom_storage: false
+diff --git a/core/modules/datetime/tests/src/Functional/DateTestBase.php b/core/modules/datetime/tests/src/Functional/DateTestBase.php
+index 9ecb8fe34f..9b0b3dec2a 100644
+--- a/core/modules/datetime/tests/src/Functional/DateTestBase.php
++++ b/core/modules/datetime/tests/src/Functional/DateTestBase.php
+@@ -35,6 +35,13 @@ abstract class DateTestBase extends BrowserTestBase {
+    */
+   protected $displayOptions;
+
++  /**
++   * An entity storage to use in this test class.
++   *
++   * @var \Drupal\Core\Entity\EntityStorageInterface
++   */
++  protected $entityStorage;
++
+   /**
+    * A field storage to use in this test class.
+    *
+@@ -104,6 +111,8 @@ protected function setUp() {
+     ]);
+     $this->drupalLogin($web_user);
+
++    $this->entityStorage = $this->container->get('entity_type.manager')->getStorage('entity_test');
++
+     // Create a field with settings to validate.
+     $this->createField();
+
+diff --git a/core/modules/datetime/tests/src/Functional/DateTimeFieldTest.php b/core/modules/datetime/tests/src/Functional/DateTimeFieldTest.php
+index 880068483f..a0d6eceb42 100644
+--- a/core/modules/datetime/tests/src/Functional/DateTimeFieldTest.php
++++ b/core/modules/datetime/tests/src/Functional/DateTimeFieldTest.php
+@@ -5,11 +5,14 @@
+ use Drupal\Component\Render\FormattableMarkup;
+ use Drupal\Core\Datetime\DrupalDateTime;
+ use Drupal\Core\Datetime\Entity\DateFormat;
++use Drupal\datetime\Plugin\Field\ConfigurableTimezoneInterface;
+ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+ use Drupal\entity_test\Entity\EntityTest;
+ use Drupal\field\Entity\FieldConfig;
+ use Drupal\field\Entity\FieldStorageConfig;
+ use Drupal\node\Entity\Node;
++use Drupal\user\Entity\User;
++use Drupal\user\UserInterface;
+
+ /**
+  * Tests Datetime field functionality.
+@@ -23,7 +26,11 @@ class DateTimeFieldTest extends DateTestBase {
+    *
+    * @var array
+    */
+-  protected $defaultSettings = ['timezone_override' => ''];
++  protected $defaultSettings = [
++    'timezone_default' => ConfigurableTimezoneInterface::TIMEZONE_USER,
++    'timezone_override' => '',
++    'timezone_per_date' => FALSE,
++  ];
+
+   /**
+    * {@inheritdoc}
+@@ -329,7 +336,7 @@ public function testDatetimeField() {
+
+     // Verify that the 'timezone_override' setting works.
+     $this->displayOptions['type'] = 'datetime_custom';
+-    $this->displayOptions['settings'] = ['date_format' => 'm/d/Y g:i:s A', 'timezone_override' => 'America/New_York'] + $this->defaultSettings;
++    $this->displayOptions['settings'] = ['date_format' => 'm/d/Y g:i:s A', 'timezone_default' => ConfigurableTimezoneInterface::TIMEZONE_FIXED, 'timezone_override' => 'America/New_York'] + $this->defaultSettings;
+     $display_repository->getViewDisplay($this->field->getTargetEntityTypeId(), $this->field->getTargetBundle(), 'full')
+       ->setComponent($field_name, $this->displayOptions)
+       ->save();
+@@ -387,6 +394,335 @@ public function testDatetimeField() {
+     $this->assertStringContainsString((string) $expected, $output, new FormattableMarkup('Formatted date field using datetime_time_ago format displayed as %expected.', ['%expected' => $expected]));
+   }
+
++  /**
++   * Test combinations of time zone configurations.
++   */
++  public function testFormatterTimezoneSettings() {
++    // Using different time zones wherever possible helps to highlight leakage.
++    // Giving time zones labels that describes the context in which they are
++    // stored makes it easier to diagnose test failures.
++    $timezones = [
++      'site' => 'Pacific/Kwajalein',
++      'user' => 'America/Phoenix',
++      'input' => 'Africa/Lagos',
++      'override' => 'Asia/Kolkata',
++      'php' => 'Pacific/Funafuti',
++      'storage' => DateTimeItemInterface::STORAGE_TIMEZONE,
++    ];
++
++    // Setup test environment.
++    // Reset php's default time zone to guarantee it's different to others here.
++    date_default_timezone_set($timezones['php']);
++    $this->config('system.date')
++      ->set('timezone.user.configurable', 1)
++      ->set('timezone.default', $timezones['site'])
++      ->save();
++    $this->setLoggedInUserTimezone($timezones['user']);
++
++    // Prepare the date that will be stored and rendered by the formatter.
++    $date = new DrupalDateTime("2012-10-15 17:25:00", 'UTC');
++    $date->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
++    $field_name = $this->fieldStorage->getName();
++    $fields = [
++      $field_name => [
++        'value' => $date->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT),
++      ],
++    ];
++
++    // Scenario 1: Stored preference not enabled.
++    // Test the formatter when per-date time zone storage has not been enabled.
++    $this->fieldStorage->setSetting('datetime_type', 'datetime');
++    $this->fieldStorage->setSetting('timezone_storage', FALSE);
++    $this->fieldStorage->save();
++    $entity = $this->entityStorage->create($fields);
++    $entity->save();
++    $this->formatterSettingsTest('not enabled', $entity->id(), $timezones);
++
++    // Scenario 2: Stored preference unspecified.
++    // Test the formatter on the same entity, after enabling per-date storage,
++    // in which case existing entities have NULL as their stored time zone.
++    $this->fieldStorage->setSetting('datetime_type', 'datetime');
++    $this->fieldStorage->setSetting('timezone_storage', TRUE);
++    $this->fieldStorage->save();
++    $this->formatterSettingsTest('no value', $entity->id(), $timezones);
++
++    // Scenario 3: Stored preference specified.
++    // Test the formatter on a new entity, which will now have a preferred
++    // time zone stored in its field.
++    $fields[$field_name]['timezone'] = $timezones['input'];
++    $entity = $this->entityStorage->create($fields);
++    $entity->save();
++    $this->formatterSettingsTest('has value', $entity->id(), $timezones);
++
++  }
++
++  /**
++   * Tests formatter output for different sets of settings.
++   */
++  protected function formatterSettingsTest($timezone_storage, $id, $timezones) {
++    // All the possible formatter time zone settings.
++    $settings = [
++      'per_date' => [
++        'Formatter using preferred time zone for each date' => TRUE,
++        'Formatter not using preferred time zone for each date' => FALSE,
++      ],
++      'default' => [
++        'user' => ConfigurableTimezoneInterface::TIMEZONE_USER,
++        'site' => ConfigurableTimezoneInterface::TIMEZONE_SITE,
++        'override' => ConfigurableTimezoneInterface::TIMEZONE_FIXED,
++      ],
++    ];
++
++    // Gather information about the field.
++    $field_name = $this->fieldStorage->getName();
++    $entity = $this->entityStorage->load($id);
++    $fieldValues = $entity->get($field_name)->getValue()[0];
++    $storedTimezone = $fieldValues['timezone'];
++    $storedDateInStorageFormat = $fieldValues['value'];
++
++    foreach ($settings['per_date'] as $per_date_label => $per_date) {
++      foreach ($settings['default'] as $default_label => $default) {
++        // Prepare the expectations. The time zone used should always be that
++        // set in the 'default' setting, unless the 'Use stored preference'
++        // setting is set AND a time zone is stored in the field for the date
++        // value being rendered.
++        $expected_timezone_label = array_search($default, $settings['default']);
++        if ($timezone_storage === 'has value') {
++          $this->assertEquals($timezones['input'], $storedTimezone, "Verifying the test is correctly setup with the right time zone stored.");
++          if ($per_date) {
++            $expected_timezone_label = 'input';
++          }
++        }
++
++        // Setup the formatter using the settings for the current scenario.
++        // Have the time zone displayed as part of the output.
++        $output_format = 'm/d/Y g:i:s A e';
++        $this->displayOptions['type'] = 'datetime_custom';
++        $this->displayOptions['settings'] = [
++          'date_format' => $output_format,
++          'timezone_default' => $default,
++          'timezone_override' => $timezones['override'],
++          'timezone_per_date' => $per_date,
++        ];
++        $this->container->get('entity_display.repository')
++          ->getViewDisplay($this->field->getTargetEntityTypeId(), $this->field->getTargetBundle(), 'full')
++          ->setComponent($field_name, $this->displayOptions)
++          ->save();
++
++        // Try to get the rendered field.
++        $output = $this->renderTestEntity($id);
++        $dom = new \DOMDocument();
++        @$dom->loadHTML($output);
++        $xpath = new \DOMXPath($dom);
++        $fieldXpath = $xpath->query("//div[contains(@class, 'field--type-datetime')]");
++        $fieldFound = ($fieldXpath->length === 1);
++        $this->assertTrue($fieldFound, "Looking for the div.field--type-datetime element");
++
++        // Test the rendered value.
++        if ($fieldFound) {
++          // Extract a date from the rendered value.
++          $actualText = trim($fieldXpath->item(0)->textContent);
++          $actualDate = DrupalDateTime::createFromFormat($output_format, $actualText);
++
++          // Prepare debug messages.
++          $scenario_message = "Per-date time zones in the field: $timezone_storage.";
++          $stored_message = new FormattableMarkup("The stored time zone is '@stored_timezone_label' ('@stored_timezone').", [
++            '@stored_timezone' => $storedTimezone,
++            '@stored_timezone_label' => array_search($storedTimezone, $timezones),
++          ]);
++          $settings_message = new FormattableMarkup("@per_date and 'Default time zone' set to '@default_label' (@default_timezone).", [
++            '@per_date' => $per_date_label,
++            '@default' => $default_label,
++            '@default_timezone' => $timezones[$default_label],
++          ]);
++          $base_message = new FormattableMarkup("Found text: '@actualText'. \n@scenario_message \n@stored_message \n@settings_message", [
++            '@actualText' => $actualText,
++            '@scenario_message' => $scenario_message,
++            '@stored_message' => $stored_message,
++            '@settings_message' => $settings_message,
++          ]);
++
++          // Test that the rendered date matches the stored date.
++          $actualDateInStorageFormat = $actualDate->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT, ['timezone' => DateTimeItemInterface::STORAGE_TIMEZONE]);
++          $message = new FormattableMarkup("Rendered date can be interpreted as '@actual',  expected @expected. \n@base_message.", [
++            '@actual' => $actualDateInStorageFormat,
++            '@expected' => $storedDateInStorageFormat,
++            '@base_message' => $base_message,
++          ]);
++          $this->assertEquals($storedDateInStorageFormat, $actualDateInStorageFormat, $message);
++
++          // Test that the rendered date used the expected time zone.
++          // Lookup the logical source of the time zone shown in the rendered date.
++          $actualTimeZone = $actualDate->getTimezone()->getName();
++          if (!$actualTimeSetting = array_search($actualTimeZone, $timezones)) {
++            $actualTimeSetting = $actualTimeZone;
++          }
++          // Compare that with the source expected to be in effect.
++          $message = new FormattableMarkup("Time formatted using '@actual' time zone, expected to use '@expected' time zone. \n @scenario_message @stored_message @settings_message.", [
++            '@actual' => $actualTimeSetting,
++            '@expected' => $expected_timezone_label,
++            '@base_message' => $base_message,
++          ]);
++          $this->assertSame($expected_timezone_label, $actualTimeSetting, $message);
++        }
++      }
++    }
++  }
++
++  /**
++   * Tests widget with different settings.
++   */
++  public function testWidgetTimezoneSettings() {
++    // Using different time zones wherever possible helps to highlight leakage.
++    // Giving time zones labels that describes the context in which they are
++    // stored makes it easier to diagnose test failures.
++    $timezones = [
++      'site' => 'Pacific/Kwajalein',
++      'user' => 'America/Phoenix',
++      'input' => 'Africa/Lagos',
++      'override' => 'Asia/Kolkata',
++      'php' => 'Pacific/Funafuti',
++      'storage' => DateTimeItemInterface::STORAGE_TIMEZONE,
++    ];
++
++    // The test date that should be saved by the widget.
++    $date = new DrupalDateTime('2012-10-15 17:25:00', DateTimeItemInterface::STORAGE_TIMEZONE);
++
++    // Store the test date formatted according to the different time zones, for
++    // use in error reporting and debugging.
++    $formattedDates = [];
++    foreach ($timezones as $label => $timezone) {
++      $formattedDates[$label] = $date->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT, $timezone);
++    }
++
++    // Setup test environment.
++    // Reset php's default time zone to guarantee it's different to others here.
++    date_default_timezone_set($timezones['php']);
++    $this->config('system.date')
++      ->set('timezone.user.configurable', 1)
++      ->set('timezone.default', $timezones['site'])
++      ->save();
++    $this->setLoggedInUserTimezone($timezones['user']);
++
++    $scenarios = [
++      'per_date' => [
++        // The field is not configured to have per-date time zone storage.
++        'no storage' => FALSE,
++        // The field storage time zones enabled, but the widget does not.
++        'not allowed' => TRUE,
++        // The widget allows, but the editor leaves at the default time zone.
++        'default' => TRUE,
++        // The editor selects a time zone other than the default.
++        'input' => TRUE,
++      ],
++      'default' => [
++        'user' => ConfigurableTimezoneInterface::TIMEZONE_USER,
++        'site' => ConfigurableTimezoneInterface::TIMEZONE_SITE,
++        'override' => ConfigurableTimezoneInterface::TIMEZONE_FIXED,
++      ],
++    ];
++    $this->setLoggedInUserTimezone($timezones['user']);
++    $field_name = $this->fieldStorage->getName();
++
++    foreach ($scenarios['per_date'] as $per_date_label => $per_date) {
++      foreach ($scenarios['default'] as $default_label => $default) {
++        // Determine the time zone the user will intend for input. We assume the
++        // user behaves according to the site builder's intention. Therefore the
++        // time zone used should always be that set in the 'default' setting,
++        // unless we are testing the scenario where the user can and does
++        // select a per-date time zone other than the default.
++        $timezone_intended_label = $default_label;
++        if ($per_date_label === 'input') {
++          $timezone_intended_label = 'input';
++        }
++        $timezone_intended = $timezones[$timezone_intended_label];
++        // Determine what we expect to be stored in the field's time zone
++        // column. We expect nothing to be stored if the field is not configured
++        // to store time zone.
++        $timezone_expected_label = NULL;
++        $timezone_expected = NULL;
++        if ($per_date) {
++          $timezone_expected_label = $timezone_intended_label;
++          $timezone_expected = $timezones[$timezone_expected_label];
++        }
++
++        // Set up the field.
++        $this->fieldStorage->setSetting('datetime_type', 'datetime');
++        if ($per_date_label === 'no storage') {
++          $this->fieldStorage->setSetting('timezone_storage', FALSE);
++        }
++        else {
++          $this->fieldStorage->setSetting('timezone_storage', TRUE);
++        }
++        $this->fieldStorage->save();
++
++        // Setup the widget.
++        $this->container->get('entity_display.repository')
++          ->getFormDisplay($this->field->getTargetEntityTypeId(), $this->field->getTargetBundle())
++          ->setComponent($field_name, [
++            'type' => 'datetime_default',
++            'settings' => [
++              'timezone_default' => $default,
++              'timezone_override' => $timezones['override'],
++              'timezone_per_date' => $per_date,
++            ],
++          ])
++          ->save();
++
++        // Prepare the field values.
++        $date_format = DateFormat::load('html_date')->getPattern();
++        $time_format = DateFormat::load('html_time')->getPattern();
++        $field_name = $this->fieldStorage->getName();
++        $edit = [
++          "{$field_name}[0][value][date]" => $date->format($date_format, ['timezone' => $timezone_intended]),
++          "{$field_name}[0][value][time]" => $date->format($time_format, ['timezone' => $timezone_intended]),
++        ];
++        // Only set time zone input if testing the scenario where a time zone
++        // select is exposed and the user selects other than the default.
++        if ($per_date_label === 'input') {
++          $edit += [
++            "{$field_name}[0][value][timezone]" => $timezone_intended,
++          ];
++        }
++
++        // Try to save the date through a widget on an entity.
++        $this->drupalGet('entity_test/add');
++        $this->submitForm($edit, t('Save'));
++        preg_match('|entity_test/manage/(\d+)|', $this->getUrl(), $match);
++        $id = $match[1];
++        $this->assertSession()->responseContains(t('entity_test @id has been created.', ['@id' => $id]));
++
++        // Test what is stored in the field.
++        if ($id) {
++          $entity = $this->entityStorage->load($id);
++          $fieldValues = $entity->get($field_name)->getValue()[0];
++          $messageBase = new FormattableMarkup("For scenario per-date '@per_date' with default '@default': ", [
++            '@per_date' => $per_date_label,
++            '@default' => $default_label,
++          ]);
++          $this->assertEquals($date->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT, ['timezone' => DateTimeItemInterface::STORAGE_TIMEZONE]), $fieldValues['value'], $messageBase . "checking correct date is stored.");
++          $message = new FormattableMarkup("the time zone stored is expected to be '@expected', actually is '@actual'.", [
++            '@expected' => $timezone_expected_label,
++            '@actual' => array_search($fieldValues['timezone'], $timezones),
++          ]);
++          $this->assertEquals($timezone_expected, $fieldValues['timezone'], $messageBase . $message);
++        }
++      }
++    }
++  }
++
++  /**
++   * Sets the time zone for the currently logged in user.
++   */
++  protected function setLoggedInUserTimezone($timezone) {
++    // Ensure a current user is set before trying to add a time zone for it.
++    $this->assertInstanceOf(UserInterface::class, $this->loggedInUser, 'Tried to set time zone without a user.');
++
++    $user = User::load($this->loggedInUser->id());
++    $user->set('timezone', $timezone)->save();
++    $this->setCurrentUser($user);
++  }
++
+   /**
+    * Tests Date List Widget functionality.
+    */
+@@ -801,6 +1137,7 @@ public function testInvalidField() {
+     $this->drupalGet('entity_test/add');
+     $this->assertSession()->fieldValueEquals("{$field_name}[0][value][date]", '');
+     $this->assertSession()->fieldValueEquals("{$field_name}[0][value][time]", '');
++    $this->assertSession()->fieldNotExists("{$field_name}[0][timezone]");
+
+     // Submit invalid dates and ensure they is not accepted.
+     $date_value = '';
+diff --git a/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDateonlyTest.php b/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDateonlyTest.php
+index 04e38fd016..518c14fcc0 100644
+--- a/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDateonlyTest.php
++++ b/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDateonlyTest.php
+@@ -96,6 +96,7 @@ protected function getExpectedNormalizedEntity() {
+       static::$fieldName => [
+         [
+           'value' => $this->entity->get(static::$fieldName)->value,
++          'timezone' => $this->entity->get(static::$fieldName)->value_timezone,
+         ],
+       ],
+     ];
+diff --git a/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDatetimeTest.php b/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDatetimeTest.php
+index 2030900cf4..b3e98d91fd 100644
+--- a/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDatetimeTest.php
++++ b/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDatetimeTest.php
+@@ -32,6 +32,20 @@ class EntityTestDatetimeTest extends EntityTestResourceTestBase {
+    */
+   protected $defaultTheme = 'stark';
+
++  /**
++   * The time zone string to use throughout the test.
++   *
++   * @var string
++   */
++  protected static $timezone = NULL;
++
++  /**
++   * Boolean indicating whether or not to use time zone storage.
++   *
++   * @var bool
++   */
++  protected static $timezoneStorage = FALSE;
++
+   /**
+    * Datetime test field name.
+    *
+@@ -55,7 +69,10 @@ public function setUp(): void {
+       'field_name' => static::$fieldName,
+       'type' => 'datetime',
+       'entity_type' => static::$entityTypeId,
+-      'settings' => ['datetime_type' => DateTimeItem::DATETIME_TYPE_DATETIME],
++      'settings' => [
++        'datetime_type' => DateTimeItem::DATETIME_TYPE_DATETIME,
++        'timezone_storage' => static::$timezoneStorage,
++      ],
+     ])
+       ->save();
+
+@@ -69,7 +86,10 @@ public function setUp(): void {
+
+     // Reload entity so that it has the new field.
+     $this->entity = $this->entityStorage->load($this->entity->id());
+-    $this->entity->set(static::$fieldName, ['value' => static::$dateString]);
++    $this->entity->set(static::$fieldName, [
++      'value' => static::$dateString,
++      'timezone' => static::$timezone,
++    ]);
+     $this->entity->save();
+   }
+
+@@ -96,6 +116,7 @@ protected function getExpectedNormalizedEntity() {
+       static::$fieldName => [
+         [
+           'value' => '2017-03-02T07:02:00+11:00',
++          'timezone' => static::$timezone,
+         ],
+       ],
+     ];
+@@ -109,6 +130,7 @@ protected function getNormalizedPostEntity() {
+       static::$fieldName => [
+         [
+           'value' => static::$dateString . '+00:00',
++          'timezone' => static::$timezone,
+         ],
+       ],
+     ];
+diff --git a/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDatetimeTimezoneStorageTest.php b/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDatetimeTimezoneStorageTest.php
+new file mode 100644
+index 0000000000..00966a7c19
+--- /dev/null
++++ b/core/modules/datetime/tests/src/Functional/EntityResource/EntityTest/EntityTestDatetimeTimezoneStorageTest.php
+@@ -0,0 +1,66 @@
++<?php
++
++namespace Drupal\Tests\datetime\Functional\EntityResource\EntityTest;
++
++use Drupal\Core\Url;
++use Drupal\Tests\rest\Functional\AnonResourceTestTrait;
++use GuzzleHttp\RequestOptions;
++
++/**
++ * Tests datetime field constraint with datetime items using time zone storage.
++ *
++ * @group datetime
++ */
++class EntityTestDatetimeTimezoneStorageTest extends EntityTestDatetimeTest {
++
++  use AnonResourceTestTrait;
++
++  /**
++   * The time zone string to use throughout the test.
++   *
++   * @var string
++   */
++  protected static $timezone = 'Australia/Sydney';
++
++  /**
++   * Boolean indicating whether or not to use time zone storage.
++   *
++   * @var bool
++   */
++  protected static $timezoneStorage = TRUE;
++
++  /**
++   * {@inheritdoc}
++   */
++  protected function assertNormalizationEdgeCases($method, Url $url, array $request_options): void {
++    parent::assertNormalizationEdgeCases($method, $url, $request_options);
++
++    if ($this->entity->getEntityType()->hasKey('bundle')) {
++      $fieldName = static::$fieldName;
++
++      // DX: 422 when time zone format is incorrect.
++      $normalization = $this->getNormalizedPostEntity();
++      $value = '2017-03-01T01:02:03+00:00';
++      $timezone = 'Mars/Phobos';
++      $normalization[static::$fieldName][0]['value'] = $value;
++      $normalization[static::$fieldName][0]['timezone'] = $timezone;
++
++      $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
++      $response = $this->request($method, $url, $request_options);
++
++      $message = "Unprocessable Entity: validation failed.\n{$fieldName}.0: The time zone value '{$timezone}' was not recognized as a valid time zone.\n";
++      $this->assertResourceErrorResponse(422, $message, $response);
++    }
++  }
++
++  /**
++   * {@inheritdoc}
++   *
++   * @group legacy
++   * @expectedDeprecation The provided datetime string format (Y-m-d\TH:i:s) is deprecated and will be removed before Drupal 9.0.0. Use the RFC3339 format instead (Y-m-d\TH:i:sP).
++   */
++  public function testPatch() {
++    return parent::testPatch();
++  }
++
++}
+diff --git a/core/modules/datetime/tests/src/Functional/Update/DatetimeUpdateTest.php b/core/modules/datetime/tests/src/Functional/Update/DatetimeUpdateTest.php
+new file mode 100644
+index 0000000000..2475a19422
+--- /dev/null
++++ b/core/modules/datetime/tests/src/Functional/Update/DatetimeUpdateTest.php
+@@ -0,0 +1,69 @@
++<?php
++
++namespace Drupal\Tests\datetime\Functional\Update;
++
++use Drupal\FunctionalTests\Update\UpdatePathTestBase;
++use Drupal\node\Entity\Node;
++
++/**
++ * Tests that settings are properly updated during database updates.
++ *
++ * @group datetime
++ * @group legacy
++ */
++class DatetimeUpdateTest extends UpdatePathTestBase {
++
++  /**
++   * The config factory service.
++   *
++   * @var \Drupal\Core\Config\ConfigFactoryInterface
++   */
++  protected $configFactory;
++
++  /**
++   * {@inheritdoc}
++   */
++  protected function setUp(): void {
++    parent::setUp();
++
++    $this->configFactory = $this->container->get('config.factory');
++    $this->entityFieldManager = $this->container->get('entity_field.manager');
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  protected function setDatabaseDumpFiles() {
++    $this->databaseDumpFiles = [
++      __DIR__ . '/../../../../../system/tests/fixtures/update/drupal-8.8.0.bare.standard.php.gz',
++      __DIR__ . '/../../../fixtures/update/datetime-date_8001-values.php',
++    ];
++  }
++
++  /**
++   * Tests that time zone changes are applied.
++   *
++   * @see datetime_update_8001()
++   */
++  public function testTimezoneSettings() {
++    // Load the 'node.field_date_1' field storage config, and check that the is
++    // no time zone storage yet.
++    $config = $this->configFactory->get('field.storage.node.field_date_1');
++    $settings = $config->get('settings');
++    $this->assertFalse(array_key_exists('timezone_storage', $settings));
++
++    // Run updates.
++    $this->runUpdates();
++
++    // Check the time zone storage has been added and defaulted to FALSE.
++    $config = $this->configFactory->get('field.storage.node.field_date_1');
++    $settings = $config->get('settings');
++    $this->assertTrue(array_key_exists('timezone_storage', $settings));
++    $this->assertFalse($settings['timezone_storage']);
++
++    // Ensure time zone column added and NULL for existing content.
++    $node = Node::load(1);
++    $this->assertNull($node->field_date_1->timezone);
++  }
++
++}
+diff --git a/core/modules/datetime/tests/src/Kernel/DateTimeItemTest.php b/core/modules/datetime/tests/src/Kernel/DateTimeItemTest.php
+index fcb8bc99f2..fa1149997d 100644
+--- a/core/modules/datetime/tests/src/Kernel/DateTimeItemTest.php
++++ b/core/modules/datetime/tests/src/Kernel/DateTimeItemTest.php
+@@ -48,7 +48,10 @@ protected function setUp(): void {
+       'field_name' => 'field_datetime',
+       'type' => 'datetime',
+       'entity_type' => 'entity_test',
+-      'settings' => ['datetime_type' => DateTimeItem::DATETIME_TYPE_DATETIME],
++      'settings' => [
++        'datetime_type' => DateTimeItem::DATETIME_TYPE_DATETIME,
++        'timezone_storage' => FALSE,
++      ],
+     ]);
+     $this->fieldStorage->save();
+     $this->field = FieldConfig::create([
+@@ -348,6 +351,30 @@ public function dateonlyValidationProvider() {
+       // Wrong input type.
+       [['2014', '01', '01']],
+     ];
+-  }
++  }
++
++  /**
++  * Tests DateTimeItem with per-date time zone storage.
++  */
++ public function testTimezoneDate() {
++   /** @var \Drupal\field\FieldStorageConfigInterface $field_storage */
++   $field_storage = FieldStorageConfig::load('entity_test.field_datetime');
++   $field_storage->setSetting('timezone_storage', TRUE);
++   $field_storage->save();
++
++   // Use a non-UTC time zone.
++   $timezone = 'America/Yellowknife';
++
++   $entity = EntityTest::create();
++   $value = '2014-01-01T20:00:00Z';
++
++   $entity->set('field_datetime', ['value' => $value, 'timezone' => $timezone]);
++   $entity->save();
++
++   // Load the entity.
++   $id = $entity->id();
++   $entity = EntityTest::load($id);
++   $this->assertEquals($timezone, $entity->field_datetime[0]->timezone, '"time zone" property can be set.');
++ }
+
+ }
+diff --git a/core/modules/datetime_range/config/schema/datetime_range.schema.yml b/core/modules/datetime_range/config/schema/datetime_range.schema.yml
+index f0f93259d3..fa2e57ec19 100644
+--- a/core/modules/datetime_range/config/schema/datetime_range.schema.yml
++++ b/core/modules/datetime_range/config/schema/datetime_range.schema.yml
+@@ -55,7 +55,7 @@ field.formatter.settings.daterange_custom:
+       translation context: 'Date range separator'
+
+ field.widget.settings.daterange_datelist:
+-  type: mapping
++  type: field.widget.settings.datetime_base
+   label: 'Date range select list display format settings'
+   mapping:
+     increment:
+@@ -69,5 +69,5 @@ field.widget.settings.daterange_datelist:
+       label: 'Time type'
+
+ field.widget.settings.daterange_default:
+-  type: mapping
++  type: field.widget.settings.datetime_base
+   label: 'Date range default display format settings'
+diff --git a/core/modules/datetime_range/datetime_range.install b/core/modules/datetime_range/datetime_range.install
+new file mode 100644
+index 0000000000..036946593c
+--- /dev/null
++++ b/core/modules/datetime_range/datetime_range.install
+@@ -0,0 +1,99 @@
++<?php
++
++/**
++ * @file
++ * Update hooks for the Datetime Range module.
++ */
++
++use Drupal\Core\Database\Database;
++use Drupal\Core\Entity\Schema\DynamicallyFieldableEntityStorageSchemaInterface;
++use Drupal\field\Entity\FieldStorageConfig;
++
++/**
++ * Add the 'timezone' field to all daterange field tables.
++ */
++function datetime_range_update_8001(array &$sandbox) {
++
++  if (!isset($sandbox['progress'])) {
++    $sandbox['progress'] = 0;
++    $sandbox['current_id'] = '';
++    $sandbox['processed'] = [];
++
++    // Find all required updates.
++    $change_list = [];
++    foreach (\Drupal::entityTypeManager()->getDefinitions() as $entity_type_id => $entity_type) {
++      $storage = \Drupal::entityTypeManager()->getStorage($entity_type_id);
++      if ($storage instanceof DynamicallyFieldableEntityStorageSchemaInterface) {
++        $field_changes = [];
++        $field_storage_definitions = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions($entity_type_id);
++        $original_storage_definitions = \Drupal::service('entity.last_installed_schema.repository')->getLastInstalledFieldStorageDefinitions($entity_type_id);
++        foreach (array_intersect_key($field_storage_definitions, $original_storage_definitions) as $field_name => $storage_definition) {
++          if ($storage_definition->getType() === 'daterange' && $storage->requiresFieldStorageSchemaChanges($storage_definition, $original_storage_definitions[$field_name])) {
++            /** @var \Drupal\Core\Entity\Sql\DefaultTableMapping $table_mapping */
++            $table_mapping = $storage->getTableMapping();
++            $field_changes[$field_name] = [
++              'table' => $table_mapping->getFieldTableName($field_name),
++              'revision_table' => $table_mapping->getDedicatedRevisionTableName($storage_definition),
++            ];
++          }
++        }
++
++        if (!empty($field_changes)) {
++          $change_list[$entity_type_id] = $field_changes;
++        }
++      }
++    }
++
++    $sandbox['change_list'] = $change_list;
++    $sandbox['max'] = count($change_list);
++  }
++
++  $remaining = array_diff(array_keys($sandbox['change_list']), $sandbox['processed']);
++  if (!empty($remaining)) {
++    $entity_type_id = array_pop($remaining);
++    $field_changes = $sandbox['change_list'][$entity_type_id];
++
++    $field_spec = [
++      'description' => 'The date time zone.',
++      'type' => 'varchar',
++      'length' => 50,
++    ];
++    $schema = Database::getConnection()->schema();
++
++    foreach ($field_changes as $field_name => $field_tables) {
++      if (stristr($field_name, 'scheduled_date')) continue;
++      $timezone_field_name = $field_name . '_timezone';
++      $field_schema = [
++        'fields' => [
++          // Include the 'value' field in order to properly create the index.
++          $field_name . '_value' => [
++            'description' => 'The date value.',
++            'type' => 'varchar',
++            'length' => 20,
++          ],
++          $timezone_field_name => $field_spec,
++        ],
++        'indexes' => [
++          'value_timezone' => [$field_name . '_value', $timezone_field_name],
++        ],
++      ];
++      $schema->addField($field_tables['table'], $timezone_field_name, $field_spec);
++      $schema->addIndex($field_tables['table'], 'value_timezone', $field_schema['indexes']['value_timezone'], $field_schema);
++
++      if ($field_tables['revision_table']) {
++        $schema->addField($field_tables['revision_table'], $timezone_field_name, $field_spec);
++        $schema->addIndex($field_tables['revision_table'], 'value_timezone', $field_schema['indexes']['value_timezone'], $field_schema);
++      }
++
++      // Set time zone storage to FALSE, which is the behavior prior to the
++      // introduction of configurable per-date time zone storage.
++      $field_storage = FieldStorageConfig::load($entity_type_id . '.' . $field_name);
++      $field_storage->setSetting('timezone_storage', FALSE);
++      $field_storage->save();
++      \Drupal::entityDefinitionUpdateManager()->updateFieldStorageDefinition($field_storage);
++    }
++    $sandbox['processed'][] = $entity_type_id;
++  }
++
++  $sandbox['#finished'] = empty($remaining);
++}
+diff --git a/core/modules/datetime_range/src/DateTimeRangeTrait.php b/core/modules/datetime_range/src/DateTimeRangeTrait.php
+index 3f05b82189..1551762579 100644
+--- a/core/modules/datetime_range/src/DateTimeRangeTrait.php
++++ b/core/modules/datetime_range/src/DateTimeRangeTrait.php
+@@ -25,13 +25,13 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+
+         if ($start_date->getTimestamp() !== $end_date->getTimestamp()) {
+           $elements[$delta] = [
+-            'start_date' => $this->buildDateWithIsoAttribute($start_date),
++            'start_date' => $this->buildDateWithIsoAttribute($start_date, $item->timezone),
+             'separator' => ['#plain_text' => ' ' . $separator . ' '],
+-            'end_date' => $this->buildDateWithIsoAttribute($end_date),
++            'end_date' => $this->buildDateWithIsoAttribute($end_date, $item->timezone),
+           ];
+         }
+         else {
+-          $elements[$delta] = $this->buildDateWithIsoAttribute($start_date);
++          $elements[$delta] = $this->buildDateWithIsoAttribute($start_date, $item->timezone);
+
+           if (!empty($item->_attributes)) {
+             $elements[$delta]['#attributes'] += $item->_attributes;
+diff --git a/core/modules/datetime_range/src/Plugin/Field/FieldFormatter/DateRangeCustomFormatter.php b/core/modules/datetime_range/src/Plugin/Field/FieldFormatter/DateRangeCustomFormatter.php
+index 78aa8aafe2..11ce6574e9 100644
+--- a/core/modules/datetime_range/src/Plugin/Field/FieldFormatter/DateRangeCustomFormatter.php
++++ b/core/modules/datetime_range/src/Plugin/Field/FieldFormatter/DateRangeCustomFormatter.php
+@@ -53,13 +53,13 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+
+         if ($start_date->getTimestamp() !== $end_date->getTimestamp()) {
+           $elements[$delta] = [
+-            'start_date' => $this->buildDate($start_date),
++            'start_date' => $this->buildDate($start_date, $item->timezone),
+             'separator' => ['#plain_text' => ' ' . $separator . ' '],
+-            'end_date' => $this->buildDate($end_date),
++            'end_date' => $this->buildDate($end_date, $item->timezone),
+           ];
+         }
+         else {
+-          $elements[$delta] = $this->buildDate($start_date);
++          $elements[$delta] = $this->buildDate($start_date, $item->timezone);
+         }
+       }
+     }
+diff --git a/core/modules/datetime_range/src/Plugin/Field/FieldFormatter/DateRangePlainFormatter.php b/core/modules/datetime_range/src/Plugin/Field/FieldFormatter/DateRangePlainFormatter.php
+index 0f74fba644..ccfc70dd18 100644
+--- a/core/modules/datetime_range/src/Plugin/Field/FieldFormatter/DateRangePlainFormatter.php
++++ b/core/modules/datetime_range/src/Plugin/Field/FieldFormatter/DateRangePlainFormatter.php
+@@ -50,13 +50,13 @@ public function viewElements(FieldItemListInterface $items, $langcode) {
+
+         if ($start_date->getTimestamp() !== $end_date->getTimestamp()) {
+           $elements[$delta] = [
+-            'start_date' => $this->buildDate($start_date),
++            'start_date' => $this->buildDate($start_date, $item->timezone),'start_date' => $this->buildDate($start_date),
+             'separator' => ['#plain_text' => ' ' . $separator . ' '],
+-            'end_date' => $this->buildDate($end_date),
++            'end_date' => $this->buildDate($end_date, $item->timezone),
+           ];
+         }
+         else {
+-          $elements[$delta] = $this->buildDate($start_date);
++          $elements[$delta] = $this->buildDate($start_date, $item->timezone);
+
+           if (!empty($item->_attributes)) {
+             $elements[$delta]['#attributes'] += $item->_attributes;
+diff --git a/core/modules/datetime_range/src/Plugin/Field/FieldType/DateRangeItem.php b/core/modules/datetime_range/src/Plugin/Field/FieldType/DateRangeItem.php
+index 7c34ed127c..59b9ea4cad 100644
+--- a/core/modules/datetime_range/src/Plugin/Field/FieldType/DateRangeItem.php
++++ b/core/modules/datetime_range/src/Plugin/Field/FieldType/DateRangeItem.php
+@@ -55,6 +55,9 @@ public static function propertyDefinitions(FieldStorageDefinitionInterface $fiel
+       ->setClass(DateTimeComputed::class)
+       ->setSetting('date source', 'end_value');
+
++    $properties['timezone'] = DataDefinition::create('string')
++      ->setLabel(t('Time zone'));
++
+     return $properties;
+   }
+
+@@ -83,6 +86,18 @@ public function storageSettingsForm(array &$form, FormStateInterface $form_state
+
+     $element['datetime_type']['#options'][static::DATETIME_TYPE_ALLDAY] = $this->t('All Day');
+
++    $element['timezone_storage']['#states'] = [
++      // Hide the option for per-date time zone storage if this is a date-only
++      // or all-day field.
++        'visible' => [
++          ':input[name="settings[datetime_type]"]' => ['value' => static::DATETIME_TYPE_DATETIME],
++        ],
++        'disabled' => [
++          [':input[name="settings[datetime_type]"]' => ['value' => static::DATETIME_TYPE_DATE]],
++          [':input[name="settings[datetime_type]"]' => ['value' => static::DATETIME_TYPE_ALLDAY]],
++        ],
++      ];
++
+     return $element;
+   }
+
+diff --git a/core/modules/datetime_range/src/Plugin/Field/FieldWidget/DateRangeDefaultWidget.php b/core/modules/datetime_range/src/Plugin/Field/FieldWidget/DateRangeDefaultWidget.php
+index 2d1a85ac2a..611ea2873d 100644
+--- a/core/modules/datetime_range/src/Plugin/Field/FieldWidget/DateRangeDefaultWidget.php
++++ b/core/modules/datetime_range/src/Plugin/Field/FieldWidget/DateRangeDefaultWidget.php
+@@ -2,6 +2,7 @@
+
+ namespace Drupal\datetime_range\Plugin\Field\FieldWidget;
+
++use Drupal\Core\Config\ConfigFactoryInterface;
+ use Drupal\Core\Entity\EntityStorageInterface;
+ use Drupal\Core\Field\FieldDefinitionInterface;
+ use Drupal\Core\Field\FieldItemListInterface;
+@@ -32,8 +33,12 @@ class DateRangeDefaultWidget extends DateRangeWidgetBase {
+   /**
+    * {@inheritdoc}
+    */
+-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityStorageInterface $date_storage) {
+-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
++  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityStorageInterface $date_storage, ConfigFactoryInterface $config_factory = NULL) {
++    if (!$config_factory) {
++      @trigger_error('The config.factory service must be passed to DateRangeDefaultWidget::__construct(), it is required before Drupal 9.0.0. See https://www.drupal.org/node/2632040.', E_USER_DEPRECATED);
++      $config_factory = \Drupal::service('config.factory');
++    }
++    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings, $config_factory);
+
+     $this->dateStorage = $date_storage;
+   }
+@@ -48,7 +53,8 @@ public static function create(ContainerInterface $container, array $configuratio
+       $configuration['field_definition'],
+       $configuration['settings'],
+       $configuration['third_party_settings'],
+-      $container->get('entity_type.manager')->getStorage('date_format')
++      $container->get('entity_type.manager')->getStorage('date_format'),
++      $container->get('config.factory')
+     );
+   }
+
+diff --git a/core/modules/datetime_range/src/Plugin/Field/FieldWidget/DateRangeWidgetBase.php b/core/modules/datetime_range/src/Plugin/Field/FieldWidget/DateRangeWidgetBase.php
+index b0f3ea7be7..186971eda1 100644
+--- a/core/modules/datetime_range/src/Plugin/Field/FieldWidget/DateRangeWidgetBase.php
++++ b/core/modules/datetime_range/src/Plugin/Field/FieldWidget/DateRangeWidgetBase.php
+@@ -30,6 +30,9 @@ public function formElement(FieldItemListInterface $items, $delta, array $elemen
+       '#title' => $this->t('End date'),
+     ] + $element['value'];
+
++    // The time zone selector should be present only once.
++    $element['end_value']['#expose_timezone'] = FALSE;
++
+     if ($items[$delta]->start_date) {
+       /** @var \Drupal\Core\Datetime\DrupalDateTime $start_date */
+       $start_date = $items[$delta]->start_date;
+@@ -76,9 +79,21 @@ public function massageFormValues(array $values, array $form, FormStateInterface
+           // we need to explicitly set the timezone.
+           $start_date->setTimeZone($user_timezone)->setTime(0, 0, 0);
+         }
++        elseif ($datetime_type !== DateRangeItem::DATETIME_TYPE_DATE) {
++          // Store the time zone if appropriate.
++          $item['timezone'] = '';
++          if ($this->shouldStoreTimezone($start_date, $form, $form_state) && $this->getFieldSetting('timezone_storage') === TRUE) {
++            $item['timezone'] = $start_date->getTimezone()->getName();
++          }
++        }
++
++        // Adjust the date for storage once validation is complete.
++        if ($form_state->isValidationComplete()) {
++          $start_date->setTimezone($storage_timezone);
++        }
+
+         // Adjust the date for storage.
+-        $item['value'] = $start_date->setTimezone($storage_timezone)->format($storage_format);
++        $item['value'] = $start_date->format($storage_format);
+       }
+
+       if (!empty($item['end_value']) && $item['end_value'] instanceof DrupalDateTime) {
+@@ -93,8 +108,13 @@ public function massageFormValues(array $values, array $form, FormStateInterface
+           $end_date->setTimeZone($user_timezone)->setTime(23, 59, 59);
+         }
+
++        // Adjust the date for storage once validation is complete.
++        if ($form_state->isValidationComplete()) {
++          $end_date->setTimezone($storage_timezone);
++        }
++
+         // Adjust the date for storage.
+-        $item['end_value'] = $end_date->setTimezone($storage_timezone)->format($storage_format);
++        $item['end_value'] = $end_date->format($storage_format);
+       }
+     }
+
+@@ -117,6 +137,13 @@ public function validateStartEnd(array &$element, FormStateInterface $form_state
+     $end_date = $element['end_value']['#value']['object'];
+
+     if ($start_date instanceof DrupalDateTime && $end_date instanceof DrupalDateTime) {
++      if (!empty($element['value']['#expose_timezone'])) {
++        // Ensure the start and end dates both use the same timezone.
++        $start_tz = $start_date->getTimezone();
++        $end_tz = $end_date->getTimezone();
++        $tz_offset = $end_tz->getOffset($end_date->getPhpDateTime()) - $start_tz->getOffset($start_date->getPhpDateTime());
++        $end_date->setTimezone($start_tz)->modify($tz_offset . ' seconds');
++      }
+       if ($start_date->getTimestamp() !== $end_date->getTimestamp()) {
+         $interval = $start_date->diff($end_date);
+         if ($interval->invert === 1) {
+diff --git a/core/modules/datetime_range/tests/src/Functional/DateRangeFieldTest.php b/core/modules/datetime_range/tests/src/Functional/DateRangeFieldTest.php
+index df03d63233..84b80257ee 100644
+--- a/core/modules/datetime_range/tests/src/Functional/DateRangeFieldTest.php
++++ b/core/modules/datetime_range/tests/src/Functional/DateRangeFieldTest.php
+@@ -5,6 +5,7 @@
+ use Drupal\Component\Render\FormattableMarkup;
+ use Drupal\Core\Datetime\DrupalDateTime;
+ use Drupal\Core\Datetime\Entity\DateFormat;
++use Drupal\datetime\Plugin\Field\FieldFormatter\DateTimeFormatterBase;
+ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+ use Drupal\Tests\datetime\Functional\DateTestBase;
+ use Drupal\datetime_range\Plugin\Field\FieldType\DateRangeItem;
+@@ -382,7 +383,7 @@ public function testDatetimeRangeField() {
+
+     // Verify that the 'timezone_override' setting works.
+     $this->displayOptions['type'] = 'daterange_custom';
+-    $this->displayOptions['settings'] = ['date_format' => 'm/d/Y g:i:s A', 'timezone_override' => 'America/New_York'] + $this->defaultSettings;
++    $this->displayOptions['settings'] = ['date_format' => 'm/d/Y g:i:s A', 'timezone_override' => 'America/New_York', 'timezone_default' => DateTimeFormatterBase::TIMEZONE_FIXED] + $this->defaultSettings;
+     $display_repository->getViewDisplay($this->field->getTargetEntityTypeId(), $this->field->getTargetBundle(), 'full')
+       ->setComponent($field_name, $this->displayOptions)
+       ->save();
+@@ -555,7 +556,7 @@ public function testAlldayRangeField() {
+
+     // Verify that the 'timezone_override' setting works.
+     $this->displayOptions['type'] = 'daterange_custom';
+-    $this->displayOptions['settings'] = ['date_format' => 'm/d/Y g:i:s A', 'timezone_override' => 'America/New_York'] + $this->defaultSettings;
++    $this->displayOptions['settings'] = ['date_format' => 'm/d/Y g:i:s A', 'timezone_override' => 'America/New_York', 'timezone_default' => DateTimeFormatterBase::TIMEZONE_FIXED] + $this->defaultSettings;
+     $display_repository->getViewDisplay($this->field->getTargetEntityTypeId(), $this->field->getTargetBundle(), 'full')
+       ->setComponent($field_name, $this->displayOptions)
+       ->save();
+diff --git a/core/modules/datetime_range/tests/src/Functional/EntityResource/EntityTest/EntityTestDateRangeTest.php b/core/modules/datetime_range/tests/src/Functional/EntityResource/EntityTest/EntityTestDateRangeTest.php
+index 636221f951..79465db24d 100644
+--- a/core/modules/datetime_range/tests/src/Functional/EntityResource/EntityTest/EntityTestDateRangeTest.php
++++ b/core/modules/datetime_range/tests/src/Functional/EntityResource/EntityTest/EntityTestDateRangeTest.php
+@@ -27,6 +27,13 @@ class EntityTestDateRangeTest extends EntityTestResourceTestBase {
+    */
+   protected static $dateString = '2017-03-01T20:02:00';
+
++  /**
++   * The Timezone string to use throughout the test.
++   *
++   * @var string
++   */
++  protected static $timezone = 'Australia/Sydney';
++
+   /**
+    * Datetime Range test field name.
+    *
+@@ -68,6 +75,7 @@ public function setUp(): void {
+     $this->entity = $this->entityStorage->load($this->entity->id());
+     $this->entity->set(static::$fieldName, [
+       'value' => static::$dateString,
++      'timezone' => static::$timezone,
+       'end_value' => static::$dateString,
+     ]);
+     $this->entity->save();
+@@ -95,6 +103,7 @@ protected function getExpectedNormalizedEntity() {
+       static::$fieldName => [
+         [
+           'value' => '2017-03-02T07:02:00+11:00',
++          'timezone' => 'Australia/Sydney',
+           'end_value' => '2017-03-02T07:02:00+11:00',
+         ],
+       ],
+@@ -109,6 +118,7 @@ protected function getNormalizedPostEntity() {
+       static::$fieldName => [
+         [
+           'value' => '2017-03-01T20:02:00+00:00',
++          'timezone' => 'Australia/Sydney',
+           'end_value' => '2017-03-01T20:02:00+00:00',
+         ],
+       ],
+@@ -129,6 +139,7 @@ protected function assertNormalizationEdgeCases($method, Url $url, array $reques
+       $normalization[static::$fieldName][0]['value'] = [
+         '2017', '03', '01', '21', '53', '00',
+       ];
++      $normalization[static::$fieldName][0]['timezone'] = NULL;
+       $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+       $response = $this->request($method, $url, $request_options);
+       $message = "Unprocessable Entity: validation failed.\n{$fieldName}.0.value: This value should be of the correct primitive type.\n";
+@@ -137,6 +148,7 @@ protected function assertNormalizationEdgeCases($method, Url $url, array $reques
+       // DX: 422 when 'end_value' is not specified.
+       $normalization = $this->getNormalizedPostEntity();
+       unset($normalization[static::$fieldName][0]['end_value']);
++      $normalization[static::$fieldName][0]['timezone'] = NULL;
+       $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+       $response = $this->request($method, $url, $request_options);
+       $message = "Unprocessable Entity: validation failed.\n{$fieldName}.0.end_value: This value should not be null.\n";
+@@ -147,6 +159,7 @@ protected function assertNormalizationEdgeCases($method, Url $url, array $reques
+       $normalization[static::$fieldName][0]['end_value'] = [
+         '2017', '03', '01', '21', '53', '00',
+       ];
++      $normalization[static::$fieldName][0]['timezone'] = NULL;
+       $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+       $response = $this->request($method, $url, $request_options);
+       $message = "Unprocessable Entity: validation failed.\n{$fieldName}.0.end_value: This value should be of the correct primitive type.\n";
+@@ -156,7 +169,7 @@ protected function assertNormalizationEdgeCases($method, Url $url, array $reques
+       $normalization = $this->getNormalizedPostEntity();
+       $value = '2017-13-55T20:02:00+00:00';
+       $normalization[static::$fieldName][0]['end_value'] = $value;
+-
++      $normalization[static::$fieldName][0]['timezone'] = NULL;
+       $request_options[RequestOptions::BODY] = $this->serializer->encode($normalization, static::$format);
+       $response = $this->request($method, $url, $request_options);
+       $message = "The specified date \"$value\" is not in an accepted format: \"Y-m-d\\TH:i:sP\" (RFC 3339), \"Y-m-d\\TH:i:sO\" (ISO 8601).";
+diff --git a/core/modules/datetime_range/tests/src/Kernel/DateRangeItemTest.php b/core/modules/datetime_range/tests/src/Kernel/DateRangeItemTest.php
+index 9620f5cf8d..b974a5b506 100644
+--- a/core/modules/datetime_range/tests/src/Kernel/DateRangeItemTest.php
++++ b/core/modules/datetime_range/tests/src/Kernel/DateRangeItemTest.php
+@@ -49,7 +49,10 @@ protected function setUp(): void {
+       'field_name' => mb_strtolower($this->randomMachineName()),
+       'entity_type' => 'entity_test',
+       'type' => 'daterange',
+-      'settings' => ['datetime_type' => DateRangeItem::DATETIME_TYPE_DATE],
++      'settings' => [
++        'datetime_type' => DateRangeItem::DATETIME_TYPE_DATE,
++        'timezone_storage' => FALSE,
++      ],
+     ]);
+     $this->fieldStorage->save();
+
+diff --git a/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldFormatterSettingsTest.php b/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldFormatterSettingsTest.php
+index 06ae05febb..67b392c530 100644
+--- a/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldFormatterSettingsTest.php
++++ b/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldFormatterSettingsTest.php
+@@ -3,6 +3,7 @@
+ namespace Drupal\Tests\field\Kernel\Migrate\d6;
+
+ use Drupal\Core\Entity\Entity\EntityViewDisplay;
++use Drupal\datetime\Plugin\Field\FieldFormatter\DateTimeFormatterBase;
+ use Drupal\Tests\migrate_drupal\Kernel\d6\MigrateDrupal6TestBase;
+
+ /**
+@@ -171,7 +172,12 @@ public function testEntityDisplaySettings() {
+     // Test date field.
+     $expected['weight'] = 10;
+     $expected['type'] = 'datetime_default';
+-    $expected['settings'] = ['timezone_override' => '', 'format_type' => 'fallback'];
++    $expected['settings'] = [
++      'timezone_override' => '',
++      'format_type' => 'fallback',
++      'timezone_default' => DateTimeFormatterBase::TIMEZONE_USER,
++      'timezone_per_date' => FALSE,
++    ];
+     $component = $display->getComponent('field_test_date');
+     $this->assertSame($expected, $component);
+     $display = EntityViewDisplay::load('node.story.default');
+diff --git a/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldInstanceTest.php b/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldInstanceTest.php
+index 47edfd6d64..1b7db9d4d9 100644
+--- a/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldInstanceTest.php
++++ b/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldInstanceTest.php
+@@ -109,7 +109,7 @@ public function testFieldInstanceMigration() {
+     $this->assertInstanceOf(FieldConfig::class, $field);
+     $this->assertSame('Date Field', $field->label());
+     $this->assertSame('An example date field.', $field->getDescription());
+-    $expected = ['datetime_type' => 'datetime'];
++    $expected = ['datetime_type' => 'datetime', 'timezone_storage' => FALSE];
+     $this->assertSame($expected, $field->getSettings());
+     $expected = [
+       [
+@@ -125,7 +125,7 @@ public function testFieldInstanceMigration() {
+     $this->assertInstanceOf(FieldConfig::class, $field);
+     $this->assertSame('Datetime Field', $field->label());
+     $this->assertSame('An example datetime field.', $field->getDescription());
+-    $expected = ['datetime_type' => 'datetime'];
++    $expected = ['datetime_type' => 'datetime', 'timezone_storage' => FALSE];
+     $this->assertSame($expected, $field->getSettings());
+     $expected = [];
+     $this->assertSame($expected, $field->getDefaultValueLiteral());
+diff --git a/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldWidgetSettingsTest.php b/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldWidgetSettingsTest.php
+index c986b0c373..53a9ca4bdc 100644
+--- a/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldWidgetSettingsTest.php
++++ b/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldWidgetSettingsTest.php
+@@ -99,7 +99,11 @@ public function testWidgetSettings() {
+     $component = $form_display->getComponent('field_test_date');
+     $expected['type'] = 'datetime_default';
+     $expected['weight'] = 10;
+-    $expected['settings'] = [];
++    $expected['settings'] = [
++      'timezone_default' => 'user',
++      'timezone_override' => '',
++      'timezone_per_date' => FALSE,
++    ];
+     $this->assertSame($expected, $component);
+
+     $component = $form_display->getComponent('field_test_datestamp');
+diff --git a/core/modules/layout_builder/tests/src/FunctionalJavascript/FieldBlockTest.php b/core/modules/layout_builder/tests/src/FunctionalJavascript/FieldBlockTest.php
+index 002cece560..b53e269c68 100644
+--- a/core/modules/layout_builder/tests/src/FunctionalJavascript/FieldBlockTest.php
++++ b/core/modules/layout_builder/tests/src/FunctionalJavascript/FieldBlockTest.php
+@@ -121,6 +121,7 @@ public function testUserFieldBlock() {
+       'settings' => [
+         'format_type' => 'long',
+         'timezone_override' => '',
++        'timezone_default' => 'user',
+       ],
+       'third_party_settings' => [],
+     ];

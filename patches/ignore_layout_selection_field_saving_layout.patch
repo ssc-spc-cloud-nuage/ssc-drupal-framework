@@ -1,0 +1,16 @@
+diff --git a/layout_library.module b/layout_library.module
+index d5e2d01..d68b857 100644
+--- a/layout_library.module
++++ b/layout_library.module
+@@ -29,6 +29,11 @@ function layout_library_entity_view_display_update(LayoutEntityDisplayInterface
+     return;
+   }
+
++  // Bail if saving layout (should only run when saving display settings).
++  if (isset($display->toggle_content_preview)) {
++    return;
++  }
++
+   $entity_type = $display->getTargetEntityTypeId();
+   $bundle = $display->getTargetBundle();
+   $field_name = 'layout_selection';

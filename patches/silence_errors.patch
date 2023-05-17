@@ -1,0 +1,22 @@
+diff --git a/src/CssSanitizer.php b/src/CssSanitizer.php
+index c83952b..850fcef 100644
+--- a/src/CssSanitizer.php
++++ b/src/CssSanitizer.php
+@@ -22,7 +22,7 @@ class CssSanitizer {
+         '@pos' => $pos,
+         '@code' => $code,
+       ];
+-      $errors[] = t('Views CSS parser error @identifier#@line:@pos: @code', $tArgs);
++      //$errors[] = t('Views CSS parser error @identifier#@line:@pos: @code', $tArgs);
+     }
+     $sanitizer = StylesheetSanitizer::newDefault();
+     $newStylesheet = $sanitizer->sanitize($stylesheet);
+@@ -33,7 +33,7 @@ class CssSanitizer {
+         '@pos' => $pos,
+         '@code' => $code,
+       ];
+-      $errors[] = t('Views CSS sanitizer error @identifier#@line:@pos: @code', $tArgs);
++      //$errors[] = t('Views CSS sanitizer error @identifier#@line:@pos: @code', $tArgs);
+     }
+     $newText = (string)$newStylesheet;
+     return $newText;
