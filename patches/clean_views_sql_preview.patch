@@ -1,0 +1,13 @@
+diff --git a/core/modules/views_ui/src/ViewUI.php b/core/modules/views_ui/src/ViewUI.php
+index 0dfaec0f44..11dc7881b2 100644
+--- a/core/modules/views_ui/src/ViewUI.php
++++ b/core/modules/views_ui/src/ViewUI.php
+@@ -645,7 +645,7 @@ public function renderPreview($display_id, $args = []) {
+                 'data' => [
+                   '#type' => 'inline_template',
+                   '#template' => '<pre>{{ query }}</pre>',
+-                  '#context' => ['query' => strtr($query_string, $quoted)],
++                  '#context' => ['query' => str_replace(['{', '}', '"'], '', strtr($query_string, $quoted))],
+                 ],
+               ],
+             ];

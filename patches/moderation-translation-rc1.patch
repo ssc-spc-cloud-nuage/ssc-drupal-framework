@@ -1,0 +1,31 @@
+diff --git a/core/lib/Drupal/Core/Entity/ContentEntityStorageBase.php b/core/lib/Drupal/Core/Entity/ContentEntityStorageBase.php
+index 17a5d3bfdb..f883366320 100644
+--- a/core/lib/Drupal/Core/Entity/ContentEntityStorageBase.php
++++ b/core/lib/Drupal/Core/Entity/ContentEntityStorageBase.php
+@@ -380,7 +380,7 @@ public function createRevision(RevisionableInterface $entity, $default = TRUE, $
+     // translation and the other translations in the default revision. This
+     // permits the creation of pending revisions that can always be saved as the
+     // new default revision without reverting changes in other languages.
+-    if (!$entity->isNew() && !$entity->isDefaultRevision() && $entity->isTranslatable() && $this->isAnyRevisionTranslated($entity)) {
++    if (!$entity->isNew() && $entity->isTranslatable() && $this->isAnyRevisionTranslated($entity)) {
+       $active_langcode = $entity->language()->getId();
+       $skipped_field_names = array_flip($this->getRevisionTranslationMergeSkippedFieldNames());
+ 
+@@ -397,11 +397,15 @@ public function createRevision(RevisionableInterface $entity, $default = TRUE, $
+       $default_revision = $this->load($entity->id());
+       $translation_languages = $default_revision->getTranslationLanguages();
+       foreach ($translation_languages as $langcode => $language) {
+-        if ($langcode == $active_langcode) {
++        // No need to merge if this is the Active language or the Default language.
++        if ($langcode == $active_langcode || $entity->language()->isDefault()) {
+           continue;
+         }
+ 
+-        $default_revision_translation = $default_revision->getTranslation($langcode);
++        $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
++        $default_revision_translation_id = $storage->getLatestTranslationAffectedRevisionId($entity->id(), $langcode);
++        $default_revision_translation = $storage->loadRevision($default_revision_translation_id);
++
+         $new_revision_translation = $new_revision->hasTranslation($langcode) ?
+           $new_revision->getTranslation($langcode) : $new_revision->addTranslation($langcode);
+ 
