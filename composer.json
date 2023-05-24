@@ -25,7 +25,6 @@
         "drupal/calendar": "^1.0@alpha",
         "drupal/calendar_link": "2.1.4",
         "drupal/chosen": "^3.0",
-        "drupal/ckeditor_bootstrap_buttons": "^2.0",
         "drupal/ckwordcount": "^2.0",
         "drupal/color_field": "^3",
         "drupal/conditional_fields": "^4.0.1",
@@ -154,6 +153,7 @@
         "w8tcha/ckeditor-wordcount-plugin": "^1.17",
         "wet-boew/wet-boew": "4.0.43.1 as 4.0.50.1",
         "wikimedia/composer-merge-plugin": "^2.0",
+        "wikimedia/css-sanitizer": "3.0.1 as 2.0.1",
         "woocommerce/flexslider": "~2.0"
     },
     "require-dev": {
