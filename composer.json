@@ -154,7 +154,6 @@
         "w8tcha/ckeditor-wordcount-plugin": "^1.17",
         "wet-boew/wet-boew": "4.0.43.1 as 4.0.50.1",
         "wikimedia/composer-merge-plugin": "^2.0",
-        "wikimedia/css-sanitizer": "^4",
         "woocommerce/flexslider": "~2.0"
     },
     "require-dev": {
