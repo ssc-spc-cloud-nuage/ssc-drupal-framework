@@ -391,8 +391,7 @@
                 "3249457 - views support": "https://www.drupal.org/files/issues/2021-11-17/views_support-3249457-8.patch"
             },
             "drupal/diff": {
-                "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff",
-                "3269933 - show proper moderation state": "https://www.drupal.org/files/issues/2022-10-15/diff-3269933-4-get-revision-with-langcode.patch"
+                "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
             },
             "drupal/sitewide_alert": {
                 "3243392 - make fieldable": "https://www.drupal.org/files/issues/2021-10-14/make_fieldable-3243392-2.patch",
