@@ -393,10 +393,6 @@
             "drupal/calendar_link": {
                 "3249457 - views support": "https://www.drupal.org/files/issues/2021-11-17/views_support-3249457-8.patch"
             },
-            "drupal/diff": {
-                "3269933 - show proper moderation state": "https://www.drupal.org/files/issues/2023-03-20/diff-3269933-get-revision-with-langcode-11.patch",
-                "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
-            },
             "drupal/tranc": {
                 "3354693 - PHP 8.1 support": "https://www.drupal.org/files/issues/2023-04-17/php8.1-3354693-6.patch"
             },
