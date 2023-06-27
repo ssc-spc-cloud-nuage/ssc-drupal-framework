@@ -394,8 +394,8 @@
                 "3249457 - views support": "https://www.drupal.org/files/issues/2021-11-17/views_support-3249457-8.patch"
             },
             "drupal/diff": {
-                "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff",
-                "3269933 - show proper moderation state": "https://www.drupal.org/files/issues/2022-10-15/diff-3269933-4-get-revision-with-langcode.patch"
+                "3269933 - show proper moderation state": "https://www.drupal.org/files/issues/2023-03-20/diff-3269933-get-revision-with-langcode-11.patch",
+                "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
             },
             "drupal/tranc": {
                 "3354693 - PHP 8.1 support": "https://www.drupal.org/files/issues/2023-04-17/php8.1-3354693-6.patch"
@@ -427,7 +427,9 @@
                 },
                 "drupal/diff": {
                     "Enter drupal/diff patch #3004705 description here":
-                    "https://www.drupal.org/files/issues/2018-12-03/ModerationState-error-of-translated-node-in-revision-overview-page-3004705-4.patch"
+                    "https://www.drupal.org/files/issues/2018-12-03/ModerationState-error-of-translated-node-in-revision-overview-page-3004705-4.patch",
+                    "Enter drupal/diff patch #3228798 description here":
+                    "https://www.drupal.org/files/issues/2021-08-19/diff-a11y-3228798-10.patch"
                 },
                 "drupal/core": {
                     "3150294 - New translations for moderated nodes are not created in the initial workflow state":
