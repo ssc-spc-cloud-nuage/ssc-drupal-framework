@@ -6,6 +6,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "ext-fileinfo": "*",
         "drupal/access_unpublished": "^1.0",
         "drupal/address": "^1.9",
         "drupal/address_static_map": "^1.0",
@@ -26,6 +27,7 @@
         "drupal/calendar_link": "2.1.4",
         "drupal/chosen": "^3.0",
         "drupal/ckwordcount": "^2.0",
+        "drupal/coder": "^8.3",
         "drupal/color_field": "^3",
         "drupal/conditional_fields": "^4.0.1",
         "drupal/config_filter": "^2.0",
@@ -392,19 +394,23 @@
                 "3249457 - views support": "https://www.drupal.org/files/issues/2021-11-17/views_support-3249457-8.patch"
             },
             "drupal/diff": {
-                "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
-            },
-            "drupal/sitewide_alert": {
-                "3243392 - make fieldable": "https://www.drupal.org/files/issues/2021-10-14/make_fieldable-3243392-2.patch",
-                "3243660 - proper date filter": "https://www.drupal.org/files/issues/2021-10-14/date_filter-3243660-2.patch",
-                "3207090 - use twig tpl": "https://www.drupal.org/files/issues/2021-10-27/use_template-3207090-4.patch",
-                "3246436 - allow class extension": "https://www.drupal.org/files/issues/2021-10-28/allow_class_extension-3246436-2.patch"
+                "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff",
+                "3269933 - show proper moderation state": "https://www.drupal.org/files/issues/2022-10-15/diff-3269933-4-get-revision-with-langcode.patch"
             },
             "drupal/tranc": {
                 "3354693 - PHP 8.1 support": "https://www.drupal.org/files/issues/2023-04-17/php8.1-3354693-6.patch"
             },
             "drupal/address_static_map": {
                 "3358951 - PHP 8.1 support and sig fix": "https://www.drupal.org/files/issues/2023-05-08/php8_signature-3358951-2.patch"
+            },
+            "drupal/config_rewrite": {
+                "3203786 - compatible with s3fs": "https://www.drupal.org/files/issues/2021-07-20/3203786-4.patch"
+            },
+            "drupal/mimemail": {
+                "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
+            },
+            "guzzlehttp/guzzle": {
+                "3225966 - hide Guzzle deprecation warnings with s3fs": "https://www.drupal.org/files/issues/2022-11-18/suppress-deprecation-using-php-8.patch"
             }
         },
         "patches-ignore": {
