@@ -1,8 +1,7 @@
 <?php
 
-namespace DrupalWxT\WxT;
+namespace SSC\Drupal;
 
-use Composer\Package\RootPackage;
 use Composer\Factory;
 use Composer\Script\Event;
 use Composer\Semver\Comparator;
