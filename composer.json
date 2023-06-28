@@ -44,7 +44,6 @@
         "drupal/core_context": "^1.0",
         "drupal/css_editor": "^2",
         "drupal/css_grid": "^1.0@beta",
-        "drupal/ctools": "^3.0",
         "drupal/custom_breadcrumbs": "^1.0",
         "drupal/date_popup": "^1.2",
         "drupal/daterange_compact": "^2.0",
@@ -421,9 +420,6 @@
             "drupalwxt/wxt": {
                 "drupal/pathauto": {
                     "Enter drupal/pathauto patch #3184164 description here": "https://www.drupal.org/files/issues/2020-11-23/3184164-2.patch"
-                },
-                "drupal/ctools": {
-                    "2759445 - pass arguments to views from LB": "https://www.drupal.org/files/issues/2020-11-03/ctools_views-pass_arguments_to_viewsblock-2759445-70.patch"
                 },
                 "drupal/redis": {
                     "3004561 - Enable ssl scheme": "https://www.drupal.org/files/issues/2019-06-26/override-default-scheme-and-persistent-for-predis-3004561-12.patch",
