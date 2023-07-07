@@ -413,6 +413,9 @@
             "drupal/mimemail": {
                 "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
             },
+            "drupal/imce": {
+                "3371499 - fix private path": "./patches/imce-private-path-fix.patch"
+            },
             "guzzlehttp/guzzle": {
                 "3225966 - hide Guzzle deprecation warnings with s3fs": "https://www.drupal.org/files/issues/2022-11-18/suppress-deprecation-using-php-8.patch"
             }

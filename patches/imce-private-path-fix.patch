@@ -1,0 +1,18 @@
+diff --git a/src/Imce.php b/src/Imce.php
+index 367b4fa..f8130a7 100644
+--- a/src/Imce.php
++++ b/src/Imce.php
+@@ -103,7 +103,12 @@ class Imce {
+     $conf['root_uri'] = $conf['scheme'] . '://';
+     // file_create_url requires a filepath for some schemes like private:// .
+     $url_gen = \Drupal::service('file_url_generator');
+-    $conf['root_url'] = preg_replace('@/(?:%2E|\.)$@i', '', $url_gen->generateAbsoluteString($conf['root_uri'] . '.'));
++    if($conf['root_uri'] == 'private://'){
++      $conf['root_url'] = \Drupal::request()->getSchemeAndHttpHost().'/system/files/private%3A';
++    }
++    else{
++      $conf['root_url'] = preg_replace('@/(?:%2E|\.)$@i', '', $url_gen->generateAbsoluteString($conf['root_uri'] . '.'));
++    }
+     // Convert to relative.
+     if (!\Drupal::config('imce.settings')->get('abs_urls')) {
+       $conf['root_url'] = $url_gen->transformRelative($conf['root_url']);
