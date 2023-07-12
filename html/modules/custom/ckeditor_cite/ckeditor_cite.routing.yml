@@ -1,0 +1,7 @@
+ckeditor_cite.cite_dialog:
+  path: '/ckeditor-cite/dialog/cite/{editor}'
+  defaults:
+    _form: '\Drupal\ckeditor_cite\Form\CkeditorCiteDialog'
+    _title: 'Add cite'
+  requirements:
+    _entity_access: 'editor.use'

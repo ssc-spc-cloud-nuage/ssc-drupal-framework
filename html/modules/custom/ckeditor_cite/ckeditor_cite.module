@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Contains ckeditor_cite.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_help().
+ */
+function ckeditor_cite_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.ckeditor_cite':
+      $output = '';
+      $output .= '<h3>' . t('CKEditor Cite') . '</h3>';
+      $output .= '<p>' . t('The module adds a CKEditor cite button to the editor toolbar and a link to its context menu (only available if you select an existing cite tag in the editor content).') . '</p>';
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('Settings') . '</dt>';
+      $output .= '<dd>' . t('In the <a href=":text-formats">text formats</a> that use ckeditor, move the icon into the active toolbar.', [':text-formats' => Url::fromRoute('filter.admin_overview')->toString()]) . '</dd>';
+      $output .= '<dt>' . t('Usage') . '</dt>';
+      $output .= '<dd>' . t('Select the cite you want to tag. Click the ckeditor cite icon and fill in the fields in the opening dialog.') . '</dd>';
+      $output .= '<dd>' . t('To edit a tagged cite place the cursor within the cite text and click the ckeditor cite icon. Or open the context menu by right-clicking on your mouse and select "Edit Cite".') . '</dd>';
+      $output .= '<dd>' . t('To remove an cite title attribute, delete the explanation in the ckeditor cite dialog. In order to untag an cite, delete the cite in the ckeditor cite dialog.') . '</dd>';
+      $output .= '</dl>';
+      return $output;
+    default:
+  }
+}

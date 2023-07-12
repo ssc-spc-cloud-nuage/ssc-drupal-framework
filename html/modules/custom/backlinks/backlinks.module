@@ -1,0 +1,249 @@
+<?php
+
+/**
+ * @file
+ * Contains backlinks.module.
+ */
+
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\Entity\Node;
+use Drupal\user\Entity\User;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\ViewExecutable;
+
+/**
+ * Implements hook_help().
+ */
+function backlinks_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the backlinks module.
+    case 'help.page.backlinks':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t(' * Parse the node for internal links and update the backlink table. Done on CRON runs (every hour).
+       This needs to be done for both EN/FR pages as non-translatable changes (like Paragraphs) will impact both
+       language versions.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/*
+ * If a node is created or updated let's check for links on that page.
+ *
+ * As this gets in the way of our flaky Moderation flow; lets run backlinks parsing with CRON.
+ *
+ */
+function backlinks_node_update(Node $node) {
+  // Let's flag this NID and Language to process the page later.
+  _backlinks_queue_node($node);
+}
+
+function backlinks_node_insert(Node $node) {
+  backlinks_node_update($node);
+}
+
+function _update_backlinks(Node $node, $langcode = NULL) {
+  if (!$langcode) {
+    $langcode = $node->language()->getId();
+  }
+  $links = _parse_for_links($node, $langcode);
+  _update_backlinks_table($node, $links, $langcode);
+}
+
+/**
+ * Parses rendered Node HTML for internal links and returns a set of linked NIDs.
+ *
+ * @param $nid
+ *
+ * @return array
+ */
+function _parse_for_links($node, $langcode) {
+  $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
+
+  // Paragraphs don't get $langcode so need to switch "current language".
+  // see: https://www.drupal.org/project/paragraphs/issues/2753201
+  // also: https://drupal.stackexchange.com/questions/156094/switch-a-language-programatically/216051#216051
+  $language_manager = \Drupal::languageManager();
+  $custom_language_negotiator = \Drupal::service('backlinks.language_negotiator');
+  $language_manager->setNegotiator($custom_language_negotiator);
+
+  // Get original "current language" so we can set it back later.
+  $original_language_id = $language_manager->getCurrentLanguage()->getId();
+
+  // Set new language by its langcode
+  $language_manager->reset(); // Needed to re-run language negotiation
+  $language_manager->getNegotiator()->setLanguageCode($langcode);
+
+  // NOTE: we pass $langcode here but view builder doesn't care; it only uses current language.
+  $pre_render = $view_builder->view($node, 'full', $langcode);
+  $html = \Drupal::service('renderer')->renderRoot($pre_render);
+
+  $dom = Html::load($html->__toString());
+  $nids = [];
+  foreach ($dom->getElementsByTagName('a') as $element) {
+    $link = $element->getAttribute('href');
+    if (!$link || $link[0] === '#') {
+      continue;
+    }
+    // strip anchor if there is one
+    $link = strtok($link, "#");
+    if (($url = \Drupal::pathValidator()->getUrlIfValidWithoutAccessCheck($link)) && $url->isRouted()) {
+      $path = \Drupal::service('path_alias.manager')->getPathByAlias(str_replace('/' . $langcode, '', $url->toString()));
+      if (preg_match('/node\/(\d+)/', $path, $matches)) {
+        // Don't include anything linked to this page (such as anchors).
+        if ($matches[1] == $node->id()) {
+          continue;
+        }
+        $nids[] = $matches[1];
+      }
+    }
+  }
+
+  // Reset language back as it was.
+  $language_manager->reset();
+  $language_manager->getNegotiator()->setLanguageCode($original_language_id);
+
+  return $nids;
+}
+
+function _update_backlinks_table($node, $links, $langcode) {
+  $nid = $node->id();
+  $db = \Drupal::service('database');
+
+  // Delete existing entries for this NID.
+  $db->delete('backlink')
+    ->condition('nid', $nid)
+    ->condition('langcode', $langcode)
+    ->execute();
+
+  // Insert new entries.
+  foreach ($links as $link) {
+    $db->insert('backlink')
+      ->fields([
+        'nid' => $nid,
+        'lid' => $link,
+        'langcode' => $langcode,
+      ])
+      ->execute();
+  }
+}
+
+/**
+ * Implements hook_node_delete
+ *
+ * Delete entries related to this node.
+ *
+ * @param Node $node
+ */
+function backlinks_node_delete(Node $node) {
+  $nid = $node->id();
+  $db = \Drupal::service('database');
+
+  // Delete existing entries for this NID.
+  $db->delete('backlink')
+    ->condition('nid', $nid)
+    ->execute();
+  $db->delete('backlink')
+    ->condition('lid', $nid)
+    ->execute();
+
+  // Remove entry from queue.
+  _backlinks_queue_delete($nid);
+}
+
+function _backlinks_queue_node(Node $node) {
+  $langcode = $node->language()->getId();
+  $connection = \Drupal::service('database');
+  $connection->upsert('backlink_queue')
+    ->fields([
+      'nid' => $node->id(),
+      'langcode' => $langcode,
+    ])
+    ->key('nid')
+    ->key('langcode')
+    ->execute();
+}
+
+function _backlinks_queue_delete($nid) {
+  $database = \Drupal::database();
+
+  // Remove entry from queue.
+  $query = $database->delete('backlink_queue');
+  $query->condition('nid', $nid);
+  $query->execute();
+}
+
+/*
+ * On each CRON run lets get a list of all nodes updated in the last.
+ *
+ * NOTE: CRON runs as anon by default.
+ */
+function backlinks_cron() {
+  // Switch to user 1
+  $accountSwitcher = Drupal::service('account_switcher');
+  $account = User::load(1);
+  $accountSwitcher->switchTo($account);
+
+  // Pull all NIDs from queue table.
+  $database = \Drupal::database();
+  $query = $database->query("SELECT nid, langcode FROM {backlink_queue}");
+  $results = $query->fetchAll();
+  $en = [];
+  $fr = [];
+
+  // Process queued
+  if ($results) {
+    foreach ($results as $result) {
+      $node = Node::load($result->nid);
+      // Maybe Node has been deleted, so don't process, just remove from Q.
+      // This should not happen anymore as Q cleanup added to _delete hook.
+      if ($node) {
+        // Scan for links.
+        _update_backlinks($node, $result->langcode);
+        // Need to still process FR even if no FR item added to Q due to deleted Paragraphs issue.
+        // So if we ae processing EN record and there is no equivalent FR record; then run as FR.
+        if ($result->langcode == 'en') {
+          $en[] = $result->nid;
+        }
+        else {
+          $fr[] = $result->nid;
+        }
+      }
+      // Remove entry from queue.
+      _backlinks_queue_delete($result->nid);
+    }
+    // Now check if any EN was processed which didnt have equivalent FR node; and run FR.
+    if (count($en)) {
+      foreach ($en as $nid) {
+        if (!in_array($nid, $fr)) {
+          $node = Node::load($nid);
+          if ($node) {
+            _update_backlinks($node, 'fr');
+          }
+        }
+      }
+    }
+  }
+
+  // Switch back to anonymous.
+  $accountSwitcher->switchBack();
+}
+
+/**
+ *
+ * @param ViewExecutable $view
+ * @param QueryPluginBase $query
+ */
+function backlinks_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'orphaned_pages') {
+    // Remove Forward links from Parent list to get Orphaned Pages.
+    $sub_query = \Drupal::database()->select('backlink', 'b')
+      ->fields('b', ['lid'])
+      ->where('b.nid = node_field_data.nid');
+    $query->addWhere(0, 'field_parent_page_node_field_data.nid', $sub_query, 'NOT IN');
+  }
+}
+

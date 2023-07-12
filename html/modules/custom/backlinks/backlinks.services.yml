@@ -1,0 +1,17 @@
+services:
+  backlinks.route_subscriber:
+    class: Drupal\backlinks\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  backlinks.language_negotiator:
+    class: Drupal\backlinks\Language\CustomLanguageNegotiator
+    arguments: ['@language_manager', '@plugin.manager.language_negotiation_method', '@config.factory', '@settings', '@request_stack']
+    calls:
+      - [initLanguageManager]
+
+  backlinks.event_subscriber:
+    class: Drupal\backlinks\EventSubscriber\EventsSubscriber
+    arguments: [ '@current_user' ]
+    tags:
+      - { name: event_subscriber }

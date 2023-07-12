@@ -1,0 +1,69 @@
+<?php
+
+use Drupal\Core\Database\Database;
+
+function backlinks_schema() {
+  $schema['backlink'] = array(
+    'description' => 'Stores internal links on nodes to use for Backlinks.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The NID of page with links.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'lid' => array(
+        'description' => 'The NID of links on the page.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'langcode' => array(
+        'type' => 'varchar',
+        'length' => '3',
+        'not null' => TRUE,
+      ),
+    ),
+  );
+
+  return $schema;
+}
+
+function backlinks_update_9001() {
+  $spec = [
+    'description' => 'Tracks node which have been updated and clears once backlinks have been updated.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The NID of page with links.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => ['nid'],
+  ];
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('backlink_queue', $spec);
+}
+
+/*
+ * Add langcode to queue.
+ */
+function backlinks_update_9002() {
+  $db = Database::getConnection();
+  $schema = $db->schema();
+
+  // Remove all queue items so we can modify.
+  $db->truncate('backlink_queue')->execute();
+
+  // Add Language column as key
+  $spec = [
+    'type' => 'varchar',
+    'description' => "Language",
+    'length' => 20,
+    'not null' => TRUE,
+  ];
+  $schema->dropPrimaryKey('backlink_queue');
+  $schema->addField('backlink_queue', 'langcode', $spec);
+  $schema->addUniqueKey('backlink_queue', 'nid_lang', ['nid', 'langcode']);
+}
