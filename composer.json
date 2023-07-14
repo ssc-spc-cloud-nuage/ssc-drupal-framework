@@ -122,7 +122,7 @@
         "drupal/search_api_solr": "^4.2.8",
         "drupal/sendgrid_integration": "^1.7",
         "drupal/simpler_quickedit": "^1.0",
-        "drupal/sitewide_alert": "^1",
+        "drupal/sitewide_alert": "^2",
         "drupal/slick_views": "^2.6",
         "drupal/smtp": "1.x-dev@dev",
         "drupal/social_link_field": "1.x-dev",
