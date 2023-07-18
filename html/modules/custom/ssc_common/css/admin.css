@@ -1,0 +1,32 @@
+.views-ajax-link.views-field-excluded,
+.views-display-disabled-link {
+  color: grey;
+}
+
+.text-uppercase {
+  text-transform: uppercase !important;
+}
+
+.green-border {
+  border: solid 2px green;
+}
+
+.views-exposed-form__item.js-form-item-parent-page.form-item--parent-page {
+  padding-left: 32px;
+  padding-top: 38px;
+}
+
+form#dblog-filter-form .claro-details__wrapper.details-wrapper {
+  display: flex;
+}
+form#dblog-filter-form .js-form-item, form#dblog-filter-form #edit-actions {
+  padding-left: 20px;
+}
+
+.entityqueue-edit-item-link {
+  display: none;
+}
+
+#ckeditor-plugin-settings details.vertical-tabs__item {
+  padding: 0;
+}

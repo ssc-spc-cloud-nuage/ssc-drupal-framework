@@ -1,0 +1,5 @@
+services:
+  ssc_common.commands:
+    class: \Drupal\ssc_common\Commands\SSCDrushCommands
+    tags:
+      - { name: drush.command }

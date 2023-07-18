@@ -1,0 +1,881 @@
+<?php
+
+/**
+ * @file
+ * Contains ssc_common.module.
+ */
+
+use Drupal\Component\Utility\Unicode;
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\Entity\Node;
+use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\user\UserInterface;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\Plugin\views\row\EntityRow;
+use Drupal\views\ViewExecutable;
+
+require_once(DRUPAL_ROOT . '/modules/custom/ssc_common/ssc_common.tokens.inc');
+require_once(DRUPAL_ROOT . '/modules/custom/ssc_common/ssc_common.misc.inc');
+require_once(DRUPAL_ROOT . '/modules/custom/ssc_common/ssc_common.cron.inc');
+
+/**
+ * Implements hook_help().
+ */
+function ssc_common_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the ssc_common module.
+    case 'help.page.ssc_common':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Customizations used by the SSC Drupal sites which are common to all sites.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function ssc_common_requirements($phase) {
+  $requirements = [];
+  // Report SSC version
+  if ($phase == 'runtime') {
+    $git_info = @file_get_contents('./git_release.txt') ?: '';
+    if ($git_info) {
+      $lines = preg_split('/\s+/', $git_info);
+      $requirements['ssc-plus'] = [
+        'title' => t('SSC'),
+        'value' => t('Release/Commit: ') .$lines[0],
+        'description' => t('Release date: ') . $lines[1],
+        'severity' => REQUIREMENT_INFO,
+      ];
+    }
+  }
+  return $requirements;
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * @todo: these should be weighted but obvious method doesn't work.
+ */
+function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Disable HTML5 Validation on ALL forms - Admin theme only.
+  $theme = \Drupal::service('theme.manager')->getActiveTheme()->getName();
+  if (!stristr($theme, 'ssc')) {
+    $form['#attributes']['novalidate'] = 'novalidate';
+  }
+
+  // For NODE forms ONLY (Create/Edit, NOT Delete, NOT config).
+  if (
+    ((stristr($form_id, 'node') && !stristr($form_id, 'node_type_')) ||
+    stristr($form_id, 'policy'))
+    && !stristr($form_id, 'delete') ) {
+    // Move some fields to Sidebar
+    if (isset($form['field_path_slug'])) {
+      $form['field_path_slug']['#group'] = 'meta';
+    }
+    if (isset($form['field_dateline'])) {
+      $form['field_dateline']['#group'] = 'meta';
+    }
+    if (isset($form['field_review_date'])) {
+      $form['field_review_date']['#group'] = 'meta';
+    }
+    if (isset($form['status'])) {
+      $form['status']['#group'] = 'meta';
+    }
+
+    // Add validator for all pages with Parent Page field
+    if (isset($form['field_parent_page'])) {
+      $form['#validate'][] = '_parent_page_form_validate';
+    }
+
+    // Force URL Alias group CLOSED.
+    $form['path']['widget'][0]['#open'] = FALSE;
+  }
+
+  switch ($form_id) {
+    case 'node_campaign_form':
+    case 'node_campaign_edit_form':
+      // Relable Layout option None as Default.
+      $form['layout_selection']['widget']['#options']['_none'] = t('Default');
+      break;
+
+    case 'node_topic_form':
+    case 'node_topic_edit_form':
+      $form['field_show_related']['#group'] = 'meta';
+      break;
+  }
+
+  // Remove Clone option from Access Token table on Node edit forms
+  if (isset($form['access_unpublished_settings'])) {
+    foreach ($form['access_unpublished_settings']['table']['#rows'] as &$row) {
+      unset ($row['operations']['data']['#links']['clone']);
+    }
+  }
+
+  // Modify SAVE button on Workflow node forms and redirect to Add translation form.
+  // Disable Live (published) workflow option if translations doesn't exist.
+  if (isset($form['moderation_state'])) {
+    // Move moderation state field to Meta group
+    $form['moderation_state']['#group'] = 'meta';
+    $form['moderation_state']['#weight'] = 100;
+    $form['revision_information']['#weight'] = 9;
+    // Redo Save button
+    $form_object = $form_state->getFormObject();
+    $entity = $form_object->getEntity();
+    if (!$entity || !$entity->hasTranslation('fr')) {
+      $form["actions"]["submit"]["#value"] = t('Save and translate');
+      $form['actions']['submit']['#submit'][] = '_redirect_to_translate';
+      unset($form['moderation_state']['widget'][0]['state']['#options']['published']);
+    }
+  }
+
+  // Remove Unpublished Access Token field from Delete confirmation page
+  // there is a patch, but doesn't work: https://www.drupal.org/project/access_unpublished/issues/3164509
+  if (stristr($form_id, 'node') && stristr($form_id, 'delete')) {
+    unset($form['access_unpublished_settings']);
+  }
+
+}
+
+function _redirect_to_translate($form, FormStateInterface $form_state) {
+  $form_object = $form_state->getFormObject();
+  $entity = $form_object->getEntity();
+  $form_state->setRedirect('entity.node.content_translation_add', [
+    'node' => $entity->id(),
+    'source' => 'en',
+    'target' => 'fr',
+  ]);
+}
+
+/**
+ *
+ * Change Views translate form so fieldsets are readable..
+ *
+ * @param $form
+ * @param $form_state
+ */
+function ssc_common_form_config_translation_edit_form_alter(&$form, &$form_state) {
+  $view_config = ['fields', 'filters', 'arguments'];
+  foreach ($form['config_names'] as $index => &$subform) {
+    if (stristr($index, 'views.')) {
+      foreach ($subform['display'] as &$display) {
+        if (!is_array($display) || empty($display['display_options'])) continue;
+        foreach ($display['display_options'] as $type => &$set) {
+          if (in_array($type, $view_config)) {
+            foreach ($set as $name => &$item) {
+              if (!is_array($item)) continue;
+              $item['#title'] = $name;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+function ssc_common_form_config_translation_add_form_alter(&$form, &$form_state) {
+  ssc_common_form_config_translation_edit_form_alter($form, $form_state);
+}
+
+function ssc_common_form_devel_generate_form_content_alter(&$form, &$form_state) {
+  // Set weights for all fields on the form so we can place our new one.
+  $x = 0;
+  foreach($form as $key => &$field) {
+    if (!is_array($field) || stristr($key, '#')) continue;
+    $field['#weight'] = $x;
+    $x++;
+  }
+
+  // Add field to set number of words to limit textarea fields.
+  $form['textarea_length'] = [
+    '#type' => 'number',
+    '#title' => t('Maximum number of words in long text fields.'),
+    '#weight' => 6,
+  ];
+}
+
+function ssc_common_form_content_moderation_entity_moderation_form_alter(&$form, &$form_state) {
+  $form_object = $form_state->getFormObject();
+  $entity = $form_state->getBuildInfo()['args'][0];
+  if (!$entity || !$entity->hasTranslation('fr')) {
+    $form['new_state']['#disabled'] = TRUE;
+    $form['submit']['#disabled'] = TRUE;
+
+    $current_path = \Drupal::service('path.current')->getPath();
+    $link = Link::createFromRoute(t('translate'), 'entity.node.content_translation_add', [
+      'node' => $entity->id(),
+      'source' => 'en',
+      'target' => 'fr',
+      ],
+      ['query' => ['desitination' => $current_path]]
+    )->toString();
+    $text = t('This form is disabled until there is a French translation available. Click this link to %link.', [
+      '%link' => $link,
+    ]);
+    $form['markup'] = [
+      '#type' => 'markup',
+      '#markup' => '<div class="moderate-form-disabled">' . $text . '</div>',
+    ];
+  }
+}
+
+function ssc_common_form_media_library_add_form_upload_alter(&$form, FormStateInterface $form_state) {
+  $form['#access'] = false;
+}
+
+/*
+ * Tweaks to Alerts form.
+ *
+ *   - EDIT is basically the same as CREATE except for #default values.
+ */
+function ssc_common_form_sitewide_alert_edit_form_alter(&$form, FormStateInterface $form_state) {
+  ssc_common_form_sitewide_alert_add_form_alter($form, $form_state);
+}
+function ssc_common_form_sitewide_alert_add_form_alter(&$form, FormStateInterface $form_state) {
+  $edit = FALSE;
+  if (stristr($form['#id'], '-edit-')) {
+    $edit = TRUE;
+  }
+
+  // Hide and set not required the Name field so we can auto fill
+  // @todo: switch to AEL once we have a solution for generic entities.
+  $form['name']['#access'] = FALSE;
+  $form['name']['widget']['#required'] = FALSE;
+
+  // set Message (banner) format to Alert Message format
+  // this is a blank CK format with only B enabled to activate CK (although B tag not allowed so doesn't show in toolbar)
+  // this allows using Char Count plugin
+  // hide format options with CSS
+  $form['message']['widget'][0]['#format'] = 'alert_message';
+
+  // Force scheduling and set Date as required
+  $form['scheduled_alert']['widget']['value']['#default_value'] = 1;
+  $form['scheduled_alert']['widget']['value']['#access'] = FALSE;
+  $form['scheduled_date']['widget'][0]['#required'] = TRUE;
+
+  // Set Dismissible default to 1
+  if (!$edit) {
+    $form['dismissible']['widget']['value']['#default_value'] = 1;
+  }
+
+  // Change "Style" label and set default
+  $form['style']['widget']['#title'] = t('Alert Type');
+  $form['style']['widget']['#required'] = TRUE;
+  if (!$edit) {
+    $form['style']['widget']['#default_value'] = 'default';
+  }
+
+  // Move parts to Sidebar - allowed by this: https://www.drupal.org/project/drupal/issues/2893740
+  $form['dismissible']['#group'] = 'revision_information';
+  $form['status']['#group'] = 'revision_information';
+  $form["dismissible_ignore_previous"]["#group"] = 'revision_information';
+  $form["scheduled_date"]["#group"] = 'revision_information';
+
+  // Remove leftover details groups.
+  unset($form['dismissible_options']);
+  unset($form['scheduling_options']);
+
+  // Add Validation
+  $form['#validate'][] = '_alert_form_validate';
+}
+
+/*
+ * Use this as normal form_alter doesn't seem to be able to move the Active (status)
+ * field above Dismissible.
+ */
+function ssc_common_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
+  if ($context['entity_type'] == 'sitewide_alert') {
+    $status = $form_display->getComponent('status');
+    // 'dismissible' is set to the base field's weight, -10.
+    $status['weight'] = -11;
+    $form_display->setComponent('status', $status);
+  }
+}
+
+/*
+ */
+function ssc_common_form_views_exposed_form_alter(&$form, FormStateInterface $form_state) {
+  $id = $form['#id'];
+
+  switch ($id) {
+    case 'views-exposed-form-site-search-block-2':
+      $lang = get_content_language_code();
+      $form['#action'] = '/' . $lang . '/search/';
+      break;
+
+    case 'views-exposed-form-site-search-block-1':
+      // Add autocomplete to Related Topics search field.
+      $form['related']['#autocomplete_route_name'] = 'ssc_common.related_search_autocomplete';
+    case 'views-exposed-form-articles-block-1':
+    case 'views-exposed-form-corporate-messages-block-2':
+    case 'views-exposed-form-upcoming-sessions-block-1':
+      $form['date_wrapper']['date_wrapper']['date']['min']['#title'] = t('Start date');
+      $form['date_wrapper']['date_wrapper']['date']['max']['#title'] = t('End date');
+      break;
+  }
+
+}
+
+function ssc_common_field_widget_form_alter(&$element, &$form_state, $context) {
+  $element['uri']['#selection_handler'] = 'views';
+  $element['uri']['#selection_settings'] = [
+    'view' => [
+      'view_name' => 'published_lists',
+      'display_name' => 'entity_reference_4',
+      'arguments' => [],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter().
+ *
+ * Modifications to Sessions (paragraph) form.
+ *  - add conditional states
+ *  - alter Company label in Address field
+ */
+function ssc_common_field_widget_paragraphs_form_alter(&$element, &$form_state, $context) {
+  if ($element['#paragraph_type'] == 'session') {
+    $delta = $element['#delta'];
+    $element['subform']['field_predefined_location']['#states'] = [
+      'visible' => [
+        'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '0'],
+      ]
+    ];
+    $element['subform']['field_custom_location']['#states'] = [
+      'visible' => [
+        'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '1'],
+      ]
+    ];
+    $element['subform']['group_virtual_details']['#states'] = [
+      'visible' => [
+        'input[name="field_sessions[' . $delta . '][subform][field_virtual][value]"]' => ['checked' => TRUE],
+      ]
+    ];
+    $element['subform']['group_in_person_details']['#states'] = [
+      'visible' => [
+        'input[name="field_sessions[' . $delta . '][subform][field_in_person][value]"]' => ['checked' => TRUE],
+      ]
+    ];
+    $element['subform']['field_predefined_location']['widget'][0]['target_id']['#states'] = [
+      'required' => [
+        'input[name="field_sessions[' . $delta . '][subform][field_in_person][value]"]' => ['checked' => TRUE],
+        'and',
+        'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '0']
+      ]
+    ];
+    $element['subform']['field_custom_location']['widget'][0]['address']['#after_build'][] = '_session_custom_location_address_alter';
+
+  }
+}
+
+function _session_custom_location_address_alter($element, $form_state) {
+  $element['organization']['#title'] = t('Building');
+  //$element['country_code']['#access'] = FALSE;
+  return $element;
+}
+
+function _alert_form_validate(&$form, $form_state) {
+  $message = strip_tags($form_state->getValue('message')[0]['value']);
+  $char_count = strlen($message);
+
+  if ($char_count > 300) {
+    $form_state->setErrorByName('message', t('Maximum number of characters is 300.'));
+  }
+}
+
+/**
+ * Validate that parent is not already a child in the tree.
+ */
+function _parent_page_form_validate(&$form, $form_state) {
+  $lang = get_content_language_code();
+  $current_node = \Drupal::routeMatch()->getParameter('node');
+
+  // Note: if this is a new node; this can't apply.
+  if (!$current_node) {
+    return;
+  }
+
+  $possible_parent = Node::load($form_state->getValue('field_parent_page')[0]['target_id']);
+  $tree = get_parent_tree($possible_parent);
+
+  // If no tree, validate (e.g. for Home).
+  if (!$tree) {
+    return;
+  }
+
+  if (in_array($current_node->id(), array_keys($tree[$lang]))) {
+    $form_state->setErrorByName('field_parent_page', t('You cannot set a Parent which is already a Child in the tree.'));
+  }
+}
+
+/*
+ * Implements hook_ENTITY_TYPE_presave
+ *  - set values before save
+ *  - set the Name
+ *  - @todo: replace with AEL when it can handle generic entities.
+ */
+function ssc_common_sitewide_alert_presave($alert) {
+  $date = date('Y-m-d', strtotime($alert->scheduled_date->value));
+  $message = strip_tags($alert->message->value);
+  $title = Unicode::truncate($message, 20, TRUE);
+
+  $alert->set('name', $title . ' - ' . $date);
+  $alert->set('message', $message);
+}
+
+/**
+ * Implements hook_page_attachments
+ *
+ * Add our admin library to all /admin pages.
+ */
+function ssc_common_page_attachments(array &$page) {
+  // Add global library everywhere
+  $page['#attached']['library'][] = 'ssc_common/global';
+
+  $request_uri = ltrim(\Drupal::request()->getRequestUri(), '/');
+  $args = explode('/', $request_uri);
+  if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+    $page['#attached']['library'][] = 'ssc_common/admin';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ssc_common_theme() {
+  return [
+    'alert_icon_block' => [
+      'variables' => [
+        'content' => NULL
+      ],
+      'render element' => 'children',
+    ],
+    'language_switcher_block' => [
+      'variables' => [
+        'content' => NULL
+      ],
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/*
+ * Use this to set the "render" language for ALL views to be the content language.
+ *
+ * NOTES:
+ *  - this likely will be wrong for Admin pages and likely needs that qualifier added here.
+ *  - this doesn't handle Dates as those are done wrong within the Datetime module
+ *
+ * ALSO:
+ *  - modify Guide Pager to insert fake PREV/NEXT rows
+ *  - @todo: this won't work as is if the View is cached
+ */
+function ssc_common_views_pre_render($view) {
+  // Set render language.
+  $language_manager = \Drupal::languageManager();
+  $langcode = $language_manager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
+  $language = $language_manager->getLanguage($langcode);
+  $language_manager->setConfigOverrideLanguage($language);
+
+  // Guide paging.
+  if ($view->id() == 'guide_pager') {
+    $current = $view->args[0];
+    if (empty($view->result)) {
+      return NULL;
+    }
+    // Find which index is current page.
+    foreach ($view->result as $index => $value) {
+      if ($value->field_steps_node_field_data__node__field_steps_field_steps_t == $current) {
+        $current_index = $index;
+        break;
+      }
+    }
+    $prev = FALSE;
+    $next = FALSE;
+    foreach ($view->result as $index => $value) {
+      if ($index == $current_index) {
+        $view->result[$index]->_entity->page[$index] = 'index';
+        $temp_entity = $view->result[$index]->_entity;
+      }
+      elseif ($index == $current_index - 1) {
+        $view->result[$index]->_entity->page[$index] = 'prev';
+        $prev = TRUE;
+      }
+      elseif ($index == $current_index + 1) {
+        $view->result[$index]->_entity->page[$index] = 'next';
+        $next = TRUE;
+      }
+      else {
+        unset($view->result[$index]);
+      }
+    }
+    // Add in fake Prev or Next if required
+    if (!$prev || !$next) {
+      $fake_row = new $value();
+      $fake_row->_entity = $temp_entity;
+      $key = $prev ? 100 : -1;
+      $key_type = $prev ? 'fake next' : 'fake prev';
+      $fake_row->_entity->page[$key] = $key_type;
+      $fake_row->index = $key;
+      $view->result[$key] = $fake_row;
+      // Sort the results
+      ksort($view->result);
+    }
+  }
+
+}
+
+/**
+ * @param ViewExecutable $view
+ *
+ */
+function ssc_common_views_pre_build($view) {
+  switch ($view->id()) {
+    case 'campaigns':
+      // Remove Featured from Campaigns list - uses Id contextual filter to exclude
+      $featured = views_get_view_result('featured_posts', 'featured_campaign');
+      if (count($featured)) {
+        $args[] = $featured[0]->nid;
+        $view->setArguments($args);
+      }
+      break;
+
+    case 'session':
+      $display = $view->current_display;
+      $event_sessions = &drupal_static('event_sessions');
+      if (!empty($event_sessions[$display])) {
+        $args[] = array_pop($event_sessions[$display]);
+        $view->setArguments($args);
+      }
+      break;
+
+    case 'featured_news':
+    case 'featured_posts':
+      if ($view->rowPlugin instanceof EntityRow && $view->rowPlugin->getEntityTypeId() === 'node') {
+        // This will call itself to count, so need to skip 2nd time
+        $skip = &drupal_static('skip_views_prebuild');
+        if ($skip) return;
+        $skip = 1;
+
+        // Count results
+        $view->execute();
+        $count = count($view->result);
+
+        // Change to Promoted Single view mode if only 1 result
+        if ($count === 1) {
+          $view->rowPlugin->options['view_mode'] = 'promoted_single';
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * Allow single day date filter to work without time being included
+ *  - change time range to include full day
+ *
+ * @param ViewExecutable $view
+ * @param QueryPluginBase $query
+ */
+function ssc_common_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  switch ($view->id()) {
+    case 'upcoming_sessions':
+      if ($view->current_display == 'block_1' && !empty($query->where[1]['conditions'])) {
+        $search = [
+          "^BETWEEN DATE_FORMAT\(\('(....-..-..)T(..:..:..)'^",
+          "^AND DATE_FORMAT\(\('(....-..-..)T(..:..:..)'^"
+        ];
+        $replace = [
+          "BETWEEN DATE_FORMAT(('$1T00:00:00'",
+          "AND DATE_FORMAT(('$1T23:59:59'",
+        ];
+        foreach ($query->where[1]['conditions'] as $key => &$condition) {
+          if (stristr($condition['field'], 'between')) {
+            $condition['field'] = preg_replace($search, $replace, $condition['field'], 1);
+            break;
+          }
+        }
+      }
+      break;
+
+    case 'event_sessions':
+      // Capture Session paragraph IDs to pass along to the Views used to build Session teaser.
+      // Make sub-arrays for each views display used
+      if ($view->current_display == 'block_1') {
+        $event_sessions = &drupal_static('event_sessions');
+        $items = views_get_view_result('event_sessions', 'embed_1', reset($view->args));
+        $displays = ['block_1', 'block_2', 'block_3'];
+        if (count($items)) {
+          foreach ($items as $item) {
+            foreach ($displays as $display) {
+              $event_sessions[$display][] = $item->id;
+            }
+          }
+        }
+      }
+      break;
+
+    case 'sessions':
+      // Fix duplicates in Session admin page
+      $query->addField('paragraphs_item_field_data', 'langcode', '', ['function' => 'groupby']);
+      $query->addGroupBy('paragraphs_item_field_data.langcode');
+      break;
+
+    case 'campaign_news':
+      $query->addField('paragraphs_item_field_data_node__field_news', 'id', '', ['function' => 'groupby']);
+      $query->addGroupBy('paragraphs_item_field_data_node__field_news.id');
+      break;
+
+    case 'content_paragraph_news':
+      $query->addField('paragraphs_item_field_data_paragraph__field_news.id', 'id', '', ['function' => 'groupby']);
+      $query->addGroupBy('paragraphs_item_field_data_paragraph__field_news.id');
+      break;
+
+    case 'latest_news_buttons':
+    case 'featured_events':
+    case 'featured_posts':
+    case 'header_pieces':
+    case 'guide_pager':
+      // Fix duplicates Views based on NID.
+      $query->addField('node_field_data', 'nid', '', ['function' => 'groupby']);
+      $query->addGroupBy('node_field_data.nid');
+      break;
+
+    case 'guide_steps':
+      // Fix duplicate Steps on Guide pages.
+      $query->addField('node_field_data_node__field_steps', 'nid', '', ['function' => 'groupby']);
+      $query->addGroupBy('node_field_data_node__field_steps.nid');
+      break;
+
+    case 'revision_header_pieces':
+    case 'titled_people_revisions':
+      $query->addField('node_field_revision', 'vid', '', ['function' => 'groupby']);
+      $query->addGroupBy('node_field_revision.vid');
+      break;
+  }
+}
+
+/**
+ * Implements hook_views_post_build().
+ *
+ * Remove duplicates from certain Views (with multiple value relationships added ??)
+ * Approach taken from here: https://www.drupal.org/project/drupal/issues/2993688#comment-13443345
+ *
+ * - works for Upcoming Sessions
+ * - doesnt work for Sessions (see _query_alter above)
+ *
+ */
+function ssc_common_views_post_build(ViewExecutable $view) {
+  $views[] = [
+    'view' => 'upcoming_sessions',
+    'display' => 'block_1',
+    'field' => 'paragraphs_item_field_data_langcode',
+  ];
+
+  foreach ($views as $item) {
+    if ($item['view'] == $view->id() && $item['display'] == $view->getDisplay()->display['id']) {
+      // Populate with the name of the field alias that views used when adding the field.
+      $entityReferenceIdFieldAlias = $item['field'];
+
+      /** @var \Drupal\Core\Database\Driver\mysql\Select $mainQuery */
+      $mainQuery = $view->build_info['query'];
+      $mainQueryFields = &$mainQuery->getFields();
+      unset($mainQueryFields[$entityReferenceIdFieldAlias]);
+
+      /** @var \Drupal\Core\Database\Driver\mysql\Select $countQuery */
+      $countQuery = $view->build_info['count_query'];
+      $countQueryFields = &$countQuery->getFields();
+      unset($countQueryFields[$entityReferenceIdFieldAlias]);
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view_field().
+ */
+function ssc_common_preprocess_views_view_field(array &$variables) {
+  // target specific view and field
+  $variables['#cache']['contexts'][] = 'languages:language_content';
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function ssc_common_views_data_alter(array &$data) {
+  $data['node']['parent_topic'] = array(
+    'title' => t('Parent topic'),
+    'group' => t('Content'),
+    'field' => array(
+      'title' => t('Parent topic'),
+      'help' => t('Top most topic parent page.'),
+      'id' => 'parent_topic',
+    ),
+  );
+}
+
+/**
+ * Modify field types for which remove button will be added.
+ *
+ * @param array $fieldTypes
+ *   A list with field types.
+ */
+function ssc_common_multiple_field_remove_button_field_types_alter(array &$fieldTypes) {
+  $fieldTypes[] = 'daterange';
+}
+
+function ssc_common_node_presave(Node $node) {
+  switch ($node->bundle()) {
+    case 'event':
+      // Loop through each session and get dates to determine overall range
+      $start = NULL;
+      foreach ($node->get('field_sessions')->getValue() as $paragraph) {
+        $session = Paragraph::load($paragraph['target_id']);
+        // Init Start/End
+        if (!isset($start)) {
+          $start = $session->field_session_date->value;
+          $end = $session->field_session_date->end_value;
+        }
+        $start = strtotime($session->field_session_date->value) < strtotime($start) ? $session->field_session_date->value : $start;
+        $end = strtotime($session->field_session_date->end_value) > strtotime($end) ? $session->field_session_date->end_value : $end;
+      }
+      if ($start) {
+        $node->set('field_session_date_range', [
+          'value' => $start,
+          'end_value' => $end
+        ]);
+        $node->set('field_session_count', count($node->get('field_sessions')
+          ->getValue()));
+      }
+      break;
+  }
+
+  // Set Parent Landing Page on News nodes
+  if ($node->hasField('field_parent_landing_page')) {
+    $bundle = $node->bundle();
+    $landing_page_nid = get_landing_page_nid($bundle);
+    $node->set('field_parent_landing_page', $landing_page_nid);
+  }
+
+  // Add ability for Devel Generate to limit text area content
+  if (isset($node->devel_generate)) {
+    $limit = $node->devel_generate['textarea_length'];
+    if ($limit) {
+      foreach ($node->getFieldDefinitions() as $field_name => $field_defn) {
+        if ($field_defn->getType() == 'text_long') {
+          $node->{$field_name}->value = limit_text_words($node->{$field_name}->value, $limit);
+          if ($settings = $field_defn->getThirdPartySettings('better_formats')) {
+            foreach($settings['allowed_formats'] as $format) {
+              if ($format) {
+                $node->{$field_name}->format = $format;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+}
+
+function ssc_common_paragraph_presave($para) {
+  // Only look at Reference (internal) paragraphs.
+  if ($para->getType() != 'reference_internal') return;
+
+  // Set paragraph's Post Date to the Dateline of the referenced page.
+  if (isset($para->field_internal_page->target_id) && isset($para->field_post_date)) {
+    $ref_page = Node::load($para->field_internal_page->target_id);
+    $para->set('field_post_date', $ref_page->field_dateline->value);
+  }
+}
+
+function ssc_common_cron() {
+  // Expire Featured News posts.
+  _expire_featured_posts_cron();
+
+  // Schedule Home Promo blocks.
+  _expire_home_promo_cron();
+}
+
+/*
+ * This fixes issue with clearing correct breadcrumb cache when a higher level page title is changed.
+ * See: https://drupal.stackexchange.com/questions/222615/breadcrumbs-are-cached
+ */
+function ssc_common_system_breadcrumb_alter(\Drupal\Core\Breadcrumb\Breadcrumb &$breadcrumb, \Drupal\Core\Routing\RouteMatchInterface $route_match, array $context) {
+  if ($route_match && $node = $route_match->getParameter('node')) {
+    $breadcrumb->addCacheableDependency($node);
+  }
+}
+
+/*
+ * Prevents Multiple Field Remove Button from being used on EntityQueue form.
+ */
+function ssc_common_multiple_field_remove_button_skip_widgets_alter(array &$skipWidgets) {
+  $skipWidgets[] = 'entityqueue_dragtable';
+}
+
+// Hack to pass Paragraph ID to news/events views used in paragraph layouts
+// Since LB doesnt seem to know context of what it is laying out.
+// see custom views Argument: ParagraphPID
+// this will currently only work for 1 instance per node
+// @todo: could add these indexed by occurrence order to allow multiple per page - not ideal though solution though
+function ssc_common_paragraph_load($entity) {
+  $pid = &drupal_static('pid_contextual_filter');
+  $paragraph = current($entity);
+  $pid[$paragraph->getType()] = $paragraph->id();
+}
+
+// Function to set username and display name from OpendID and MS Graph.
+function ssc_common_openid_connect_userinfo_save(UserInterface $account, array $context) {
+  // Set Username to email address
+  $account->setUsername($context['userinfo']['email']);
+
+  // \Drupal::logger('SSC')->info(print_r($context['userinfo'], true));
+
+  // Set Display Name to First Last.
+  $account->set('field_first_name', $context['userinfo']['givenName']);
+  $account->set('field_last_name', $context['userinfo']['surname']);
+  // Add in AAD name.
+  $account->set('field_aad_name', $context['userinfo']['displayName']);
+}
+
+function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state) {
+  $form['timezone']['#group'] = 'group_locale';
+}
+
+/*
+ * Use hacked in hook_timezone_list_alter to reducea/alter TZ options.
+ */
+function ssc_common_timezone_list_alter($zones) {
+  $keep = [
+    'Edmonton' => t('Mountain time'),
+    'Halifax' => t('Atlantic time') ,
+    'Saint John\'s' => t('Newfoundland time'),
+    'Toronto' => t('Eastern time'),
+    'Vancouver' => t('Pacific time'),
+    'Winnipeg' => t('Central time'),
+  ];
+  foreach ($zones as $optgroup => &$group) {
+    if ($optgroup != 'America') {
+      unset($zones[$optgroup]);
+    }
+    else {
+      foreach ($zones['America'] as $index => $option) {
+        if (!in_array($option, array_keys($keep))) {
+          unset($zones['America'][$index]);
+        }
+        else {
+          $zones['America'][$index] .= ' (' . $keep[$option] . ')';
+        }
+      }
+    }
+  }
+  return $zones;
+}

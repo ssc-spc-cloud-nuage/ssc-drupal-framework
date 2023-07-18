@@ -1,0 +1,4 @@
+ssc_common.admin_settings:
+  route_name: ssc_common.admin_settings
+  title: Settings
+  base_route: ssc_common.admin_settings

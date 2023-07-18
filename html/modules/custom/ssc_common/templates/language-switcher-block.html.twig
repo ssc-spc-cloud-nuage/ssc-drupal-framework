@@ -1,0 +1,18 @@
+{#
+/**
+* @file
+* Default theme implementation to display a block.
+*
+* @see template_preprocess_block()
+*
+* @ingroup themeable
+*/
+#}
+<div id="user-profile-block-switcher">
+  <div class="hidden-xs">
+    {{ content.full_switcher }}
+  </div>
+  <div class="visible-xs">
+    {{ content.narrow_switcher }}
+  </div>
+</div>

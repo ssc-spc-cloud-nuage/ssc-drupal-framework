@@ -1,0 +1,17 @@
+/* hide Country selector on Event form */
+#edit-field-custom-location-0-address-country-code {
+  display: none;
+}
+
+#edit-field-topics-wrapper input.form-autocomplete {
+  max-width: 250px;
+}
+
+#edit-field-sessions-wrapper tr.draggable {
+  border: blue 1px solid;
+}
+
+#edit-message-wrapper #edit-message-0-format {
+  display: none;
+}
+

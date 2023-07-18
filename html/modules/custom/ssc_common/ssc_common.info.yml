@@ -1,0 +1,5 @@
+name: 'SSC Common'
+type: module
+description: 'Customizations for SSC Drupal sites which are common across all sites.'
+core_version_requirement: ^8 || ^9
+package: 'SSC'

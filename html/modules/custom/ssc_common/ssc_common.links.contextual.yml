@@ -1,0 +1,4 @@
+ssc_common.contextual:
+  title: Layout
+  route_name: layout_builder.overrides.node.view
+  group: node

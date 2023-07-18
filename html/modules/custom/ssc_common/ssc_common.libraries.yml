@@ -1,0 +1,20 @@
+admin:
+  css:
+    theme:
+      css/admin.css: {}
+      css/forms.css: {}
+      css/tables.css: {}
+
+global:
+  js:
+    js/global.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings
+    - core/drupal
+    - core/js-cookie
+
+header-link:
+  css:
+    theme:
+      css/header-link.css: {}

@@ -1,0 +1,24 @@
+services:
+  ssc_common.route_subscriber:
+    class: Drupal\ssc_common\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  ssc_common.twig.SSCTwig:
+    class: Drupal\ssc_common\Twig\SSCTwig
+    tags:
+      - { name: twig.extension }
+
+  openid_connect.auto_login:
+    class: Drupal\ssc_common\EventSubscriber\OpenIDConnectAutoLogin
+    arguments: ['@current_user', '@plugin.manager.openid_connect_client', '@config.factory']
+    tags:
+      - { name: event_subscriber }
+
+  twig.extension.date:
+    class: Twig_Extensions_Extension_Date
+    tags:
+      - { name: twig.extension }
+
+
+

@@ -1,0 +1,68 @@
+/**
+ * @file
+ * Styles for the site header buttons and links.
+ */
+
+/* All links */
+.header-link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 2.5rem;
+  background-color: var(--clr-ssc-gray-1);
+  border-radius: 100vw !important;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--clr-ssc-white-1) !important;
+  transition: background-color 0.1s ease-out;
+}
+@media screen and (max-width: 767px) {
+  .header-link {
+    height: 2rem;
+  }
+}
+.header-link:hover {
+  background-color: var(--clr-ssc-purple-1);
+  text-decoration: none;
+  color: var(--clr-ssc-white-1);
+}
+.header-link:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+  text-decoration: none;
+}
+.header-link * {
+  margin: 0;
+}
+
+/* Accent links */
+.header-link--accent,
+.header-link--accent:visited {
+  background-color: var(--clr-ssc-pink-1);
+  color: var(--clr-ssc-white-1);
+}
+.header-link--accent:hover {
+  background-color: var(--clr-ssc-purple-1);
+}
+.header-link--accent:focus-visible {
+  background-color: var(--clr-ssc-pink-1);
+}
+
+/* Icon-only links */
+.header-link--icon {
+  aspect-ratio: 1;
+  padding: 0 !important;
+}
+.header-link--icon > span {
+  font-size: 1.25rem;
+}
+.header-link--icon > svg {
+  fill: var(--clr-ssc-white-1);
+}
+
+/* Text-only links */
+.header-link--text {
+  padding-inline: 1em;
+  font-size: 1rem;
+}
+

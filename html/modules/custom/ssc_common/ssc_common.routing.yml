@@ -1,0 +1,24 @@
+ssc_common.admin_config_system:
+  path: '/admin/config/ssc'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'SSC Common'
+  requirements:
+    _permission: 'access administration pages'
+
+ssc_common.admin_settings:
+  path: '/admin/config/ssc/general'
+  defaults:
+    _form: '\Drupal\ssc_common\Form\SSCGeneralConfiguration'
+    _title: 'SSC Common General Configuration'
+  requirements:
+    _permission: 'administer site configuration'
+
+ssc_common.related_search_autocomplete:
+  path: '/autocomplete/related'
+  defaults:
+    _controller: '\Drupal\ssc_common\Controller\RelatedSearchAutocomplete::handleAutocomplete'
+    _format: json
+  requirements:
+    _permission: 'access content'
+
