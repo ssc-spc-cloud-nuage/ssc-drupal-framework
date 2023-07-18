@@ -1,6 +1,6 @@
 {
-    "name": "ssc_common",
-    "type": "common-drupal-module",
+    "name": "ssc-drupal-framework/ssc_common",
+    "type": "drupal-module",
     "description": "Customizations used by SSC Drupal sites.",
     "minimum-stability": "dev"
 }
