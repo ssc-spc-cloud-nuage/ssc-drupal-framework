@@ -246,6 +246,9 @@
             "html/modules/contrib/{$name}": [
                 "type:drupal-module"
             ],
+            "html/modules/common/{$name}": [
+                "type:common-drupal-module"
+            ],
             "html/profiles/{$name}": [
                 "type:drupal-profile"
             ],
