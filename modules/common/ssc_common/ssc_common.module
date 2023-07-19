@@ -18,9 +18,10 @@ use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\row\EntityRow;
 use Drupal\views\ViewExecutable;
 
-require_once(DRUPAL_ROOT . '/modules/custom/ssc_common/ssc_common.tokens.inc');
-require_once(DRUPAL_ROOT . '/modules/custom/ssc_common/ssc_common.misc.inc');
-require_once(DRUPAL_ROOT . '/modules/custom/ssc_common/ssc_common.cron.inc');
+$path_to_common = \Drupal::service('extension.list.module')->getPath('ssc_common');
+require_once($path_to_common . '/ssc_common.tokens.inc');
+require_once($path_to_common . '/ssc_common.misc.inc');
+require_once($path_to_common . '/ssc_common.cron.inc');
 
 /**
  * Implements hook_help().
