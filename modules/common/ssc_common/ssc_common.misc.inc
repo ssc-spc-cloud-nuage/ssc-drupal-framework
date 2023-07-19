@@ -118,7 +118,7 @@ function get_landing_page_nid($type) {
 
 function get_landing_pages() {
   $landing_pages = &drupal_static(__FUNCTION__);
-  $cid = 'ssc_common:und';
+  $cid = 'ssc_custom:und';
 
   if ($cache = \Drupal::cache()->get($cid)) {
     $landing_pages = $cache->data;
@@ -132,6 +132,16 @@ function get_landing_pages() {
       foreach ($view->result as $rid => $row) {
         $child_type = $row->_entity->field_child_type->target_id;
         if (!empty($child_type)) {
+          // Even though we have a TID returned by the View, the Term maybe have been removed - which results in a WSOD here
+          $bundle_term = Term::load($child_type);
+          if (!$bundle_term) {
+            $message = t('Landing page News Type term has been deleted: %lp', [
+              '%lp' => $row->_entity->getTitle(),
+            ]);
+            \Drupal::messenger()->addError($message);
+            \Drupal::logger('SSC')->error($message);
+            continue;
+          }
           $bundle = Term::load($child_type)->getName();
           if (!empty($bundle)) {
             $values[$bundle] = $row->nid;
