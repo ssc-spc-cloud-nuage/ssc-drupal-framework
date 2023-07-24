@@ -215,3 +215,16 @@ function limit_text_words($text, $limit) {
   return $text;
 }
 
+function get_tid_by_name($name = NULL, $vid = NULL) {
+  $properties = [];
+  if (!empty($name)) {
+    $properties['name'] = $name;
+  }
+  if (!empty($vid)) {
+    $properties['vid'] = $vid;
+  }
+  $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties($properties);
+  $term = reset($terms);
+
+  return !empty($term) ? $term->id() : 0;
+}
