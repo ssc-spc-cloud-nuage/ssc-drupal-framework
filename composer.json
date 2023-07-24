@@ -146,7 +146,6 @@
         "drupal/views_bulk_operations": "4.2.3",
         "drupal/views_css_grid": "1.0.x-dev",
         "drupal/views_field_view": "^1.0@beta",
-        "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^1.4",
         "drupalwxt/wxt": "4.5.3",
         "drush/drush": "11.5.1",
@@ -156,7 +155,6 @@
         "twig/extensions": "^1.5",
         "w8tcha/ckeditor-wordcount-plugin": "^1.17",
         "wet-boew/wet-boew": "4.0.43.1 as 4.0.50.1",
-        "wikimedia/css-sanitizer": "4.0.1 as 2.0.1",
         "woocommerce/flexslider": "~2.0"
     },
     "require-dev": {
