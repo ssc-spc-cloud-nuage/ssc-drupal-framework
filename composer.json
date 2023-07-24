@@ -146,6 +146,7 @@
         "drupal/views_bulk_operations": "4.2.3",
         "drupal/views_css_grid": "1.0.x-dev",
         "drupal/views_field_view": "^1.0@beta",
+        "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^1.4",
         "drupalwxt/wxt": "4.5.3",
         "drush/drush": "11.5.1",
