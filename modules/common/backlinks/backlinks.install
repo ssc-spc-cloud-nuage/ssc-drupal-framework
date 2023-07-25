@@ -26,6 +26,23 @@ function backlinks_schema() {
     ),
   );
 
+  $schema['backlink_queue'] = array(
+    'description' => 'Stores internal links on nodes to use for Backlinks.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The NID of page with links.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'langcode' => array(
+        'type' => 'varchar',
+        'length' => '3',
+        'not null' => TRUE,
+      ),
+    ),
+  );
+
   return $schema;
 }
 
