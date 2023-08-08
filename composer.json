@@ -403,7 +403,7 @@
                 "3225966 - hide Guzzle deprecation warnings with s3fs": "https://www.drupal.org/files/issues/2022-11-18/suppress-deprecation-using-php-8.patch"
             },
             "drupal/lb_tabs": {
-                "3201111 - hide when empty": "https://www.drupal.org/files/issues/2022-07-24/3201111-hide_tab_if_no_content.patch"
+                "local - hide when empty": "./patches/lb_tabs-hide_empty.patch"
             }
         },
         "patches-ignore": {

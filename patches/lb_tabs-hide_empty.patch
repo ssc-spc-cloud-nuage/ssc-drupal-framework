@@ -1,0 +1,19 @@
+diff --git a/src/Plugin/Layout/LbTabsLayoutBase.php b/src/Plugin/Layout/LbTabsLayoutBase.php
+index a3322ae..8539f95 100644
+--- a/src/Plugin/Layout/LbTabsLayoutBase.php
++++ b/src/Plugin/Layout/LbTabsLayoutBase.php
+@@ -37,6 +37,14 @@ abstract class LbTabsLayoutBase extends LayoutDefault {
+     // Element::children() needs this.
+     $build += ['label_blocks' => [], 'content_blocks' => []];
+ 
++    // Remove empty blocks
++    foreach (Element::children($build['content_blocks'], TRUE) as $i => $contentKey) {
++      $contents = trim(strip_tags(\Drupal::service('renderer')->renderRoot($build['content_blocks'][$contentKey]['content'])));
++      if (!$contents) {
++        unset($build['content_blocks'][$contentKey]);
++      }
++    }
++
+     // No label blocks, so set labels from block titles.
+     if (!$this->configuration['labels_from_blocks']) {
+       foreach (Element::children($build['content_blocks'], TRUE) as $i => $contentKey) {
