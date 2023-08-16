@@ -1,0 +1,15 @@
+diff --git a/core/modules/config_translation/src/FormElement/TextFormat.php b/core/modules/config_translation/src/FormElement/TextFormat.php
+index f9f6bc61bc..dadac2cfd8 100644
+--- a/core/modules/config_translation/src/FormElement/TextFormat.php
++++ b/core/modules/config_translation/src/FormElement/TextFormat.php
+@@ -30,8 +30,8 @@ public function getTranslationElement(LanguageInterface $translation_language, $
+     return [
+       '#type' => 'text_format',
+       // Override the #default_value property from the parent class.
+-      '#default_value' => $translation_config['value'],
+-      '#format' => $translation_config['format'],
++      '#default_value' => $translation_config['value'] ?? '',
++      '#format' => $translation_config['format'] ?? NULL,
+       // @see \Drupal\config_translation\Element\FormElementBase::getTranslationElement()
+       '#allowed_formats' => [$source_config['format']],
+     ] + parent::getTranslationElement($translation_language, $source_config, $translation_config);
