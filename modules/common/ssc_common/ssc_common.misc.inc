@@ -65,8 +65,15 @@ function get_parent_tree(Node $node) {
     $tree = ['en' => [], 'fr' => []];
   }
 
+  // If no Parent Page field
   if (!$node->hasField('field_parent_page')) {
-    // @todo - add error about no parent field
+    \Drupal::messenger()->addError(t('Breadcrumb set to use Parent Page but this bundle has no Parent Page field.'));
+    return NULL;
+  }
+
+  // Required, but just in case Parent not set.
+  if (!$node->field_parent_page->getString()) {
+    \Drupal::messenger()->addError(t('Breadcrumb set to use Parent Page but value not set.'));
     return NULL;
   }
 
