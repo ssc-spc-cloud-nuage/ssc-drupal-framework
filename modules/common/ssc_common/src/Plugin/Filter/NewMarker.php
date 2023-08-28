@@ -16,7 +16,14 @@ use Drupal\filter\Plugin\FilterBase;
  *   title = @Translation("NEW marker"),
  *   description = @Translation("Add NEW marker to content based on data-wb-label attr."),
  *   type = Drupal\filter\Plugin\FilterInterface::TYPE_MARKUP_LANGUAGE,
+ *   settings = {
+ *     "default_duration" = "42",
+ *     "default_marker_text" = @Translation("New"),
+ *     "default_wrapper_classes" = "label label-default mrgn-rght-sm"
+ *   },
  * )
+ * @see \Drupal\filter\Annotation\Filter
+ * @see \Drupal\filter\Plugin\FilterInterface
  */
 class NewMarker extends FilterBase {
 
@@ -35,24 +42,24 @@ class NewMarker extends FilterBase {
   }
 
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $form['default_expiry'] = [
+    $form['default_duration'] = [
       '#type' => 'number',
       '#title' => t('Default expiry (in days)'),
-      '#default_value' => 42,
+      '#default_value' => $this->settings['default_duration'] ?? 42,
       '#required' => TRUE,
     ];
 
     $form['default_marker_text'] = [
       '#type' => 'textfield',
       '#title' => t('Default marker text'),
-      '#default_value' => 'New',
+      '#default_value' => $this->settings['default_marker_text'] ?? t('New'),
       '#required' => TRUE,
     ];
 
     $form['default_wrapper_classes'] = [
       '#type' => 'textfield',
       '#title' => t('Default wrapper classes'),
-      '#default_value' => 'label label-default mrgn-rght-sm',
+      '#default_value' => $this->settings['default_wrapper_classes'] ?? 'label label-default mrgn-rght-sm',
       '#required' => TRUE,
     ];
 
@@ -78,7 +85,7 @@ class NewMarker extends FilterBase {
     }
 
     // Get config settings.
-    $default_expiry = $this->settings['default_expiry'] ?? '42';
+    $default_duration = $this->settings['default_duration'] ?? '42';
     $default_marker_text = $this->settings['default_marker_text'] ?? 'New';
     $default_wrapper_classes = $this->settings['default_wrapper_classes'];
 
@@ -105,10 +112,14 @@ class NewMarker extends FilterBase {
         ? strtotime($settings->startDate)
         : strtotime(date('Y-m-d', $now));
 
-      // If no End, assume Start + Default expiry
+      // Priority: inline endDate, inline duration, global durationIf no End, assume Start + Default duration
       $end = isset($settings->endDate)
         ? strtotime($settings->endDate)
-        : strtotime(date('Y-m-d', $start) . ' +' . $default_expiry . ' days');
+        : (
+          isset($settings->duration)
+          ? strtotime(date('Y-m-d', $start) . ' +' . $settings->duration . ' days')
+          : strtotime(date('Y-m-d', $start) . ' +' . $default_duration . ' days')
+        );
 
       // Determine if marker is active.
       if ($end < $now || $start >= $now) {

@@ -1,0 +1,13 @@
+ssc_common.settings:
+  type: config_object
+  label: 'SSC+ configuration'
+  mapping:
+    login_page_h1:
+      type: text
+      label: 'H1'
+    login_page_info:
+      type: text
+      label: 'Login page info'
+    comment_login_info:
+      type: text_format
+      label: 'Comment login info'

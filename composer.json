@@ -6,6 +6,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "ext-dom": "*",
         "ext-fileinfo": "*",
         "cweagans/composer-patches": "1.7.3",
         "drupal/access_unpublished": "1.5.0",
