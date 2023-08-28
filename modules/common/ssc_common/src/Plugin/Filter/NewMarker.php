@@ -103,7 +103,7 @@ class NewMarker extends FilterBase {
     // Get config settings.
     $default_duration = $this->settings['default_duration'] ?? '42';
     $marker_text_setting = 'default_marker_text_' . $langcode;
-    $default_marker_text = $this->settings[$marker_text_setting] ?? 'New';
+    $default_marker_text = $this->settings[$marker_text_setting] ?? t('New');
     $default_wrapper_classes = $this->settings['default_wrapper_classes'];
 
     // Create marker pieces.
