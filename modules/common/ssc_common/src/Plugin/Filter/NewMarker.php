@@ -38,7 +38,16 @@ class NewMarker extends FilterBase {
    * {@inheritdoc}
    */
   public function tips($long = FALSE) {
-    return $this->t('Adds a configurable marker to the content based on date.');
+    return $this->t('Adds a configurable marker to the content based on date. Supports the following inline
+      settings:
+      <ul>
+        <li>startDate</li>
+        <li>endDate</li>
+        <li>duration<sup>*</sup></li>
+        <li>text<sup>*</sup></li>
+        <li>class<sup>*</sup></li>
+      </ul>
+      Items marked with a * have default settings.');
   }
 
   public function settingsForm(array $form, FormStateInterface $form_state) {
@@ -49,10 +58,17 @@ class NewMarker extends FilterBase {
       '#required' => TRUE,
     ];
 
-    $form['default_marker_text'] = [
+    $form['default_marker_text_en'] = [
       '#type' => 'textfield',
-      '#title' => t('Default marker text'),
-      '#default_value' => $this->settings['default_marker_text'] ?? t('New'),
+      '#title' => t('Default marker text (EN)'),
+      '#default_value' => $this->settings['default_marker_text_en'] ?? 'New',
+      '#required' => TRUE,
+    ];
+
+    $form['default_marker_text_fr'] = [
+      '#type' => 'textfield',
+      '#title' => t('Default marker text (FR)'),
+      '#default_value' => $this->settings['default_marker_text_fr'] ?? 'Nouveau',
       '#required' => TRUE,
     ];
 
@@ -86,7 +102,8 @@ class NewMarker extends FilterBase {
 
     // Get config settings.
     $default_duration = $this->settings['default_duration'] ?? '42';
-    $default_marker_text = $this->settings['default_marker_text'] ?? 'New';
+    $marker_text_setting = 'default_marker_text_' . $langcode;
+    $default_marker_text = $this->settings[$marker_text_setting] ?? 'New';
     $default_wrapper_classes = $this->settings['default_wrapper_classes'];
 
     // Create marker pieces.
