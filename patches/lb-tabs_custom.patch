@@ -1,0 +1,30 @@
+diff --git a/layouts/tabs/tabs.css b/layouts/tabs/tabs.css
+index 3a87354..4ceaaae 100644
+--- a/layouts/tabs/tabs.css
++++ b/layouts/tabs/tabs.css
+@@ -1 +1,5 @@
+ /* Nothing needed currently. */
++
++.lb-tabs-hide-tab {
++  display: none !important;
++}
+diff --git a/layouts/tabs/tabs.js b/layouts/tabs/tabs.js
+index e75a3fd..5c13f33 100644
+--- a/layouts/tabs/tabs.js
++++ b/layouts/tabs/tabs.js
+@@ -3,7 +3,15 @@
+     attach: function (context, settings) {
+       for (var id in settings.lb_tabs_tabs) {
+         var options = settings.lb_tabs_tabs[id];
++        // Use anchor if set.
++        var hash = $(location).attr('hash');
++        if (hash) {
++          options.active = $('#' + id + ' .lb-tabs__tab-content').index($(hash));
++        }
+         $("#" + id, context).tabs(options);
++        $(document).ready(function() {
++          $('.lb-tabs__tab-content').removeClass('lb-tabs-hide-tab');
++        });
+       }
+     }
+   };

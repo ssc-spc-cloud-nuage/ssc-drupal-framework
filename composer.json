@@ -406,7 +406,7 @@
             },
             "drupal/lb_tabs": {
                 "local - hide when empty": "./patches/lb_tabs-hide_empty.patch",
-                "3381220 - permalinked tabs": "https://www.drupal.org/files/issues/2023-08-16/tab_links-3381220-4.patch"
+                "local - modify anchors": "./patches/lb-tabs_custom.patch"
             }
         },
         "patches-ignore": {

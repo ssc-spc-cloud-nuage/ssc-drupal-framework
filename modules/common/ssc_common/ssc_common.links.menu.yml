@@ -1,12 +1,12 @@
 ssc_common.admin_config_system:
-  title: SSC+
+  title: SSC
   route_name: ssc_common.admin_config_system
   parent: system.admin_config
   description: 'SSC+ specific configuration settings.'
 
 ssc_common.admin_settings:
-  title: 'SSC+ General Configuration'
+  title: 'SSC General Configuration'
   route_name: ssc_common.admin_settings
-  description: 'SSC+ General Configuration'
+  description: 'SSC General Configuration'
   parent: ssc_common.admin_config_system
   weight: -20
