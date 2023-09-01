@@ -11,7 +11,8 @@ use Drupal\filter\Plugin\FilterBase;
  *
  * @Filter(
  *   id = "file_meta",
- *   title = @Translation("Add meta info to file links"),
+ *   title = @Translation("File Meta"),
+ *   description = @Translation("Add meta info to file links."),
  *   type = Drupal\filter\Plugin\FilterInterface::TYPE_MARKUP_LANGUAGE,
  * )
  */
@@ -42,6 +43,11 @@ class FileMeta extends FilterBase {
 
     $dom = Html::load($text);
     foreach ($dom->getElementsByTagName('a') as $element) {
+      // Skip IMGs.
+      if ($element->getElementsByTagName('img')->length) {
+        continue;
+      }
+
       $link = $element->getAttribute('href');
       if (!$link || !stristr($link, '/files/')) {
         continue;
