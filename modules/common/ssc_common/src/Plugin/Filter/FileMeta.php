@@ -50,10 +50,13 @@ class FileMeta extends FilterBase {
       // Size full title.
       $sizes = [
         'B' => $this->t('bytes'),
+        'bytes' => $this->t('bytes'),
         'KB' => $this->t('kilobytes'),
         'MB' => $this->t('megabytes'),
+        'octets' => $this->t('bytes'),
         'Ko' => $this->t('kilobytes'),
         'Mo' => $this->t('megabytes'),
+
       ];
       // Doc types full title.
       $doctypes = [
