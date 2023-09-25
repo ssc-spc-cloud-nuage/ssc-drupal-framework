@@ -11,6 +11,7 @@ class RelatedSearchAutocomplete {
    * Handler for autocomplete request.
    */
   public function handleAutocomplete(Request $request) {
+    $langcode =  \Drupal::languageManager()->getCurrentLanguage()->getId();
     $results = [];
     $input = $request->query->get('q');
     if (!$input) {
@@ -26,10 +27,13 @@ class RelatedSearchAutocomplete {
     $ids = $query->execute();
     $terms = $ids ? \Drupal\taxonomy\Entity\Term::loadMultiple($ids) : [];
     foreach ($terms as $term) {
-      $results[] = [
-        'value' => $term->getName(),
-        'label' => $term->getName(),
-      ];
+      if($term->hasTranslation($langcode)){
+        $translated_term = \Drupal::service('entity.repository')->getTranslationFromContext($term, $langcode);
+        $results[] = [
+          'value' => $translated_term->getName(),
+          'label' => $translated_term->getName(),
+        ];
+      }
     }
     return new JsonResponse($results);
   }
