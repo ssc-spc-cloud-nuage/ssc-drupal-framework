@@ -858,7 +858,7 @@ function ssc_common_timezone_list_alter($zones) {
   $keep = [
     'Edmonton' => t('Mountain time'),
     'Halifax' => t('Atlantic time') ,
-    'Saint John\'s' => t('Newfoundland time'),
+    'St Johns' => t('Newfoundland time'),
     'Toronto' => t('Eastern time'),
     'Vancouver' => t('Pacific time'),
     'Winnipeg' => t('Central time'),
