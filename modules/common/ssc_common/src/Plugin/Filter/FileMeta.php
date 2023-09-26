@@ -34,12 +34,35 @@ class FileMeta extends FilterBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo: only works with managed files and IMCE uploads aren't managed.
    */
   public function fileLinkSearch($text, $langcode, $filter) {
     // Embedded wet map gets messed up with this so let's just not support it.
     if (stristr($text, 'data-wb-geomap')) {
       return $text;
     }
+
+    // Size full title.
+    $sizes = [
+      'B' => $this->t('bytes'),
+      'bytes' => $this->t('bytes'),
+      'KB' => $this->t('kilobytes'),
+      'MB' => $this->t('megabytes'),
+      'octets' => $this->t('bytes'),
+      'Ko' => $this->t('kilobytes'),
+      'Mo' => $this->t('megabytes'),
+
+    ];
+    
+    // Doc types full title.
+    $doctypes = [
+      'PDF' => $this->t('Portable document format'),
+      'DOCX' => $this->t('Word'),
+      'XLSX' => $this->t('Excel'),
+      'PPTX' => $this->t('Powerpoint'),
+      'TXT' => $this->t('Plain text'),
+    ];
 
     $dom = Html::load($text);
     foreach ($dom->getElementsByTagName('a') as $element) {
@@ -53,26 +76,6 @@ class FileMeta extends FilterBase {
         continue;
       }
 
-      // Size full title.
-      $sizes = [
-        'B' => $this->t('bytes'),
-        'bytes' => $this->t('bytes'),
-        'KB' => $this->t('kilobytes'),
-        'MB' => $this->t('megabytes'),
-        'octets' => $this->t('bytes'),
-        'Ko' => $this->t('kilobytes'),
-        'Mo' => $this->t('megabytes'),
-
-      ];
-      // Doc types full title.
-      $doctypes = [
-        'PDF' => $this->t('Portable document format'),
-        'DOCX' => $this->t('Word'),
-        'XLSX' => $this->t('Excel'),
-        'PPTX' => $this->t('Powerpoint'),
-        'TXT' => $this->t('Plain text'),
-      ];
-
       // Load file with this path.
       $uri = str_replace(['/sites/default/files/', '%20'], ['public://', ' '], $link);
       /** @var \Drupal\file\FileInterface[] $files */
@@ -81,7 +84,7 @@ class FileMeta extends FilterBase {
         ->loadByProperties(['uri' => $uri]);
 
       // File may have been deleted; so let's skip those.
-      if (!$files) {
+      if (!$files || !file_exists($uri)) {
         continue;
       }
 
