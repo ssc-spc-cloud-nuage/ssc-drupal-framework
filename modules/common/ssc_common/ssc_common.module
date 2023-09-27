@@ -852,9 +852,18 @@ function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state)
 }
 
 /*
- * Use hacked in hook_timezone_list_alter to reducea/alter TZ options.
+ * Use hacked in hook_timezone_list_alter to reduce/alter TZ options.
+ *
+ * - don't do this for Views admin
  */
 function ssc_common_timezone_list_alter($zones) {
+  // Don't modify in Views UI
+  // @todo: might be easier to only do on Node/User forms?
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() == 'views_ui.form_handler') {
+    return $zones;
+  }
+
   $keep = [
     'Edmonton' => t('Mountain time'),
     'Halifax' => t('Atlantic time') ,
