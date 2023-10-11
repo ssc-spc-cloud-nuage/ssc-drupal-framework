@@ -51,7 +51,7 @@ function ssc_common_requirements($phase) {
       $lines = preg_split('/\s+/', $git_info);
       $requirements['ssc-plus'] = [
         'title' => t('SSC'),
-        'value' => t('Release/Commit: ') .$lines[0],
+        'value' => t('Release/Commit: ') . $lines[0],
         'description' => t('Release date: ') . $lines[1],
         'severity' => REQUIREMENT_INFO,
       ];
@@ -312,7 +312,7 @@ function ssc_common_form_views_exposed_form_alter(&$form, FormStateInterface $fo
 
     case 'views-exposed-form-site-search-block-1':
       // Add autocomplete to Related Topics search field.
-      $form['related']['#autocomplete_route_name'] = 'ssc_common.related_search_autocomplete';
+      $form['r']['#autocomplete_route_name'] = 'ssc_common.related_search_autocomplete';
     case 'views-exposed-form-articles-block-1':
     case 'views-exposed-form-corporate-messages-block-2':
     case 'views-exposed-form-upcoming-sessions-block-1':
