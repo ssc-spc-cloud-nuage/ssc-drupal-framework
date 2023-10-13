@@ -5,6 +5,7 @@ namespace Drupal\ssc_common\Plugin\Block;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\wxt_library\Plugin\Block\LanguageBlock;
 
 /**
@@ -72,7 +73,24 @@ class LanguageSwitcherBlock extends LanguageBlock {
     }
     else {
       $title = Markup::create($links->links[$switch]['title']);
-      // Need to add language to the links.
+
+      // If Search page, change Related Topic to FR version.
+      if (stristr($url->getRouteName(), 'page_manager.page_view_search_search-layout_builder')) {
+        if (isset($links->links[$switch]['query']['r'])) {
+          $query = \Drupal::entityQuery('taxonomy_term')
+            ->condition('vid', 'topics')
+            ->condition('name', $links->links[$switch]['query']['r'], '=');
+           $ids = $query->execute();
+           $tid = current($ids);
+           $term = Term::load($tid);
+            if($term->hasTranslation($switch)) {
+              $translated_term = \Drupal::service('entity.repository')->getTranslationFromContext($term, $switch);
+              $links->links[$switch]['query']['r'] = $translated_term->getName();
+            }
+        }
+      }
+
+      // Add language to the links.
       $links->links[$switch]['url']->setOption('query', $links->links[$switch]['query']);
     }
     $links->links[$switch]['url']->setOption('language', $this->languageManager->getLanguage($switch));
