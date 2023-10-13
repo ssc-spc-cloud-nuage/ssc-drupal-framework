@@ -2,6 +2,7 @@
 
 namespace Drupal\ssc_common\Plugin\Block;
 
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
@@ -76,16 +77,16 @@ class LanguageSwitcherBlock extends LanguageBlock {
 
       // If Search page, change Related Topic to FR version.
       if (stristr($url->getRouteName(), 'page_manager.page_view_search_search-layout_builder')) {
-        if (isset($links->links[$switch]['query']['r'])) {
+        if (!empty($links->links[$switch]['query']['r'])) {
           $query = \Drupal::entityQuery('taxonomy_term')
             ->condition('vid', 'topics')
             ->condition('name', $links->links[$switch]['query']['r'], '=');
            $ids = $query->execute();
            $tid = current($ids);
            $term = Term::load($tid);
-            if($term->hasTranslation($switch)) {
+           if ($term && $term->hasTranslation($switch)) {
               $translated_term = \Drupal::service('entity.repository')->getTranslationFromContext($term, $switch);
-              $links->links[$switch]['query']['r'] = $translated_term->getName();
+              $links->links[$switch]['query']['r'] = Xss::filter($translated_term->getName());
             }
         }
       }
