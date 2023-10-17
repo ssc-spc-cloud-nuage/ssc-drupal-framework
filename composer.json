@@ -436,6 +436,9 @@
                 "drupal/fontawesome": {
                     "3071758 - Fix multiple icons issue":
                     "https://git.drupalcode.org/project/fontawesome/-/merge_requests/4.diff"
+                },
+                "drupal/footnotes": {
+                    "Warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
                 }
             }
         }
