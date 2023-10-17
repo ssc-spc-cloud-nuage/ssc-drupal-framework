@@ -54,7 +54,7 @@ class FileMeta extends FilterBase {
       'Mo' => $this->t('megabytes'),
 
     ];
-    
+
     // Doc types full title.
     $doctypes = [
       'PDF' => $this->t('Portable document format'),
@@ -103,7 +103,8 @@ class FileMeta extends FilterBase {
       $attr1->setAttribute('title', $doc_type_title);
       $attr1_text = $dom->createTextNode(' (' . $filemime);
       $attr1->appendChild($attr1_text);
-      $attr_sep = $dom->createTextNode(', ' . $size_bits[0]);
+      $size_value = $langcode == 'en' ? $size_bits[0] : str_replace('.', ',', $size_bits[0]);
+      $attr_sep = $dom->createTextNode(', ' . $size_value);
       $attr2 = $dom->createElement('attr');
       $attr2->setAttribute('title', $sizes[$size_bits[1]]);
       $attr2_text = $dom->createTextNode($size_bits[1] . ')');
