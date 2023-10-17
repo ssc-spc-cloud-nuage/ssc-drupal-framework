@@ -138,7 +138,7 @@
         "drupal/time_range": "^9.0",
         "drupal/timezone_detect": "1.x-dev@dev",
         "drupal/tranc": "1.0.1",
-        "drupal/translatable_menu_link_uri": "^2.0",
+        "drupal/translatable_menu_link_uri": "^2.1",
         "drupal/twig_tweak": "^3.1",
         "drupal/ultimate_cron": "^2.0@alpha",
         "drupal/userprotect": "^1.1",
@@ -346,9 +346,6 @@
             },
             "drupal/ctools": {
                 "3230847 - allow LB to use ajax block conditions": "https://www.drupal.org/files/issues/2022-09-11/ctools-condition-form-ajax-3230847-7.diff"
-            },
-            "drupal/translatable_menu_link_uri": {
-                "3198891 - move translation link to translation form": "https://www.drupal.org/files/issues/2021-02-17/3198891_3.patch"
             },
             "drupal/entity_reference_revisions": {
                 "2799479 - paragraph relationship to host": "https://www.drupal.org/files/issues/2022-06-01/entity_reference_revisions-relationship_host_id-2799479-176.patch",
