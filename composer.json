@@ -408,6 +408,9 @@
             "drupal/lb_tabs": {
                 "local - hide when empty": "./patches/lb_tabs-hide_empty.patch",
                 "local - modify anchors": "./patches/lb-tabs_custom.patch"
+            },
+            "drupal/footnotes": {
+                "Warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
             }
         },
         "patches-ignore": {
@@ -436,9 +439,6 @@
                 "drupal/fontawesome": {
                     "3071758 - Fix multiple icons issue":
                     "https://git.drupalcode.org/project/fontawesome/-/merge_requests/4.diff"
-                },
-                "drupal/footnotes": {
-                    "Warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
                 }
             }
         }
