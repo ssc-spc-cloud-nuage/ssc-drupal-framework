@@ -16,7 +16,7 @@
         "drupal/adobe_analytics": "^1.0@dev",
         "drupal/adv_varnish": "4.0.7",
         "drupal/advagg": "4.1.0",
-        "drupal/ape": "1.5.0",
+        "drupal/ape": "^1.6",
         "drupal/auto_entitylabel": "3.0.0",
         "drupal/autocomplete_deluxe": "2.0.3",
         "drupal/backup_migrate": "^5",
@@ -26,7 +26,7 @@
         "drupal/block_ajax": "3.0.0",
         "drupal/block_field": "1.0.0-rc4",
         "drupal/bootstrap_layout_builder": "2.1.1",
-        "drupal/calendar": "1.0.0-alpha4",
+        "drupal/calendar": "^1.0@beta",
         "drupal/calendar_link": "2.1.4",
         "drupal/chosen": "3.0.5",
         "drupal/ckwordcount": "2.1.0",
@@ -36,7 +36,6 @@
         "drupal/config_filter": "2.4.0",
         "drupal/config_ignore": "^3.0",
         "drupal/config_override_warn": "^1",
-        "drupal/config_rewrite": "^1",
         "drupal/config_split": "^2.0",
         "drupal/console": "^1.9.10",
         "drupal/content_lock": "2.3.0",
@@ -53,7 +52,7 @@
         "drupal/devel_php": "^1.3",
         "drupal/draggableviews": "2.1.3",
         "drupal/entity_clone": "^2",
-        "drupal/entity_field_condition": "1.3",
+        "drupal/entity_field_condition": "1.x-dev@dev",
         "drupal/entity_reference_revisions": "1.10.0",
         "drupal/entityqueue": "1.x-dev",
         "drupal/environment_indicator": "^4",
@@ -67,11 +66,11 @@
         "drupal/field_formatter_class": "^1.5",
         "drupal/field_tools": "^1",
         "drupal/flag": "4.0.0-beta4",
-        "drupal/flexslider": "^2.0",
-        "drupal/focal_point": "^1.5",
+        "drupal/focal_point": "^2",
         "drupal/fpa": "^2.0@beta",
         "drupal/fvm": "^2.0",
         "drupal/google_analytics": "^4.0",
+        "drupal/hal": "^1.0",
         "drupal/htmlmail": "^3.0@alpha",
         "drupal/iek": "1.x-dev",
         "drupal/image_effects": "3.4",
@@ -95,7 +94,7 @@
         "drupal/linkit": "^6",
         "drupal/log_stdout": "^1.3",
         "drupal/mail_redirect": "^4.0",
-        "drupal/masquerade": "2.0-beta4",
+        "drupal/masquerade": "^2",
         "drupal/media_library_theme_reset": "^1.1",
         "drupal/message": "1.4",
         "drupal/message_notify": "1.3",
@@ -105,13 +104,12 @@
         "drupal/module_filter": "^4.0",
         "drupal/multiple_fields_remove_button": "^2",
         "drupal/o365": "^3.0",
-        "drupal/openid_connect_windows_aad": "1.4",
+        "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.1",
         "drupal/phpmailer_smtp": "^2",
         "drupal/rabbit_hole": "^1.0@beta",
         "drupal/readmore": "^2",
         "drupal/realname": "^2",
-        "drupal/redis": "^1",
         "drupal/restui": "^1.21",
         "drupal/rules": "^3.0@alpha",
         "drupal/s3fs": "3.2",
@@ -130,7 +128,7 @@
         "drupal/text_field_formatter": "^2.0",
         "drupal/time_range": "^9.0",
         "drupal/timezone_detect": "1.x-dev@dev",
-        "drupal/tranc": "1.0.1",
+        "drupal/tranc": "^1.0.2",
         "drupal/translatable_menu_link_uri": "^2.1",
         "drupal/twig_tweak": "^3.1",
         "drupal/ultimate_cron": "^2.0@alpha",
@@ -138,7 +136,7 @@
         "drupal/view_custom_table": "^2.0",
         "drupal/viewfield": "^3.0@beta",
         "drupal/views_autosubmit": "^1.4",
-        "drupal/views_block_filter_block": "^1.0",
+        "drupal/views_block_filter_block": "^2",
         "drupal/views_bulk_edit": "^2.6",
         "drupal/views_bulk_operations": "4.2.3",
         "drupal/views_css_grid": "1.0.x-dev",
@@ -291,13 +289,11 @@
                 "local - CTA block failing to translate on Test": "./patches/core-hack-custom-block-config.patch"
             },
             "drupal/openid_connect_windows_aad": {
-                "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2021-01-22/3189492-windows-aad-userinfo.patch",
-                "3161994 - AADSTS901002: The 'resource' request parameter is not supported": "https://www.drupal.org/files/issues/2021-10-26/openid_connect_windows_aad-request_parameter_is_not_supported-3161994-10.patch",
+                "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
                 "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2022-04-05/openid_connect_windows_aad-User_photo_submodule-3273039-3.patch"
             },
             "drupal/masquerade": {
-                "2900413 - unlink link in block": "https://www.drupal.org/files/issues/2020-10-26/2900413-29.patch",
-                "2900413 - unlink link in block - my addition": "https://www.drupal.org/files/issues/2021-03-01/better-unmasq-link-2900413-30.patch"
+                "local - better unlink link in block": "./patches/masquerade-better_unlink.patch"
             },
             "drupal/content_sync": {
                 "2979368 - ignore types": "https://www.drupal.org/files/issues/2020-09-22/2979368-17.patch"
@@ -329,7 +325,8 @@
                 "3251306 - translate as content": "https://www.drupal.org/files/issues/2021-11-26/translate_as_content-3251306-7.patch",
                 "3252347 - path matching": "https://www.drupal.org/files/issues/2021-12-02/translated_path_matching-3252347-3.patch",
                 "3262353 - allow tokens in path matching": "https://www.drupal.org/files/issues/2022-02-03/allow_tokens_in_path-3262353-3.patch",
-                "3271500 - allow array tokens": "https://www.drupal.org/files/issues/2022-03-24/array_tokens-3271500-3.patch"
+                "3271500 - allow array tokens": "https://www.drupal.org/files/issues/2022-03-24/array_tokens-3271500-3.patch",
+                "3286855 - D10 compatability": "https://www.drupal.org/files/issues/2023-05-03/custom_breadcrumbs-3286855-9.patch"
             },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
@@ -349,7 +346,7 @@
                 "2887353 - module to sync paragraph translations": "https://www.drupal.org/files/issues/2022-07-26/paragraphs-translation-sync-2887353-54.patch"
             },
             "drupal/entity_field_condition": {
-                "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2021-07-28/entity_field_condition-generic-fieldable-entity-field-value-plugin-3091898-19.patch"
+                "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2023-09-07/entity_field_condition-generic-fieldable-entity-field-value-plugin-3091898-35.patch"
             },
             "drupal/smtp": {
                 "3063886 - fix debugging": "https://www.drupal.org/files/issues/2022-11-21/3063886-83.patch"
@@ -361,7 +358,8 @@
                 "local - remove tmpstore items on cancel": "./patches/empty_on_cancel-local.patch"
             },
             "drupal/viewscss": {
-                "local - silence errors": "./patches/silence_errors.patch"
+                "local - silence errors": "./patches/silence_errors.patch",
+                "3290565 - D10 compatability": "https://www.drupal.org/files/issues/2023-10-20/3290565-8.x-1.0-rc1.patch"
             },
             "drupal/layout_library": {
                 "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
@@ -377,9 +375,6 @@
                 "3269933 - show proper moderation state": "https://www.drupal.org/files/issues/2023-03-20/diff-3269933-get-revision-with-langcode-11.patch",
                 "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
             },
-            "drupal/tranc": {
-                "3354693 - PHP 8.1 support": "https://www.drupal.org/files/issues/2023-04-17/php8.1-3354693-6.patch"
-            },
             "drupal/address_static_map": {
                 "3358951 - PHP 8.1 support and sig fix": "https://www.drupal.org/files/issues/2023-05-08/php8_signature-3358951-2.patch"
             },
@@ -392,15 +387,24 @@
             "drupal/imce": {
                 "3371499 - fix private path": "./patches/imce-private-path-fix.patch"
             },
-            "guzzlehttp/guzzle": {
-                "3225966 - hide Guzzle deprecation warnings with s3fs": "https://www.drupal.org/files/issues/2022-11-18/suppress-deprecation-using-php-8.patch"
-            },
             "drupal/lb_tabs": {
                 "local - hide when empty": "./patches/lb_tabs-hide_empty.patch",
                 "local - modify anchors": "./patches/lb-tabs_custom.patch"
             },
             "drupal/footnotes": {
                 "Warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
+            },
+            "guzzlehttp/guzzle": {
+                "3225966 - hide Guzzle deprecation warnings with s3fs": "https://www.drupal.org/files/issues/2022-11-18/suppress-deprecation-using-php-8.patch"
+            },
+            "drupal/adobe_analytics": {
+                "3364865 - D10 compatability": "https://www.drupal.org/files/issues/2023-06-05/adobe_analytics.1.x-3364865-2.patch"
+            },
+            "drupal/htmlmail": {
+                "3287920 - D10 compatability": "https://www.drupal.org/files/issues/2023-07-24/htmlmail_drupal10_support.patch"
+            },
+            "drupal/timezone_detect": {
+                "3290054 - D10 compatability": "https://www.drupal.org/files/issues/2022-06-16/timezone_detect.1.x-dev.rector.patch"
             }
         },
         "patches-ignore": {

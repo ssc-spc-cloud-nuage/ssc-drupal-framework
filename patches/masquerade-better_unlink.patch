@@ -1,0 +1,17 @@
+diff --git a/src/MasqueradeCallbacks.php b/src/MasqueradeCallbacks.php
+index aa61c12..09dedc7 100644
+--- a/src/MasqueradeCallbacks.php
++++ b/src/MasqueradeCallbacks.php
+@@ -79,10 +79,11 @@ class MasqueradeCallbacks implements TrustedCallbackInterface {
+    */
+   public function renderSwitchBackLink() {
+     if ($this->masquerade->isMasquerading()) {
++      $current_user = \Drupal::currentUser();
+       return [
+         [
+           '#type' => 'link',
+-          '#title' => new TranslatableMarkup('Switch back'),
++          '#title' => t('Unmasquerade as %user', ['%user' => $current_user->getDisplayName()]),
+           '#url' => Url::fromRoute('masquerade.unmasquerade', [], [
+             'query' => \Drupal::destination()->getAsArray(),
+           ]),
