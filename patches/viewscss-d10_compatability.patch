@@ -8,3 +8,6 @@ index 135c6ff..a5a9f8b 100644
  description: Provides a views style that renders inline css.
 -core_version_requirement: ^8.7.7 || ^9
 +core_version_requirement: ^8.7.7 || ^9 || ^10
+
+# Information added by Drupal.org packaging script on 2020-11-14
+version: '8.x-1.0-rc1'

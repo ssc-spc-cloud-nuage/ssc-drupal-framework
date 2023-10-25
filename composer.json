@@ -358,8 +358,7 @@
                 "local - remove tmpstore items on cancel": "./patches/empty_on_cancel-local.patch"
             },
             "drupal/viewscss": {
-                "local - silence errors": "./patches/silence_errors.patch",
-                "local - D10 compatability": "./patches/viewscss-d10_compatability.patch"
+                "local - silence errors": "./patches/viewscss-silence_errors.patch"
             },
             "drupal/layout_library": {
                 "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
