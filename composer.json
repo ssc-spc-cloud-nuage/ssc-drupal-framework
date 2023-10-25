@@ -359,7 +359,7 @@
             },
             "drupal/viewscss": {
                 "local - silence errors": "./patches/silence_errors.patch",
-                "3290565 - D10 compatability": "https://www.drupal.org/files/issues/2023-10-20/3290565-8.x-1.0-rc1.patch"
+                "local - D10 compatability": "./patches/viewscss-d10_compatability.patch"
             },
             "drupal/layout_library": {
                 "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
