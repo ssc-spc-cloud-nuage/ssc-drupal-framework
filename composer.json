@@ -421,7 +421,8 @@
                 "3364865 - D10 compatability": "https://www.drupal.org/files/issues/2023-06-05/adobe_analytics.1.x-3364865-2.patch"
             },
             "drupaloverride/tranc": {
-                "3290123 - D10 compatability": "https://www.drupal.org/files/issues/2022-07-23/tranc.1.0.1.rector.patch"
+                "3290123 - D10 compatability #2": "https://www.drupal.org/files/issues/2022-07-23/tranc.1.0.1.rector.patch",
+                "3290123 - D10 compatability #1": "https://www.drupal.org/files/issues/2022-06-16/tranc.1.0.1.rector.patch"
             }
         },
         "patches-ignore": {
