@@ -1,0 +1,5 @@
+name: Lightning Core
+type: module
+description: repalcement for lightning core
+package: D10
+core_version_requirement: ^9 || ^10
