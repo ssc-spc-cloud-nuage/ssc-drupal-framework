@@ -96,6 +96,7 @@
         "drupal/module_filter": "^4.0",
         "drupal/multiple_fields_remove_button": "^2",
         "drupal/o365": "^3.0",
+        "drupal/openid_connect": "^3",
         "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.1",
         "drupal/phpmailer_smtp": "^2",
@@ -119,6 +120,7 @@
         "drupal/telephone_validation": "^2.3",
         "drupal/text_field_formatter": "^2.0",
         "drupal/time_range": "^9.0",
+        "drupal/tranc": "1.1.x-dev@dev",
         "drupal/translatable_menu_link_uri": "^2.1",
         "drupal/twig_tweak": "^3",
         "drupal/ultimate_cron": "^2.0@alpha",
@@ -134,7 +136,6 @@
         "drupal/w3c_validator": "^2",
         "drupaloverride/adobe_analytics": "dev-1",
         "drupaloverride/htmlmail": "dev-1",
-        "drupaloverride/tranc": "dev-1",
         "drupaloverride/twig_extensions": "dev-1",
         "drupaloverride/viewscss": "dev-1",
         "drupalwxt/wxt": "5.0.0",
@@ -224,18 +225,6 @@
                 "dist": {
                     "type": "zip",
                     "url": "https://ftp.drupal.org/files/projects/viewscss-8.x-1.x-dev.zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "drupaloverride/tranc",
-                "version": "dev-1",
-                "type": "drupal-module",
-                "dist": {
-                    "type": "zip",
-                    "url": "https://ftp.drupal.org/files/projects/tranc-1.0.2.zip"
                 }
             }
         }
@@ -416,14 +405,10 @@
             },
             "drupaloverride/viewscss": {
                 "local - silence errors": "./patches/viewscss-silence_errors.patch",
-                "3290565 - D10 compatability": "https://www.drupal.org/files/issues/2023-10-20/3290565-8.x-1.0-rc1.patch"
+                "3290565 - D10 compatability": "https://www.drupal.org/files/issues/2023-11-01/3290565-06.patch"
             },
             "drupaloverride/adobe_analytics": {
                 "3364865 - D10 compatability": "https://www.drupal.org/files/issues/2023-06-05/adobe_analytics.1.x-3364865-2.patch"
-            },
-            "drupaloverride/tranc": {
-                "3290123 - D10 compatability #2": "https://www.drupal.org/files/issues/2022-07-23/tranc.1.0.1.rector.patch",
-                "3290123 - D10 compatability #1": "https://www.drupal.org/files/issues/2022-06-16/tranc.1.0.1.rector.patch"
             }
         },
         "patches-ignore": {
