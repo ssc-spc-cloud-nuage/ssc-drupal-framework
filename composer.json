@@ -416,7 +416,7 @@
             },
             "drupaloverride/viewscss": {
                 "local - silence errors": "./patches/viewscss-silence_errors.patch",
-                "3290565 - D10 compatability": "https://www.drupal.org/files/issues/2023-10-20/3290565-8.x-1.0-rc1.patch"
+                "3290565 - D10 compatability": "https://www.drupal.org/files/issues/2023-11-01/3290565-06.patch"
             },
             "drupaloverride/adobe_analytics": {
                 "3364865 - D10 compatability": "https://www.drupal.org/files/issues/2023-06-05/adobe_analytics.1.x-3364865-2.patch"
