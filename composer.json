@@ -120,6 +120,7 @@
         "drupal/telephone_validation": "^2.3",
         "drupal/text_field_formatter": "^2.0",
         "drupal/time_range": "^9.0",
+        "drupaloverride/timezone_detect": "dev-1",
         "drupal/tranc": "1.1.x-dev@dev",
         "drupal/translatable_menu_link_uri": "^2.1",
         "drupal/twig_tweak": "^3",
@@ -225,6 +226,18 @@
                 "dist": {
                     "type": "zip",
                     "url": "https://ftp.drupal.org/files/projects/viewscss-8.x-1.x-dev.zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "drupaloverride/timezone_detect",
+                "version": "dev-1",
+                "type": "drupal-module",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://ftp.drupal.org/files/projects/timezone_detect-8.x-1.x-dev.zip"
                 }
             }
         }
@@ -409,6 +422,9 @@
             },
             "drupaloverride/adobe_analytics": {
                 "3364865 - D10 compatability": "https://www.drupal.org/files/issues/2023-06-05/adobe_analytics.1.x-3364865-2.patch"
+            },
+            "drupaloverride/timezone_detect": {
+                "3290054 - D10 compatability": "https://www.drupal.org/files/issues/2022-06-16/timezone_detect.1.x-dev.rector.patch"
             }
         },
         "patches-ignore": {
