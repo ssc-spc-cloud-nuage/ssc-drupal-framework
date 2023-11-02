@@ -222,7 +222,12 @@ class EntityFinder extends TamperBase {
           $query->condition($type, $bundle, '=');
       }
 
-      $ids = array_filter($query->condition($field, $data)->range(0, 1)->execute());
+      $results = $query
+        ->condition($field, $data)
+        ->range(0, 1)
+        ->accessCheck(FALSE)
+        ->execute();
+      $ids = array_filter($results);
       if ($ids) {
         return reset($ids);
       }

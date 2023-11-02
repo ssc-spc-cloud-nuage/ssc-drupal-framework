@@ -3,12 +3,12 @@
 namespace Drupal\ssc_common\EventSubscriber;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Routing\RouteObjectInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\openid_connect\Plugin\OpenIDConnectClientManager;
-use Symfony\Cmf\Component\Routing\RouteObjectInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -86,10 +86,10 @@ class OpenIDConnectAutoLogin implements EventSubscriberInterface {
    *
    * The process will start, if there is only one client enabled.
    *
-   * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   Response event.
    */
-  public function login(GetResponseEvent $event) {
+  public function login(ResponseEvent $event) {
     // Get current request.
     $request = $event->getRequest();
     // Check if user is anonymous and login or register page was requested.

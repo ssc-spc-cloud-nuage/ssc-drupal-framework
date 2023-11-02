@@ -80,7 +80,8 @@ class LanguageSwitcherBlock extends LanguageBlock {
         if (!empty($links->links[$switch]['query']['r'])) {
           $query = \Drupal::entityQuery('taxonomy_term')
             ->condition('vid', 'topics')
-            ->condition('name', $links->links[$switch]['query']['r'], '=');
+            ->condition('name', $links->links[$switch]['query']['r'], '=')
+            ->accessCheck(FALSE);
            $ids = $query->execute();
            $tid = current($ids);
            $term = Term::load($tid);

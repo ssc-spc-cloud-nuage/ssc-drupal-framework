@@ -1,7 +1,7 @@
 name: 'Backlinks'
 type: module
 description: 'Provide table and views handler for backlinks support.'
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10
 package: 'SSC'
 dependencies:
   - views
