@@ -139,7 +139,7 @@
         "drupaloverride/htmlmail": "dev-1",
         "drupaloverride/twig_extensions": "dev-1",
         "drupaloverride/viewscss": "dev-1",
-        "drupalwxt/wxt": "5.0.0",
+        "drupalwxt/wxt": "5.0.x-dev#884bfd54",
         "drush/drush": "^11",
         "w8tcha/ckeditor-wordcount-plugin": "^1.17",
         "wet-boew/wet-boew": "4.0.43.1 as 4.0.50.1"

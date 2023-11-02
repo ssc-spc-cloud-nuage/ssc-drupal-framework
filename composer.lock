@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "059ff010a58717d8b06e6bac64a6917f",
+    "content-hash": "9f509d59e81ea4e4c2cff348898702b5",
     "packages": [
         {
             "name": "arthurkushman/query-path",
@@ -171,16 +171,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.283.17",
+            "version": "3.283.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "b1a52f85e9eb3952d8f1909d5404849fc2f2af4e"
+                "reference": "0263a41920f77a521660fb128701d9c9c6312756"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/b1a52f85e9eb3952d8f1909d5404849fc2f2af4e",
-                "reference": "b1a52f85e9eb3952d8f1909d5404849fc2f2af4e",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0263a41920f77a521660fb128701d9c9c6312756",
+                "reference": "0263a41920f77a521660fb128701d9c9c6312756",
                 "shasum": ""
             },
             "require": {
@@ -260,9 +260,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.283.17"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.283.18"
             },
-            "time": "2023-11-01T18:11:41+00:00"
+            "time": "2023-11-02T18:16:01+00:00"
         },
         {
             "name": "bower-asset/cropper",
@@ -8631,28 +8631,28 @@
         },
         {
             "name": "drupal/group",
-            "version": "1.5.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/group.git",
-                "reference": "8.x-1.5"
+                "reference": "8.x-1.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/group-8.x-1.5.zip",
-                "reference": "8.x-1.5",
-                "shasum": "4b890350749ff1d388425da8343b8835847492d8"
+                "url": "https://ftp.drupal.org/files/projects/group-8.x-1.6.zip",
+                "reference": "8.x-1.6",
+                "shasum": "f9559b6e79db8420f9d13e9d4b2387b3a66fd03b"
             },
             "require": {
-                "drupal/core": "^9.3 || ^10",
-                "drupal/entity": "^1.2",
-                "drupal/variationcache": "^1.1"
+                "drupal/core": "^9.5 || ^10",
+                "drupal/entity": "^1.4",
+                "drupal/variationcache": "^1.3"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.5",
-                    "datestamp": "1685706327",
+                    "version": "8.x-1.6",
+                    "datestamp": "1693382492",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8675,7 +8675,7 @@
                 }
             ],
             "description": "This module allows you to group users, content and other entities",
-            "homepage": "http://drupal.org/project/group",
+            "homepage": "https://drupal.org/project/group",
             "support": {
                 "source": "https://git.drupalcode.org/project/group",
                 "issues": "https://drupal.org/project/issues/group"
@@ -10444,11 +10444,17 @@
         },
         {
             "name": "drupal/linkit",
-            "version": "dev-6.0.x",
+            "version": "6.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/linkit.git",
-                "reference": "cb9da807dc985c179993fffce0b6e255d93b62c7"
+                "reference": "6.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/linkit-6.0.2.zip",
+                "reference": "6.0.2",
+                "shasum": "b7d965d122403c0d1cd8b891db3ea56004026804"
             },
             "require": {
                 "drupal/core": "^9.4 || ^10.0.0"
@@ -10462,15 +10468,12 @@
             },
             "type": "drupal-module",
             "extra": {
-                "branch-alias": {
-                    "dev-6.0.x": "6.0.x-dev"
-                },
                 "drupal": {
-                    "version": "6.0.1+2-dev",
-                    "datestamp": "1696865222",
+                    "version": "6.0.2",
+                    "datestamp": "1696865395",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Dev releases are not covered by Drupal security advisories."
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
@@ -15945,17 +15948,11 @@
         },
         {
             "name": "drupal/wxt_bootstrap",
-            "version": "7.2.0",
+            "version": "dev-7.x",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/wxt_bootstrap.git",
-                "reference": "8.x-7.2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/wxt_bootstrap-8.x-7.2.zip",
-                "reference": "8.x-7.2",
-                "shasum": "1e61ce6d134d74b6ab3de6f33866abdc1e2b8705"
+                "reference": "215588b839703c100269e809ca3f4354ccc0a573"
             },
             "require": {
                 "composer/installers": "^1.2",
@@ -15966,12 +15963,15 @@
             },
             "type": "drupal-theme",
             "extra": {
+                "branch-alias": {
+                    "dev-7.x": "7.x-dev"
+                },
                 "drupal": {
-                    "version": "8.x-7.2",
-                    "datestamp": "1696088750",
+                    "version": "8.x-7.2+9-dev",
+                    "datestamp": "1698887217",
                     "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
                     }
                 },
                 "installer-paths": {
@@ -16061,17 +16061,11 @@
         },
         {
             "name": "drupal/wxt_library",
-            "version": "7.2.0",
+            "version": "dev-7.x",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/wxt_library.git",
-                "reference": "8.x-7.2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/wxt_library-8.x-7.2.zip",
-                "reference": "8.x-7.2",
-                "shasum": "7de040f74c14a05d352abf4954f11d6a49724382"
+                "reference": "3d6d39a375abca693ff16a3b6863ae4897ec61fd"
             },
             "require": {
                 "composer/installers": "^1.2 || ^2",
@@ -16090,12 +16084,15 @@
             },
             "type": "drupal-module",
             "extra": {
+                "branch-alias": {
+                    "dev-7.x": "7.x-dev"
+                },
                 "drupal": {
-                    "version": "8.x-7.2",
-                    "datestamp": "1696088727",
+                    "version": "8.x-7.2+2-dev",
+                    "datestamp": "1697989947",
                     "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
                     }
                 },
                 "installer-paths": {
@@ -16220,16 +16217,16 @@
         },
         {
             "name": "drupalwxt/wxt",
-            "version": "5.0.0",
+            "version": "5.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupalwxt/wxt.git",
-                "reference": "3024a1d9e7a513921c9762e6b9e35af3673d2341"
+                "reference": "884bfd54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupalwxt/wxt/zipball/3024a1d9e7a513921c9762e6b9e35af3673d2341",
-                "reference": "3024a1d9e7a513921c9762e6b9e35af3673d2341",
+                "url": "https://api.github.com/repos/drupalwxt/wxt/zipball/884bfd54",
+                "reference": "884bfd54",
                 "shasum": ""
             },
             "require": {
@@ -16258,7 +16255,7 @@
                 "drupal/ctools": "^3.9",
                 "drupal/diff": "^1.1",
                 "drupal/dropzonejs": "^2.1",
-                "drupal/embed": "^1.0",
+                "drupal/embed": "^1.7",
                 "drupal/entity_block": "^1.0",
                 "drupal/entity_browser": "^2.3",
                 "drupal/entity_browser_block": "^1.0",
@@ -16271,14 +16268,14 @@
                 "drupal/file_entity": "2.0-beta10",
                 "drupal/fontawesome": "^2.24",
                 "drupal/footnotes": "^3.1",
-                "drupal/group": "1.5",
+                "drupal/group": "1.6",
                 "drupal/image_widget_crop": "^2.1",
                 "drupal/inline_entity_form": "^1.0-rc12",
                 "drupal/layout_builder_restrictions": "^2.14",
                 "drupal/layout_builder_st": "^1.0-alpha2",
                 "drupal/layout_builder_styles": "^2.0",
                 "drupal/layout_library": "^1.0-beta1",
-                "drupal/linkit": "6.0.x-dev",
+                "drupal/linkit": "6.0.2",
                 "drupal/media_entity_instagram": "^3",
                 "drupal/media_entity_slideshow": "^2.0",
                 "drupal/media_entity_twitter": "^2.5",
@@ -16291,7 +16288,7 @@
                 "drupal/panels": "^4.7",
                 "drupal/paragraphs": "^1.15",
                 "drupal/password_policy": "^4.0",
-                "drupal/pathauto": "^1.8",
+                "drupal/pathauto": "^1.12",
                 "drupal/redirect": "^1.5",
                 "drupal/redis": "^1.6",
                 "drupal/search_api": "^1.27",
@@ -16308,8 +16305,8 @@
                 "drupal/views_infinite_scroll": "^2.0",
                 "drupal/webform": "^6.2.0-beta5",
                 "drupal/webform_migrate": "2.0.x-dev",
-                "drupal/wxt_bootstrap": "7.2",
-                "drupal/wxt_library": "7.2",
+                "drupal/wxt_bootstrap": "7.x-dev",
+                "drupal/wxt_library": "7.x-dev",
                 "ext-dom": "*",
                 "npm-asset/dropzone": "^5.7.4",
                 "phpdocumentor/reflection-docblock": "^5",
@@ -16324,6 +16321,7 @@
                 "phpspec/prophecy-phpunit": "^2",
                 "squizlabs/php_codesniffer": "3.*"
             },
+            "default-branch": true,
             "type": "drupal-profile",
             "extra": {
                 "drupal-scaffold": {
@@ -16372,7 +16370,8 @@
                         "2920739 - Allow accessing the 'Custom block library' page without 'Administer blocks' permission": "https://www.drupal.org/files/issues/2022-07-26/2920739-55.access_listing_page.patch"
                     },
                     "drupal/bootstrap": {
-                        "Enter drupal/bootstrap patch #2881978 description here": "https://www.drupal.org/files/issues/2018-10-28/temporarily_disable-2881978-3.patch"
+                        "Enter drupal/bootstrap patch #2881978 description here": "https://www.drupal.org/files/issues/2018-10-28/temporarily_disable-2881978-3.patch",
+                        "3249470 - Error generated when importing translation": "https://www.drupal.org/files/issues/2021-11-17/3249470-3.patch"
                     },
                     "drupal/core": {
                         "Enter drupal/core patch #850600 description here": "https://www.drupal.org/files/issues/2022-06-08/D94x-postgresql_ssl_dsn-850600-23.patch",
@@ -16409,17 +16408,22 @@
                         "Enter drupal/diff patch #3183380 description here": "https://www.drupal.org/files/issues/2020-11-19/3183380-add-compare-revisions.patch",
                         "Enter drupal/diff patch #3228798 description here": "https://www.drupal.org/files/issues/2021-08-19/diff-a11y-3228798-10.patch"
                     },
+                    "drupal/entity_browser": {
+                        "2914385 - Fix PHP error": "https://www.drupal.org/files/issues/2022-04-21/entity_browser-key-2914385-12.patch"
+                    },
+                    "drupal/entity_embed": {
+                        "3272732 - CKE5 compatibility": "https://www.drupal.org/files/issues/2023-06-19/entity_embed-3272732-93.patch"
+                    },
                     "drupal/fontawesome": {
                         "3071758 - Fix multiple icons issue": "https://git.drupalcode.org/project/fontawesome/-/merge_requests/4.diff"
                     },
                     "drupal/group": {
                         "Enter drupal/group patch #2817109 description here": "https://www.drupal.org/files/issues/2817109-by-rachel_norfolk-ericras-How-to-redir.patch",
                         "Enter drupal/group patch #2864721 description here": "https://www.drupal.org/files/issues/2020-07-30/group-translate_content_permission-2864721-20.patch",
-                        "Enter drupal/group patch #2895988 description here": "https://www.drupal.org/files/issues/2022-07-31/2895988-29.patch",
-                        "Enter drupal/group patch #3367539 description here": "https://www.drupal.org/files/issues/2023-06-26/3367539--007-drupal-10-compatibility-group-1.x.patch"
+                        "Enter drupal/group patch #2895988 description here": "https://www.drupal.org/files/issues/2022-07-31/2895988-29.patch"
                     },
                     "drupal/linkit": {
-                        "Detect and strip base URL from pasted URLs to increase matching hits": "https://www.drupal.org/files/issues/2023-09-10/linkit6x-3078075-68.patch"
+                        "Detect and strip base URL from pasted URLs to increase matching hits": "https://www.drupal.org/files/issues/2023-10-15/linkit6x-3078075-76.patch"
                     },
                     "drupal/page_manager": {
                         "Enter drupal/page_manager patch #2626090 description here": "https://www.drupal.org/files/issues/page-manager-2626090-page-title-empty-5.patch",
@@ -16442,12 +16446,8 @@
                         "3004561 - Enable ssl scheme": "https://www.drupal.org/files/issues/2021-11-19/redis-support_tls_on_predis-3004561-37.patch",
                         "3175412 - Use item_id instead of qid for Queue item": "https://www.drupal.org/files/issues/2020-10-07/redis-queue-item-id-3175412-2.patch"
                     },
-                    "drupal/s3fs": {
-                        "Enter drupal/s3fs patch #2986407 description here": "https://www.drupal.org/files/issues/2018-07-17/s3fs-2986407-save-memory-2.patch",
-                        "Enter drupal/s3fs patch #3038992 description here": "https://www.drupal.org/files/issues/2019-03-10/0001-feat-s3fs-Compatibility-with-Minio.patch"
-                    },
-                    "toc_filter": {
-                        "3262302 - Exclude text above [toc] token when building TOC": "https://www.drupal.org/files/issues/2022-02-03/toc-filter-exclude-text-above-token-3262302-2.patch"
+                    "drupal/views_bootstrap": {
+                        "3395400 - PHP 8.2 Deprecation messages at ./src/Plugin/views/style/ViewsBootstrapGrid.php": "https://www.drupal.org/files/issues/2023-10-19/issue-3395400-php82-deprecation-notice.patch"
                     },
                     "drupal/webform": {
                         "Enter drupal/webform patch #3205860 description here": "https://www.drupal.org/files/issues/2021-03-26/webform_clientside_validation-3205860-2.patch"
@@ -16467,9 +16467,9 @@
             "description": "Project template for Drupal 10 sites built with the WxT distribution.",
             "support": {
                 "issues": "https://github.com/drupalwxt/wxt/issues",
-                "source": "https://github.com/drupalwxt/wxt/tree/5.0.0"
+                "source": "https://github.com/drupalwxt/wxt/tree/5.0.x"
             },
-            "time": "2023-09-30T15:49:33+00:00"
+            "time": "2023-11-02T03:36:37+00:00"
         },
         {
             "name": "drush/drush",
@@ -29088,7 +29088,8 @@
         "drupaloverride/adobe_analytics": 20,
         "drupaloverride/htmlmail": 20,
         "drupaloverride/twig_extensions": 20,
-        "drupaloverride/viewscss": 20
+        "drupaloverride/viewscss": 20,
+        "drupalwxt/wxt": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
