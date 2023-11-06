@@ -8,10 +8,3 @@ services:
     class: Drupal\ssc_common\Twig\SSCTwig
     tags:
       - { name: twig.extension }
-
-  openid_connect.auto_login:
-    class: Drupal\ssc_common\EventSubscriber\OpenIDConnectAutoLogin
-    arguments: ['@current_user', '@plugin.manager.openid_connect_client', '@config.factory']
-    tags:
-      - { name: event_subscriber }
-
