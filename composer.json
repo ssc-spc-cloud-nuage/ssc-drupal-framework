@@ -415,6 +415,9 @@
             },
             "drupaloverride/timezone_detect": {
                 "3290054 - D10 compatability": "https://www.drupal.org/files/issues/2022-06-16/timezone_detect.1.x-dev.rector.patch"
+            },
+            "drupalwxt/wxt": {
+                "3399712 - PHP 8.1 deprecation fix for bulk uploading": "https://www.drupal.org/files/issues/2023-11-06/wxt_ext_media-deprecated_fix-3399712-03.patch"
             }
         },
         "patches-ignore": {
