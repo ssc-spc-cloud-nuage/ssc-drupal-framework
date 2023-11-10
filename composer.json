@@ -380,6 +380,9 @@
             "drupal/message_notify": {
                 "2965975 - use message language": "https://www.drupal.org/files/issues/2022-04-14/proper_language-2965975-9.patch"
             },
+            "drupal/entity_browser": {
+                "2998066 - Fix for media library selection on structured page node edit.": "https://www.drupal.org/files/issues/2019-08-15/2998066-disable-inline-form-errors.patch"
+            },
             "drupal/mimemail": {
                 "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
             },
