@@ -350,6 +350,9 @@
                 "2799479 - paragraph relationship to host": "https://www.drupal.org/files/issues/2022-06-01/entity_reference_revisions-relationship_host_id-2799479-176.patch",
                 "local - moderation support": "./patches/moderation-translation-err-rc1.patch"
             },
+            "drupal/feeds": {
+                "3261687 - A stray renderRoot() invocation is causing bubbling of attached assets to break": "https://www.drupal.org/files/issues/2022-04-22/feeds-renderRoot-issue-3261687-5.patch"
+            },
             "drupal/flag": {
                 "2723703 - views relationships": "https://www.drupal.org/files/issues/2021-02-22/2723703-73.patch"
             },
