@@ -1,0 +1,27 @@
+diff --git a/composer.json b/composer.json
+index df5bc11..4ba9cc5 100644
+--- a/composer.json
++++ b/composer.json
+@@ -24,6 +24,6 @@
+     "source": "http://cgit.drupalcode.org/entity_field_condition"
+   },
+   "require": {
+-    "drupal/core": "^8.7.7 || ^9.0"
++    "drupal/core": "^8.7.7 || ^9.0 || ^10"
+   }
+ }
+diff --git a/entity_field_condition.info.yml b/entity_field_condition.info.yml
+index 0262d62..1d06d11 100644
+--- a/entity_field_condition.info.yml
++++ b/entity_field_condition.info.yml
+@@ -1,9 +1,8 @@
+ name: Entity Field Condition
+ description: Provides Condition plugins that check to see if a particular entity type has a field with a specific value.
+ package: Other
+-
+ type: module
+-core_version_requirement: ^8.7.7 || ^9.0
++core_version_requirement: ^8.7.7 || ^9.0 || ^10
+ 
+ dependencies:
+   - drupal:node
