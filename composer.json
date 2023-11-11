@@ -394,7 +394,9 @@
             },
             "drupal/openid_connect_windows_aad": {
                 "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
-                "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2023-06-16/openid_connect_windows_aad-User_photo_submodule-3273039-7.patch"
+                "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2023-06-16/openid_connect_windows_aad-User_photo_submodule-3273039-7.patch",
+                "3345637 - Warning null argument in saveUserinfo() openid_connect, actually caused by the windows_aad role handling.": "https://www.drupal.org/files/issues/2023-11-03/3345637-12.patch",
+                "3400940 - Warning undefined array index end_session_endpoint.": "https://www.drupal.org/files/issues/2023-11-11/3400940-03.patch"
             },
             "drupal/paragraphs": {
                 "3068944 - paragraphs to follow translation setting for showing fields": "https://www.drupal.org/files/issues/2021-05-05/paragraphWidget-multilanguage-enable-buton.patch",
