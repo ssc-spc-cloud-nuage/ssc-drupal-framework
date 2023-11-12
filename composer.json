@@ -301,7 +301,7 @@
                 "3239705 - make link fields sortable": "https://www.drupal.org/files/issues/2021-10-06/make_link_fields_click_sortable-3239705-7.patch",
                 "3243125 - add 'has new content' sort handler": "https://www.drupal.org/files/issues/2021-10-20/has_new_sort-3243125-5.patch",
                 "2893740 - sidebar for other entities": "https://www.drupal.org/files/issues/2023-08-04/2893740-49.patch",
-                "2916876 = block visibility control for LB": "https://www.drupal.org/files/issues/2023-03-10/2916876-167.10x.patch",
+                "2916876 = block visibility control for LB": "https://www.drupal.org/files/issues/2023-11-06/drupal-2916876-layout-builder-visibility-conditions-192-10.x.patch",
                 "2941092 - ignore width property when saving translation": "https://www.drupal.org/files/issues/2021-04-15/2941092-19.patch",
                 "1699378 - allow tokens in arguments for entityref fields": "https://www.drupal.org/files/issues/2023-06-19/1699378-allow-views-token-D9.5.9-1.patch",
                 "3048288 - fixes admin lang neg messing up flags": "https://www.drupal.org/files/issues/2019-04-15/route-method-exception-path-fix-3048288.patch",
@@ -404,7 +404,8 @@
             },
             "drupal/openid_connect": {
                 "3011413 - autologin": "https://www.drupal.org/files/issues/2023-10-16/openid_connect-autologin-3011413-99.patch",
-                "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch"
+                "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch",
+                "3355330 - array offset on null on settings form": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/82.diff"
             },
             "drupal/openid_connect_windows_aad": {
                 "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
