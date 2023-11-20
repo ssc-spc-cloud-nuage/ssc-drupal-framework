@@ -8,6 +8,7 @@
     "require": {
         "ext-dom": "*",
         "ext-fileinfo": "*",
+        "chi-teck/drupal-code-generator": "^3.0",
         "cweagans/composer-patches": "^1.7",
         "drupal/access_unpublished": "1.5.0",
         "drupal/address": "1.11.0",
@@ -140,7 +141,7 @@
         "drupaloverride/timezone_detect": "dev-1",
         "drupaloverride/twig_extensions": "dev-1",
         "drupalwxt/wxt": "5.0.x-dev#884bfd54",
-        "drush/drush": "^11",
+        "drush/drush": "12.4.3",
         "w8tcha/ckeditor-wordcount-plugin": "^1.17",
         "wet-boew/wet-boew": "4.0.43.1 as 4.0.50.1"
     },
@@ -308,6 +309,7 @@
                 "2692289 - allow limiting autocomplete to 1": "https://www.drupal.org/files/issues/2021-12-10/2692289-25-9.3.0.patch",
                 "3101231 - multilingual layout edit context": "https://www.drupal.org/files/issues/2022-02-16/layout-builder-translation-issue-3101231-34.patch",
                 "3089151 - fix drag/drop (needed for Field Groups)": "https://www.drupal.org/files/issues/2023-02-08/3089151-45.patch",
+                "3052608 - fixes DateTime issue in Paragraph breaking media upload": "https://www.drupal.org/files/issues/2023-04-11/3052608-22.patch",
                 "3056135 - LB failing after Workflow enabled": "https://www.drupal.org/files/issues/2020-09-23/3056135-17.patch",
                 "local   - clean preview of views sql query": "./patches/clean_views_sql_preview.patch",
                 "2885278 - adds tabs to revision pages and removes double title": "https://www.drupal.org/files/issues/2021-09-13/drupal-node_revision_local_tasks_canonical-2885278-21.patch",
