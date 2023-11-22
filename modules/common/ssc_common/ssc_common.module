@@ -341,7 +341,7 @@ function ssc_common_field_widget_form_alter(&$element, &$form_state, $context) {
  *  - add conditional states
  *  - alter Company label in Address field
  */
-function ssc_common_field_widget_entity_reference_paragraphs_form_alter(&$element, &$form_state, $context) {
+function ssc_common_field_widget_single_element_entity_reference_paragraphs_form_alter(&$element, &$form_state, $context) {
   if ($element['#paragraph_type'] == 'session') {
     $delta = $element['#delta'];
     $element['subform']['field_predefined_location']['#states'] = [
