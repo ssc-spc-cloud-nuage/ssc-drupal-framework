@@ -356,7 +356,7 @@
                 "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
             },
             "drupal/entity_clone": {
-                "3354693 - Allow entity_clone to be compatible with tranc": "https://www.drupal.org/files/issues/2023-11-23/entity_clone-3354693-14.patch"
+                "3354693 - Allow entity_clone to be compatible with tranc": "https://www.drupal.org/files/issues/2023-11-23/entity_clone-3354693-16.patch"
             },
             "drupal/eva": {
                 "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
