@@ -355,9 +355,6 @@
                 "3269933 - show proper moderation state": "https://www.drupal.org/files/issues/2023-03-20/diff-3269933-get-revision-with-langcode-11.patch",
                 "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
             },
-            "drupal/entity_clone": {
-                "3354693 - Allow entity_clone to be compatible with tranc": "https://www.drupal.org/files/issues/2023-11-23/entity_clone-3354693-16.patch"
-            },
             "drupal/eva": {
                 "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
             },
@@ -432,6 +429,9 @@
             },
             "drupal/smtp": {
                 "3063886 - fix debugging": "https://www.drupal.org/files/issues/2022-11-21/3063886-83.patch"
+            },
+            "drupal/tranc": {
+                "3354693 - Ensure that tranc is compatible with entity_clone": "https://www.drupal.org/files/issues/2023-11-23/3354693_15.patch"
             },
             "drupal/views_bulk_operations": {
                 "local - remove tmpstore items on cancel": "./patches/empty_on_cancel-local.patch"
