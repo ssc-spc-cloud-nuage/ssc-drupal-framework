@@ -120,7 +120,7 @@
         "drupal/telephone_validation": "^2.3",
         "drupal/text_field_formatter": "^2.0",
         "drupal/time_range": "^9.0",
-        "drupal/tranc": "1.1.x-dev@dev",
+        "drupal/tranc": "^1.0.3",
         "drupal/translatable_menu_link_uri": "^2.1",
         "drupal/twig_tweak": "^3",
         "drupal/ultimate_cron": "^2.0@alpha",
@@ -430,9 +430,6 @@
             "drupal/smtp": {
                 "3063886 - fix debugging": "https://www.drupal.org/files/issues/2022-11-21/3063886-83.patch"
             },
-            "drupal/tranc": {
-                "3354693 - Ensure that tranc is compatible with entity_clone": "https://www.drupal.org/files/issues/2023-11-23/3354693_15.patch"
-            },
             "drupal/views_bulk_operations": {
                 "local - remove tmpstore items on cancel": "./patches/empty_on_cancel-local.patch"
             },
@@ -451,32 +448,18 @@
         },
         "patches-ignore": {
             "drupalwxt/wxt": {
-                "drupal/pathauto": {
-                    "Enter drupal/pathauto patch #3184164 description here": "https://www.drupal.org/files/issues/2020-11-23/3184164-2.patch"
-                },
-                "drupal/redis": {
-                    "3004561 - Enable ssl scheme": "https://www.drupal.org/files/issues/2019-06-26/override-default-scheme-and-persistent-for-predis-3004561-12.patch",
-                    "Enter drupal/redis patch #3166814 description here": "https://www.drupal.org/files/issues/2020-08-23/redis_test_lock_setup.patch"
-                },
                 "drupal/diff": {
                     "Enter drupal/diff patch #3004705 description here": "https://www.drupal.org/files/issues/2018-12-03/ModerationState-error-of-translated-node-in-revision-overview-page-3004705-4.patch",
                     "Enter drupal/diff patch #3228798 description here": "https://www.drupal.org/files/issues/2021-08-19/diff-a11y-3228798-10.patch"
                 },
-                "drupal/core": {
-                    "3150294 - New translations for moderated nodes are not created in the initial workflow state": "https://www.drupal.org/files/issues/2022-01-05/3150294-95.patch"
+                "drupal/entity_embed": {
+                    "3272732 - CKE5 compatibility": "https://www.drupal.org/files/issues/2023-06-19/entity_embed-3272732-93.patch"
                 },
                 "drupal/webform": {
                     "Enter drupal/webform patch #3205860 description here": "https://www.drupal.org/files/issues/2021-03-26/webform_clientside_validation-3205860-2.patch"
                 },
                 "drupal/fontawesome": {
                     "3071758 - Fix multiple icons issue": "https://git.drupalcode.org/project/fontawesome/-/merge_requests/4.diff"
-                },
-                "drupal/s3fs": {
-                    "Enter drupal/s3fs patch #2986407 description here": "https://www.drupal.org/files/issues/2018-07-17/s3fs-2986407-save-memory-2.patch",
-                    "Enter drupal/s3fs patch #3038992 description here": "https://www.drupal.org/files/issues/2019-03-10/0001-feat-s3fs-Compatibility-with-Minio.patch"
-                },
-                "drupal/linkit": {
-                    "Detect and strip base URL from pasted URLs to increase matching hits": "https://www.drupal.org/files/issues/2023-09-10/linkit6x-3078075-68.patch"
                 }
             }
         }
