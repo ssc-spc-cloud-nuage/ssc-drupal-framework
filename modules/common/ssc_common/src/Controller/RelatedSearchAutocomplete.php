@@ -24,6 +24,7 @@ class RelatedSearchAutocomplete {
       ->condition('name', $input, 'CONTAINS')
       ->groupBy('tid')
       ->sort('name', 'ASC')
+      ->accessCheck(TRUE)
       ->range(0, 10);
     $ids = $query->execute();
     $terms = $ids ? Term::loadMultiple($ids) : [];
