@@ -5,10 +5,10 @@ index a3322ae..8539f95 100644
 @@ -37,6 +37,14 @@ abstract class LbTabsLayoutBase extends LayoutDefault {
      // Element::children() needs this.
      $build += ['label_blocks' => [], 'content_blocks' => []];
- 
+
 +    // Remove empty blocks
 +    foreach (Element::children($build['content_blocks'], TRUE) as $i => $contentKey) {
-+      $contents = trim(strip_tags(\Drupal::service('renderer')->renderRoot($build['content_blocks'][$contentKey]['content'])));
++      $contents = trim(strip_tags(\Drupal::service('renderer')->render($build['content_blocks'][$contentKey]['content'])));
 +      if (!$contents) {
 +        unset($build['content_blocks'][$contentKey]);
 +      }
