@@ -66,3 +66,14 @@
   font-size: 1rem;
 }
 
+/* Dot indicator (notifications) */
+.header-link--indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: var(--clr-ssc-pink-2);
+  border-radius: 100vw;
+  outline: solid 2px var(--clr-ssc-white-1);
+}
