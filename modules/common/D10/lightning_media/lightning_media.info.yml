@@ -1,5 +1,0 @@
-name: Lightning Media
-type: module
-description: Replacement for D10
-package: D10
-core_version_requirement: ^9 || ^10
