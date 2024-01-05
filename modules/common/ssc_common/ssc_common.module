@@ -335,44 +335,81 @@ function ssc_common_field_widget_form_alter(&$element, &$form_state, $context) {
 }
 
 /**
- * Implements hook_field_widget_WIDGET_TYPE_form_alter().
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
  *
  * Modifications to Sessions (paragraph) form.
  *  - add conditional states
  *  - alter Company label in Address field
  */
-function ssc_common_field_widget_single_element_entity_reference_paragraphs_form_alter(&$element, &$form_state, $context) {
+function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element, $form_state, $context) {
   if ($element['#paragraph_type'] == 'session') {
     $delta = $element['#delta'];
-    $element['subform']['field_predefined_location']['#states'] = [
-      'visible' => [
-        'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '0'],
-      ]
-    ];
-    $element['subform']['field_custom_location']['#states'] = [
-      'visible' => [
-        'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '1'],
-      ]
-    ];
-    $element['subform']['group_virtual_details']['#states'] = [
-      'visible' => [
-        'input[name="field_sessions[' . $delta . '][subform][field_virtual][value]"]' => ['checked' => TRUE],
-      ]
-    ];
+    // If "In person" is checked under "Meeting Details",
+    // "In person details" should display.
     $element['subform']['group_in_person_details']['#states'] = [
       'visible' => [
         'input[name="field_sessions[' . $delta . '][subform][field_in_person][value]"]' => ['checked' => TRUE],
       ]
     ];
+
+    // If "Pre-defined" is selected for "Location type" under "In person details",
+    // "Predefined Location" entity reference field should display.
+    $element['subform']['field_predefined_location']['#states'] = [
+      'visible' => [
+        'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '0'],
+      ]
+    ];
+    // If "Custom" is selected for "Location type" under "In person details",
+    // "Custom Location" should display.
+    $element['subform']['field_custom_location']['#states'] = [
+      'visible' => [
+        'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '1'],
+      ]
+    ];
+
+    // If "Virtual" is checked under "Meeting Details",
+    // "Vitual details" should display.
+    $element['subform']['group_virtual_details']['#states'] = [
+      'visible' => [
+        'input[name="field_sessions[' . $delta . '][subform][field_virtual][value]"]' => ['checked' => TRUE],
+      ]
+    ];
+    // If "In person" is checked and Location type is "Pre-defined", Predefined location is required.
     $element['subform']['field_predefined_location']['widget'][0]['target_id']['#states'] = [
       'required' => [
         'input[name="field_sessions[' . $delta . '][subform][field_in_person][value]"]' => ['checked' => TRUE],
-        'and',
         'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '0']
       ]
     ];
+
+    $element['subform']['field_predefined_location']['widget']['#element_validate'][] = '_session_custom_predefined_location_validate';
+
     $element['subform']['field_custom_location']['widget'][0]['address']['#after_build'][] = '_session_custom_location_address_alter';
 
+  }
+}
+
+function _session_custom_predefined_location_validate($element, $form_state) {
+  $parent_paragraph = 'field_sessions';
+  $sessions = $form_state->getValue($parent_paragraph);
+  // We are only able to validate if the user clicks 'Edit' on one of the
+  // paragraphs inside the field_sessions field.
+  if (!isset($sessions[0]['subform'])) {
+    return;
+  }
+  $complete_form = $form_state->getCompleteForm();
+  // @todo Make sure we handle delta appropriately if multiple values in paragraph.
+  $subform_state = SubformState::createForSubform($complete_form[$parent_paragraph]['widget'][0]['subform'], $complete_form, $form_state);
+  $in_person = $subform_state->getValue(['field_in_person', 'value']);
+  $location_type = $subform_state->getValue(['field_location_type', 0, 'value']);
+  $predefined_location = $subform_state->getValue(['field_predefined_location', 0, 'target_id']);
+  // Pre-defined location field is required if
+  // In person checkbox is checked and
+  // Pre-defined is selected from Location Type.
+  if ($in_person === 1 && $location_type === "0") {
+    if ($predefined_location === null) {
+      $form_state->setError($element, t($element['#title'] . ' is required when In person checkbox is checked and Pre-defined is selected.'));
+    }
   }
 }
 
