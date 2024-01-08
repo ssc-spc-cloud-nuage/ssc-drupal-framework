@@ -382,7 +382,7 @@ function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element,
       ]
     ];
 
-    $element['subform']['field_predefined_location']['widget']['#element_validate'][] = '_session_custom_predefined_location_validate';
+    $element['#element_validate'][] = '_session_custom_predefined_location_validate';
 
     $element['subform']['field_custom_location']['widget'][0]['address']['#after_build'][] = '_session_custom_location_address_alter';
 
@@ -398,8 +398,7 @@ function _session_custom_predefined_location_validate($element, $form_state) {
     return;
   }
   $complete_form = $form_state->getCompleteForm();
-  // @todo Make sure we handle delta appropriately if multiple values in paragraph.
-  $subform_state = SubformState::createForSubform($complete_form[$parent_paragraph]['widget'][0]['subform'], $complete_form, $form_state);
+  $subform_state = SubformState::createForSubform($element['subform'], $complete_form, $form_state);
   $in_person = $subform_state->getValue(['field_in_person', 'value']);
   $location_type = $subform_state->getValue(['field_location_type', 0, 'value']);
   $predefined_location = $subform_state->getValue(['field_predefined_location', 0, 'target_id']);
@@ -408,7 +407,7 @@ function _session_custom_predefined_location_validate($element, $form_state) {
   // Pre-defined is selected from Location Type.
   if ($in_person === 1 && $location_type === "0") {
     if ($predefined_location === null) {
-      $form_state->setError($element, t($element['#title'] . ' is required when In person checkbox is checked and Pre-defined is selected.'));
+      $form_state->setError($element['subform']['field_predefined_location']['widget'], t('Pre-defined location field is required when In person checkbox is checked and Pre-defined is selected.'));
     }
   }
 }
