@@ -366,7 +366,6 @@ function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element,
         'select[name="field_sessions[' . $delta . '][subform][field_location_type]"]' => ['value' => '1'],
       ]
     ];
-
     // If "Virtual" is checked under "Meeting Details",
     // "Vitual details" should display.
     $element['subform']['group_virtual_details']['#states'] = [
@@ -383,7 +382,6 @@ function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element,
     ];
 
     $element['#element_validate'][] = '_session_custom_predefined_location_validate';
-
     $element['subform']['field_custom_location']['widget'][0]['address']['#after_build'][] = '_session_custom_location_address_alter';
 
   }
@@ -392,9 +390,10 @@ function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element,
 function _session_custom_predefined_location_validate($element, $form_state) {
   $parent_paragraph = 'field_sessions';
   $sessions = $form_state->getValue($parent_paragraph);
-  // We are only able to validate if the user clicks 'Edit' on one of the
-  // paragraphs inside the field_sessions field.
-  if (!isset($sessions[0]['subform'])) {
+  // We are only able to validate if the user clicks 'Edit'
+  // on one of the paragraphs inside the field_sessions field.
+  $delta = $element['#delta'];
+  if (!isset($sessions[$delta]['subform'])) {
     return;
   }
   $complete_form = $form_state->getCompleteForm();
@@ -403,8 +402,8 @@ function _session_custom_predefined_location_validate($element, $form_state) {
   $location_type = $subform_state->getValue(['field_location_type', 0, 'value']);
   $predefined_location = $subform_state->getValue(['field_predefined_location', 0, 'target_id']);
   // Pre-defined location field is required if
-  // In person checkbox is checked and
-  // Pre-defined is selected from Location Type.
+  // In person checkbox is checked AND
+  // "Pre-defined" option is selected from Location Type.
   if ($in_person === 1 && $location_type === "0") {
     if ($predefined_location === null) {
       $form_state->setError($element['subform']['field_predefined_location']['widget'], t('Pre-defined location field is required when In person checkbox is checked and Pre-defined is selected.'));
