@@ -1,18 +1,16 @@
-diff --git a/core/modules/system/system.module b/core/modules/system/system.module
-index 49b4d57900..5aa5532e99 100644
---- a/core/modules/system/system.module
-+++ b/core/modules/system/system.module
-@@ -1112,7 +1112,12 @@ function system_mail($key, &$message, $params) {
-  * @see https://www.drupal.org/node/3023528
-  */
- function system_time_zones($blank = NULL, $grouped = FALSE) {
--  @trigger_error(__METHOD__ . '() is deprecated in drupal:10.1.0 and is removed from drupal:11.0.0. This function is no longer used in Drupal core. Use \Drupal\Core\Datetime\TimeZoneFormHelper::getOptionsList(), \Drupal\Core\Datetime\TimeZoneFormHelper::getOptionsListByRegion() or \DateTimeZone::listIdentifiers() instead. See https://www.drupal.org/node/3023528', E_USER_DEPRECATED);
+diff --git a/core/lib/Drupal/Core/Datetime/TimeZoneFormHelper.php b/core/lib/Drupal/Core/Datetime/TimeZoneFormHelper.php
+index e79d6cbe1a..a6e6eedbda 100644
+--- a/core/lib/Drupal/Core/Datetime/TimeZoneFormHelper.php
++++ b/core/lib/Drupal/Core/Datetime/TimeZoneFormHelper.php
+@@ -69,6 +69,11 @@ public static function getOptionsListByRegion(bool $blank = FALSE): array {
+         asort($grouped_zones[$key]);
+       }
+     }
 +
-+  // Allow modules to alter this list. But can't modify when submitting.
-+  if (!isset($_POST['op'])) {
-+    $zones = \Drupal::moduleHandler()->invokeAll('timezone_list_alter', [$zones]);
-+  }
-+
-   return $grouped ? TimeZoneFormHelper::getOptionsListByRegion((bool) $blank) : TimeZoneFormHelper::getOptionsList((bool) $blank);
- }
++    // Allow modules to alter this list. But can't modify when submitting.
++    if (!isset($_POST['op'])) {
++      $grouped_zones = \Drupal::moduleHandler()->invokeAll('timezone_list_alter', [$grouped_zones]);
++    }
+     return $grouped_zones;
+   }
  
