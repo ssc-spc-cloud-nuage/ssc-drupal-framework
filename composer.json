@@ -320,6 +320,7 @@
                 "3306820 - show field name on Manage Display": "https://www.drupal.org/files/issues/2022-08-30/3306820-machine-name-in-field-ui-table_0.patch",
                 "3325410 - show revision numbers": "https://www.drupal.org/files/issues/2022-12-05/add_revision_numbers-3325410-3.patch",
                 "3353388 - Fix TypeError in FormElementHelper.php": "https://www.drupal.org/files/issues/2023-06-21/typeError_implode_3353388.patch",
+                "3359497 - Prevent warnings for library definitions license sans URL.": "https://www.drupal.org/files/issues/2023-10-07/fix-license-missing-url.patch",
                 "local   - clean preview of views sql query": "./patches/clean_views_sql_preview.patch",
                 "local   - moderation": "./patches/moderation-translation-rc6.patch",
                 "local   - TZ alter": "./patches/core-tz_alter.patch",
@@ -370,6 +371,9 @@
             },
             "drupal/flag": {
                 "2723703 - views relationships": "https://www.drupal.org/files/issues/2021-02-22/2723703-73.patch"
+            },
+            "drupal/fontawesome": {
+                "3409881 - Font awesome patch for D10.1.6 compatibility.": "https://www.drupal.org/files/issues/2023-12-19/wxt5-3409880-03.patch"
             },
             "drupal/footnotes": {
                 "Warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
