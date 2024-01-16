@@ -54,7 +54,7 @@
         "drupal/environment_indicator": "^4",
         "drupal/eva": "3.0.0",
         "drupal/extlink": "^1.6",
-        "drupal/facets": "2.0.6",
+        "drupal/facets": "^3",
         "drupal/feeds": "^3.0@beta",
         "drupal/feeds_ex": "^1.0@beta",
         "drupal/feeds_tamper": "^2.0@beta",
@@ -400,9 +400,6 @@
             "drupal/message_notify": {
                 "2965975 - use message language": "https://www.drupal.org/files/issues/2022-04-14/proper_language-2965975-9.patch"
             },
-            "drupal/entity_browser": {
-                "2998066 - Fix for media library selection on structured page node edit.": "https://www.drupal.org/files/issues/2019-08-15/2998066-disable-inline-form-errors.patch"
-            },
             "drupal/mimemail": {
                 "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
             },
@@ -414,7 +411,6 @@
             "drupal/openid_connect_windows_aad": {
                 "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
                 "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2023-06-16/openid_connect_windows_aad-User_photo_submodule-3273039-7.patch",
-                "3345637 - Warning null argument in saveUserinfo() openid_connect, actually caused by the windows_aad role handling.": "https://www.drupal.org/files/issues/2023-11-03/3345637-12.patch",
                 "3400940 - Warning undefined array index end_session_endpoint.": "https://www.drupal.org/files/issues/2023-11-11/3400940-03.patch"
             },
             "drupal/paragraphs": {
@@ -461,6 +457,10 @@
                 },
                 "drupal/fontawesome": {
                     "3071758 - Fix multiple icons issue": "https://git.drupalcode.org/project/fontawesome/-/merge_requests/4.diff"
+                },
+                "drupal/entity_browser": {
+                    "3350169 - Fix PHP 8.2 deprecation issue with WidgetSelectorBase-class":
+                    "https://www.drupal.org/files/issues/2023-06-15/3350169-8_0.patch"
                 }
             }
         }
