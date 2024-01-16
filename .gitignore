@@ -79,3 +79,4 @@ helm/passwords/values-azure-passwords-test.yaml
 docker-compose.base.yml
 docker-compose.ci.yml
 docker-compose.yml
+composer.lock
