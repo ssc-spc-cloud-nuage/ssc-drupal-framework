@@ -22,11 +22,20 @@
       if ($(this).prop('tagName') === 'H2') {
         level1++;
         level2 = 0;
-        $(this).attr('id', 'section-' + level1 + '-' + level2);
-      }
-      else {
+        if ($(this).attr('id') === undefined) {
+          $(this).attr('id', 'section-' + level1 + '-' + level2);
+        }
+        else {
+          $(this).attr('id', $(this).attr('id') + "-01");
+        }
+      } else {
         level2++;
-        $(this).attr('id', 'section-' + level1 + '-' + level2);
+        if ($(this).attr('id') === undefined) {
+          $(this).attr('id', 'section-' + level1 + '-' + level2);
+        }
+        else {
+          $(this).attr('id', $(this).attr('id') + "-01");
+        }
       }
     });
 
