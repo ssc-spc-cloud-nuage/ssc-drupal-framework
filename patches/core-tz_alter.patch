@@ -1,16 +1,14 @@
 diff --git a/core/modules/system/system.module b/core/modules/system/system.module
-index deba8f16a0..eb6e3bfcb6 100644
+index 158068252e..71fd5a57d4 100644
 --- a/core/modules/system/system.module
 +++ b/core/modules/system/system.module
-@@ -1153,6 +1156,11 @@ function system_time_zones($blank = NULL, $grouped = FALSE) {
+@@ -1138,6 +1138,9 @@ function system_time_zones($blank = NULL, $grouped = FALSE) {
      $zones = $grouped_zones;
    }
-
-+  // Allow modules to alter this list. But can't modify when submitting.
-+  if (!isset($_POST['op']) || isset($_POST['form_id'])) {
-+    $zones = \Drupal::moduleHandler()->invokeAll('timezone_list_alter', [$zones]);
-+  }
+ 
++  // Allow modules to alter this list.
++  $zones = \Drupal::moduleHandler()->invokeAll('timezone_list_alter', [$zones]);
 +
    return $zones;
  }
-
+ 
