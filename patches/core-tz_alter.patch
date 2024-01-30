@@ -7,7 +7,7 @@ index deba8f16a0..eb6e3bfcb6 100644
    }
 
 +  // Allow modules to alter this list. But can't modify when submitting.
-+  if (!isset($_POST['op'])) {
++  if (!isset($_POST['op']) || isset($_POST['form_id'])) {
 +    $zones = \Drupal::moduleHandler()->invokeAll('timezone_list_alter', [$zones]);
 +  }
 +
