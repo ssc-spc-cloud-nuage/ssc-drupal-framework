@@ -439,6 +439,9 @@
             },
             "drupal/facets": {
                 "3172373 - disable auto-submit": "https://www.drupal.org/files/issues/2023-08-24/disable-auto-refresh-3172373-21.patch"
+            },
+            "drupal/bootstrap_layouts": {
+                "3376161 - section admin labels": "https://www.drupal.org/files/issues/2023-07-21/add-admin-labels.patch"
             }
         },
         "patches-ignore": {
