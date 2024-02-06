@@ -6,6 +6,7 @@
  */
 
 use Drupal\Component\Utility\Unicode;
+use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformState;
@@ -43,7 +44,7 @@ function ssc_common_help($route_name, RouteMatchInterface $route_match) {
 /**
  * Implements hook_requirements().
  */
-function ssc_common_requirements($phase) {
+function ssc_common_requirements($phase): array {
   $requirements = [];
   // Report SSC version
   if ($phase == 'runtime') {
@@ -66,7 +67,7 @@ function ssc_common_requirements($phase) {
  *
  * @todo: these should be weighted but obvious method doesn't work.
  */
-function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   // Disable HTML5 Validation on ALL forms - Admin theme only.
   $theme = \Drupal::service('theme.manager')->getActiveTheme()->getName();
   if (!stristr($theme, 'ssc')) {
@@ -146,7 +147,7 @@ function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id)
 
 }
 
-function _redirect_to_translate($form, FormStateInterface $form_state) {
+function _redirect_to_translate($form, FormStateInterface $form_state): void {
   $form_object = $form_state->getFormObject();
   $entity = $form_object->getEntity();
   $form_state->setRedirect('entity.node.content_translation_add', [
@@ -163,7 +164,7 @@ function _redirect_to_translate($form, FormStateInterface $form_state) {
  * @param $form
  * @param $form_state
  */
-function ssc_common_form_config_translation_edit_form_alter(&$form, &$form_state) {
+function ssc_common_form_config_translation_edit_form_alter(&$form, &$form_state): void {
   $view_config = ['fields', 'filters', 'arguments'];
   foreach ($form['config_names'] as $index => &$subform) {
     if (stristr($index, 'views.')) {
@@ -181,11 +182,11 @@ function ssc_common_form_config_translation_edit_form_alter(&$form, &$form_state
     }
   }
 }
-function ssc_common_form_config_translation_add_form_alter(&$form, &$form_state) {
+function ssc_common_form_config_translation_add_form_alter(&$form, &$form_state): void {
   ssc_common_form_config_translation_edit_form_alter($form, $form_state);
 }
 
-function ssc_common_form_devel_generate_form_content_alter(&$form, &$form_state) {
+function ssc_common_form_devel_generate_form_content_alter(&$form, &$form_state): void {
   // Set weights for all fields on the form so we can place our new one.
   $x = 0;
   foreach($form as $key => &$field) {
@@ -202,7 +203,7 @@ function ssc_common_form_devel_generate_form_content_alter(&$form, &$form_state)
   ];
 }
 
-function ssc_common_form_content_moderation_entity_moderation_form_alter(&$form, &$form_state) {
+function ssc_common_form_content_moderation_entity_moderation_form_alter(&$form, &$form_state): void {
   $form_object = $form_state->getFormObject();
   $entity = $form_state->getBuildInfo()['args'][0];
   if (!$entity || !$entity->hasTranslation('fr')) {
@@ -227,7 +228,7 @@ function ssc_common_form_content_moderation_entity_moderation_form_alter(&$form,
   }
 }
 
-function ssc_common_form_media_library_add_form_upload_alter(&$form, FormStateInterface $form_state) {
+function ssc_common_form_media_library_add_form_upload_alter(&$form, FormStateInterface $form_state): void {
   $form['#access'] = false;
 }
 
@@ -236,10 +237,10 @@ function ssc_common_form_media_library_add_form_upload_alter(&$form, FormStateIn
  *
  *   - EDIT is basically the same as CREATE except for #default values.
  */
-function ssc_common_form_sitewide_alert_edit_form_alter(&$form, FormStateInterface $form_state) {
+function ssc_common_form_sitewide_alert_edit_form_alter(&$form, FormStateInterface $form_state): void {
   ssc_common_form_sitewide_alert_add_form_alter($form, $form_state);
 }
-function ssc_common_form_sitewide_alert_add_form_alter(&$form, FormStateInterface $form_state) {
+function ssc_common_form_sitewide_alert_add_form_alter(&$form, FormStateInterface $form_state): void {
   $edit = FALSE;
   if (stristr($form['#id'], '-edit-')) {
     $edit = TRUE;
@@ -291,7 +292,7 @@ function ssc_common_form_sitewide_alert_add_form_alter(&$form, FormStateInterfac
  * Use this as normal form_alter doesn't seem to be able to move the Active (status)
  * field above Dismissible.
  */
-function ssc_common_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context) {
+function ssc_common_entity_form_display_alter(EntityFormDisplayInterface $form_display, array $context): void {
   if ($context['entity_type'] == 'sitewide_alert') {
     $status = $form_display->getComponent('status');
     // 'dismissible' is set to the base field's weight, -10.
@@ -302,7 +303,7 @@ function ssc_common_entity_form_display_alter(EntityFormDisplayInterface $form_d
 
 /*
  */
-function ssc_common_form_views_exposed_form_alter(&$form, FormStateInterface $form_state) {
+function ssc_common_form_views_exposed_form_alter(&$form, FormStateInterface $form_state): void {
   $id = $form['#id'];
 
   switch ($id) {
@@ -324,7 +325,7 @@ function ssc_common_form_views_exposed_form_alter(&$form, FormStateInterface $fo
 
 }
 
-function ssc_common_field_widget_form_alter(&$element, &$form_state, $context) {
+function ssc_common_field_widget_form_alter(&$element, &$form_state, $context): void {
   $element['uri']['#selection_handler'] = 'views';
   $element['uri']['#selection_settings'] = [
     'view' => [
@@ -342,7 +343,7 @@ function ssc_common_field_widget_form_alter(&$element, &$form_state, $context) {
  *  - add conditional states
  *  - alter Company label in Address field
  */
-function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element, $form_state, $context) {
+function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element, $form_state, $context): void {
   if ($element['#paragraph_type'] == 'session') {
     $delta = $element['#delta'];
     // If "In person" is checked under "Meeting Details",
@@ -388,7 +389,7 @@ function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element,
   }
 }
 
-function _session_custom_predefined_location_validate($element, $form_state) {
+function _session_custom_predefined_location_validate($element, $form_state): void {
   $parent_paragraph = 'field_sessions';
   $sessions = $form_state->getValue($parent_paragraph);
   // We are only able to validate if the user clicks 'Edit'
@@ -412,7 +413,7 @@ function _session_custom_predefined_location_validate($element, $form_state) {
   }
 }
 
-function _session_custom_location_address_alter($element, $form_state) {
+function _session_custom_location_address_alter($element, $form_state): array {
   $element['organization']['#title'] = t('Building');
   //$element['country_code']['#access'] = FALSE;
   return $element;
@@ -430,7 +431,7 @@ function _alert_form_validate(&$form, $form_state) {
 /**
  * Validate that parent is not already a child in the tree.
  */
-function _parent_page_form_validate(&$form, $form_state) {
+function _parent_page_form_validate(&$form, $form_state): void {
   $lang = get_content_language_code();
   $current_node = \Drupal::routeMatch()->getParameter('node');
 
@@ -458,7 +459,7 @@ function _parent_page_form_validate(&$form, $form_state) {
  *  - set the Name
  *  - @todo: replace with AEL when it can handle generic entities.
  */
-function ssc_common_sitewide_alert_presave($alert) {
+function ssc_common_sitewide_alert_presave($alert): void {
   $date = date('Y-m-d', strtotime($alert->scheduled_date->value));
   $message = strip_tags($alert->message->value);
   $title = Unicode::truncate($message, 20, TRUE);
@@ -472,7 +473,7 @@ function ssc_common_sitewide_alert_presave($alert) {
  *
  * Add our admin library to all /admin pages.
  */
-function ssc_common_page_attachments(array &$page) {
+function ssc_common_page_attachments(array &$page): void {
   // Add global library everywhere
   $page['#attached']['library'][] = 'ssc_common/global';
 
@@ -486,7 +487,7 @@ function ssc_common_page_attachments(array &$page) {
 /**
  * Implements hook_theme().
  */
-function ssc_common_theme() {
+function ssc_common_theme(): array {
   return [
     'alert_icon_block' => [
       'variables' => [
@@ -573,7 +574,7 @@ function ssc_common_views_pre_render($view) {
  * @param ViewExecutable $view
  *
  */
-function ssc_common_views_pre_build($view) {
+function ssc_common_views_pre_build($view): void {
   switch ($view->id()) {
     case 'campaigns':
       // Remove Featured from Campaigns list - uses Id contextual filter to exclude
@@ -621,7 +622,7 @@ function ssc_common_views_pre_build($view) {
  * @param ViewExecutable $view
  * @param QueryPluginBase $query
  */
-function ssc_common_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+function ssc_common_views_query_alter(ViewExecutable $view, QueryPluginBase $query): void {
   switch ($view->id()) {
     case 'upcoming_sessions':
       if ($view->current_display == 'block_1' && !empty($query->where[1]['conditions'])) {
@@ -709,7 +710,7 @@ function ssc_common_views_query_alter(ViewExecutable $view, QueryPluginBase $que
  * - doesnt work for Sessions (see _query_alter above)
  *
  */
-function ssc_common_views_post_build(ViewExecutable $view) {
+function ssc_common_views_post_build(ViewExecutable $view): void {
   $views[] = [
     'view' => 'upcoming_sessions',
     'display' => 'block_1',
@@ -737,7 +738,7 @@ function ssc_common_views_post_build(ViewExecutable $view) {
 /**
  * Implements hook_preprocess_views_view_field().
  */
-function ssc_common_preprocess_views_view_field(array &$variables) {
+function ssc_common_preprocess_views_view_field(array &$variables): void {
   // target specific view and field
   $variables['#cache']['contexts'][] = 'languages:language_content';
 }
@@ -745,7 +746,7 @@ function ssc_common_preprocess_views_view_field(array &$variables) {
 /**
  * Implements hook_views_data_alter().
  */
-function ssc_common_views_data_alter(array &$data) {
+function ssc_common_views_data_alter(array &$data): void {
   $data['node']['parent_topic'] = array(
     'title' => t('Parent topic'),
     'group' => t('Content'),
@@ -763,11 +764,11 @@ function ssc_common_views_data_alter(array &$data) {
  * @param array $fieldTypes
  *   A list with field types.
  */
-function ssc_common_multiple_field_remove_button_field_types_alter(array &$fieldTypes) {
+function ssc_common_multiple_field_remove_button_field_types_alter(array &$fieldTypes): void {
   $fieldTypes[] = 'daterange';
 }
 
-function ssc_common_node_presave(Node $node) {
+function ssc_common_node_presave(Node $node): void {
   switch ($node->bundle()) {
     case 'event':
       // Loop through each session and get dates to determine overall range
@@ -833,7 +834,7 @@ function ssc_common_paragraph_presave($para) {
   }
 }
 
-function ssc_common_cron() {
+function ssc_common_cron(): void {
   // Expire Featured News posts.
   _expire_featured_posts_cron();
 
@@ -845,7 +846,7 @@ function ssc_common_cron() {
  * This fixes issue with clearing correct breadcrumb cache when a higher level page title is changed.
  * See: https://drupal.stackexchange.com/questions/222615/breadcrumbs-are-cached
  */
-function ssc_common_system_breadcrumb_alter(\Drupal\Core\Breadcrumb\Breadcrumb &$breadcrumb, \Drupal\Core\Routing\RouteMatchInterface $route_match, array $context) {
+function ssc_common_system_breadcrumb_alter(Breadcrumb &$breadcrumb, RouteMatchInterface $route_match, array $context): void {
   if ($route_match && $node = $route_match->getParameter('node')) {
     $breadcrumb->addCacheableDependency($node);
   }
@@ -854,7 +855,7 @@ function ssc_common_system_breadcrumb_alter(\Drupal\Core\Breadcrumb\Breadcrumb &
 /*
  * Prevents Multiple Field Remove Button from being used on EntityQueue form.
  */
-function ssc_common_multiple_field_remove_button_skip_widgets_alter(array &$skipWidgets) {
+function ssc_common_multiple_field_remove_button_skip_widgets_alter(array &$skipWidgets): void {
   $skipWidgets[] = 'entityqueue_dragtable';
 }
 
@@ -863,18 +864,28 @@ function ssc_common_multiple_field_remove_button_skip_widgets_alter(array &$skip
 // see custom views Argument: ParagraphPID
 // this will currently only work for 1 instance per node
 // @todo: could add these indexed by occurrence order to allow multiple per page - not ideal though solution though
-function ssc_common_paragraph_load($entity) {
+function ssc_common_paragraph_load($entity): void {
   $pid = &drupal_static('pid_contextual_filter');
   $paragraph = current($entity);
   $pid[$paragraph->getType()] = $paragraph->id();
 }
 
-// Function to set username and display name from OpendID and MS Graph.
+/* Function to set username and display name from OpendID and MS Graph.
+ *    NOTE: this is only valid for AAD not Common API. Skip this if the
+ *  SG Auth module is enabled.
+ */
 function ssc_common_openid_connect_userinfo_save(UserInterface $account, array $context) {
   // Set Username to email address
   $account->setUsername($context['userinfo']['email']);
 
   // \Drupal::logger('SSC')->info(print_r($context['userinfo'], true));
+
+  // For now just skip if the sg_auth module enabled. Could just test if $context values
+  // are set.
+  $module_handler = \Drupal::moduleHandler();
+  if ($module_handler->moduleExists('sg_auth')) {
+    return;
+  }
 
   // Set Display Name to First Last.
   $account->set('field_first_name', $context['userinfo']['givenName']);
@@ -883,7 +894,7 @@ function ssc_common_openid_connect_userinfo_save(UserInterface $account, array $
   $account->set('field_aad_name', $context['userinfo']['displayName']);
 }
 
-function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state) {
+function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state): void {
   $form['timezone']['#group'] = 'group_locale';
 }
 
