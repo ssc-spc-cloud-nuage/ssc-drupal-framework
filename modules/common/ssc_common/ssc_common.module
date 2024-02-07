@@ -77,7 +77,7 @@ function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id)
   // For NODE forms ONLY (Create/Edit, NOT Delete, NOT config).
   if (
     ((stristr($form_id, 'node') && !stristr($form_id, 'node_type_')) ||
-    stristr($form_id, 'policy'))
+      stristr($form_id, 'policy'))
     && !stristr($form_id, 'delete') ) {
     // Move some fields to Sidebar
     if (isset($form['field_path_slug'])) {
@@ -215,7 +215,7 @@ function ssc_common_form_content_moderation_entity_moderation_form_alter(&$form,
       'node' => $entity->id(),
       'source' => 'en',
       'target' => 'fr',
-      ],
+    ],
       ['query' => ['desitination' => $current_path]]
     )->toString();
     $text = t('This form is disabled until there is a French translation available. Click this link to %link.', [
@@ -874,23 +874,24 @@ function ssc_common_paragraph_load($entity): void {
  *    NOTE: this is only valid for AAD not Common API. Skip this if the
  *  SG Auth module is enabled.
  */
-function ssc_common_openid_connect_userinfo_save(UserInterface $account, array $context) {
-  // Set Username to email address
-  $account->setUsername($context['userinfo']['email']);
-
+function ssc_common_openid_connect_userinfo_save(UserInterface $account, array $context): void {
   // \Drupal::logger('SSC')->info(print_r($context['userinfo'], true));
 
-  // For now just skip if the sg_auth module enabled. Could just test if $context values
-  // are set.
+  // For now just skip if SG Auth is enabled.
   $module_handler = \Drupal::moduleHandler();
   if ($module_handler->moduleExists('sg_auth')) {
     return;
   }
 
-  // Set Display Name to First Last.
+  // Even though we should have SG Auth enabled if Common API connection, lets test this anyway.
+  if (!isset($context['userinfo']['displayName'])) {
+    return;
+  }
+
+  // Set user profile fields.
+  $account->setUsername($context['userinfo']['email']);
   $account->set('field_first_name', $context['userinfo']['givenName']);
   $account->set('field_last_name', $context['userinfo']['surname']);
-  // Add in AAD name.
   $account->set('field_aad_name', $context['userinfo']['displayName']);
 }
 
