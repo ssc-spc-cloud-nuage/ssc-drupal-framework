@@ -343,6 +343,9 @@
             "drupal/calendar_link": {
                 "3249457 - views support": "https://www.drupal.org/files/issues/2021-11-17/views_support-3249457-8.patch"
             },
+            "drupal/config_ignore": {
+                "3421466 - Set default to functional value." : "https://git.drupalcode.org/project/config_ignore/-/merge_requests/22.patch"
+            },
             "drupal/content_sync": {
                 "2979368 - ignore types": "https://www.drupal.org/files/issues/2020-09-22/2979368-17.patch"
             },
