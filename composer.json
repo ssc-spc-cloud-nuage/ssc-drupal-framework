@@ -63,6 +63,7 @@
         "drupal/field_tools": "^1",
         "drupal/flag": "4.0.0-beta4",
         "drupal/focal_point": "^2",
+        "drupal/form_mode_manager": "dev-3297262-automated-drupal-10#2c564b3b047dfc5002349c45ef6eec9aa98f8968",
         "drupal/fpa": "^4",
         "drupal/fvm": "^2.0",
         "drupal/google_analytics": "^4.0",
@@ -167,6 +168,10 @@
         }
     },
     "repositories": [
+        {
+            "type": "git",
+            "url": "https://git.drupalcode.org/issue/form_mode_manager-3297262.git"
+        },
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
