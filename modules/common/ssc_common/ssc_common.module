@@ -908,7 +908,14 @@ function ssc_common_timezone_list_alter($zones) {
   // Don't modify in Views UI
   // @todo: might be easier to only do on Node/User forms?
   $route_match = \Drupal::routeMatch();
-  if ($route_match->getRouteName() == 'views_ui.form_handler') {
+  $ignore = [
+    'views_ui.form_handler',
+  ];
+  if (in_array($route_match->getRouteName(), $ignore)) {
+    return $zones;
+  }
+  // Don't modify list when saving user profile.
+  if ($route_match->getRouteName() == 'entity.user.edit_form' && isset($_POST['op']) && $_POST['op'] == 'Save') {
     return $zones;
   }
 
