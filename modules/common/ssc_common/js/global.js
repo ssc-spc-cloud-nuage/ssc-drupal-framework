@@ -18,23 +18,24 @@
     // Add IDs for TOC H2/H3
     var level1 = 0;
     var level2 = 0;
-    $('.toc-section h2, .toc-section h3').each(function() {
-      if ($(this).prop('tagName') === 'H2') {
-        level1++;
-        level2 = 0;
-        if ($(this).attr('id') === undefined) {
-          $(this).attr('id', 'section-' + level1 + '-' + level2);
+    $('h2, h3', '.toc-section').each(function() {
+      // Only add ID when there is no parent element with the .toc-ignore class
+      if ($(this).parents('.toc-ignore').length === 0) {
+        var id = $(this).attr('id');
+
+        if ($(this).prop('tagName') === 'H2') {
+          level1++;
+          level2 = 0;
         }
         else {
-          $(this).attr('id', $(this).attr('id') + "-01");
+          level2++;
         }
-      } else {
-        level2++;
-        if ($(this).attr('id') === undefined) {
-          $(this).attr('id', 'section-' + level1 + '-' + level2);
+
+        if (id) {
+          $(this).attr('id', `${id}-01`);
         }
         else {
-          $(this).attr('id', $(this).attr('id') + "-01");
+          $(this).attr('id', `section-${level1}-${level2}`);
         }
       }
     });
