@@ -19,6 +19,7 @@ use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\row\EntityRow;
 use Drupal\views\ViewExecutable;
+use Drupal\Core\Render\Element;
 
 $path_to_common = \Drupal::service('extension.list.module')->getPath('ssc_common');
 require_once($path_to_common . '/ssc_common.tokens.inc');
