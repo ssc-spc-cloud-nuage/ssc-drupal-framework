@@ -19,7 +19,6 @@ use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\row\EntityRow;
 use Drupal\views\ViewExecutable;
-use Drupal\Core\Render\Element;
 
 $path_to_common = \Drupal::service('extension.list.module')->getPath('ssc_common');
 require_once($path_to_common . '/ssc_common.tokens.inc');
@@ -898,29 +897,6 @@ function ssc_common_openid_connect_userinfo_save(UserInterface $account, array $
 
 function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state): void {
   $form['timezone']['#group'] = 'group_locale';
-  // Hide Username, Password, Status, Roles etc,
-  // only display email for Organization profile form
-  if ($form['#form_id'] === 'user_organization_profile_form') {
-    if (!array_key_exists('account', $form)) {
-      return;
-    }
-    foreach (Element::children($form['account']) as $key) {
-      if ($key !== 'mail') {
-        $form['account'][$key]['#access'] = FALSE;
-      }
-    }
-    if (array_key_exists('mail', $form['account'])) {
-      foreach (Element::children($form['account']['mail']) as $key) {
-        if ($key !== 'mail') {
-          $form['account']['mail'][$key]['#access'] = FALSE;
-        }
-      }
-    }
-    if (array_key_exists('mail', $form['account']['mail'])) {
-      // The mail field being disabled at serving_gov.theme.
-      unset($form['account']['mail']['mail']['#description']);
-    }
-  }
 }
 
 /*
