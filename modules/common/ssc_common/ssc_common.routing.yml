@@ -14,6 +14,14 @@ ssc_common.admin_settings:
   requirements:
     _permission: 'administer site configuration'
 
+ssc_common.utm_settings:
+  path: '/admin/config/ssc/utm-codes'
+  defaults:
+    _form: '\Drupal\ssc_common\Form\SSCUTMCodes'
+    _title: 'Global UTM codes'
+  requirements:
+    _permission: 'administer site configuration'
+    
 ssc_common.related_search_autocomplete:
   path: '/autocomplete/related'
   defaults:
