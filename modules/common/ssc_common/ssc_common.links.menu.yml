@@ -10,10 +10,3 @@ ssc_common.admin_settings:
   description: 'SSC General Configuration'
   parent: ssc_common.admin_config_system
   weight: -20
-
-ssc_common.utm_settings:
-  title: 'Global UTM codes'
-  route_name: ssc_common.utm_settings
-  description: 'Global UTM Codes'
-  parent: ssc_common.admin_config_system
-  weight: -30
