@@ -120,6 +120,7 @@
         "drupal/telephone_validation": "^2.3",
         "drupal/text_field_formatter": "^2.0",
         "drupal/time_range": "^9.0",
+        "drupal/timezone_detect": "^1.0@dev",
         "drupal/tranc": "^1.0.3",
         "drupal/translatable_menu_link_uri": "^2.1",
         "drupal/twig_tweak": "^3",
@@ -136,7 +137,6 @@
         "drupaloverride/adobe_analytics": "dev-1",
         "drupaloverride/entity_field_condition": "dev-1",
         "drupaloverride/htmlmail": "dev-1",
-        "drupaloverride/timezone_detect": "dev-1",
         "drupaloverride/twig_extensions": "dev-1",
         "drupalwxt/wxt": "5.0.x-dev#884bfd54",
         "drush/drush": "12.4.3",
@@ -444,9 +444,6 @@
             },
             "drupaloverride/adobe_analytics": {
                 "3364865 - D10 compatability": "https://www.drupal.org/files/issues/2023-06-05/adobe_analytics.1.x-3364865-2.patch"
-            },
-            "drupaloverride/timezone_detect": {
-                "3290054 - D10 compatability": "https://www.drupal.org/files/issues/2022-06-16/timezone_detect.1.x-dev.rector.patch"
             },
             "drupal/facets": {
                 "3172373 - disable auto-submit": "https://www.drupal.org/files/issues/2023-08-24/disable-auto-refresh-3172373-21.patch"
