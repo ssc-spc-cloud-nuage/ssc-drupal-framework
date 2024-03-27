@@ -233,7 +233,7 @@
                     "url": "https://git.drupalcode.org/api/v4/projects/project%2Ftwig_extensions/repository/archive.zip?sha=10b6a1a6"
                 }
             }
-        },
+        }
     ],
     "scripts": {
         "post-root-package-install": [
