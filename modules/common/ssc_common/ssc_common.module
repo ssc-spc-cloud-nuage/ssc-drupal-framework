@@ -910,6 +910,7 @@ function ssc_common_timezone_list_alter($zones) {
   $route_match = \Drupal::routeMatch();
   $ignore = [
     'views_ui.form_handler',
+    'entity.user.canonical',
   ];
   if (in_array($route_match->getRouteName(), $ignore)) {
     return $zones;
