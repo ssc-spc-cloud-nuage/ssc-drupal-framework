@@ -945,3 +945,14 @@ function ssc_common_timezone_list_alter($zones) {
   }
   return $zones;
 }
+
+/**
+ * Implements hook_page_top().
+ */
+function ssc_common_page_top(array &$page_top) {
+  // Remove sitewide alerts form Splash page.
+  if (\Drupal::routeMatch()->getRouteName() == 'language_selection_page'
+    && !empty($page_top['sitewide_alert'])) {
+    unset($page_top['sitewide_alert']);
+  }
+}
