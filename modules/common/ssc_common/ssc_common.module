@@ -308,6 +308,7 @@ function ssc_common_form_views_exposed_form_alter(&$form, FormStateInterface $fo
 
   switch ($id) {
     case 'views-exposed-form-site-search-block-2':
+    case 'views-exposed-form-site-search-block-3':
       $lang = get_content_language_code();
       $form['#action'] = '/' . $lang . '/search/';
       break;

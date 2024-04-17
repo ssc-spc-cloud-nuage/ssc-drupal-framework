@@ -22,3 +22,12 @@ ssc_common.related_search_autocomplete:
   requirements:
     _permission: 'access content'
 
+ssc_common.404:
+  path: '/ssc/system/404'
+  defaults:
+    _controller: '\Drupal\ssc_common\Controller\Http404Controller:on404'
+    _title: 'Page not found'
+  requirements:
+    # Overrides core native 404 handling
+    _access: 'TRUE'
+
