@@ -6,8 +6,12 @@ admin:
       css/tables.css: {}
 
 global:
+  css:
+    theme:
+      css/ssc-menu.css: {}
   js:
     js/global.js: {}
+    js/ssc-menu.js: {}
   dependencies:
     - core/jquery
     - core/drupalSettings

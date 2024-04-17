@@ -1,0 +1,73 @@
+{#
+/**
+ * @file
+ * Custom theme implementation to display a menu, forked off of
+ * the WxT GCWeb flyout menu and tailored for SSC.
+ *
+ * Available variables:
+ * - menu_name: The machine name of the menu.
+ * - items: A nested list of menu items. Each menu item contains:
+ *   - attributes: HTML attributes for the menu item.
+ *   - below: The menu item child items.
+ *   - title: The menu link title.
+ *   - url: The menu link url, instance of \Drupal\Core\Url
+ *   - localized_options: Menu link localized options.
+ *
+ * @ingroup templates
+ */
+#}
+{% import _self as menus %}
+
+{#
+  We call a macro which calls itself to render the full tree.
+  @see http://twig.sensiolabs.org/doc/tags/macro.html
+#}
+{{ menus.menu_links(items, attributes, 0, menu_name|clean_class, gcweb_cdn, gcweb_cdn_url, language) }}
+
+{% macro menu_links(items, attributes, menu_level, menu_name, gcweb_cdn, gcweb_cdn_url, language) %}
+  {% import _self as menus %}
+  {% if items %}
+    {% if menu_level == 0 %}
+      {% if gcweb_cdn and gcweb_cdn_url %}
+        <ul role="menu" class="main-menu-tabs-group" aria-orientation="vertical" data-ajax-replace="{{ gcweb_cdn_url }}{{ language }}.html">
+      {% else %}
+        <ul role="menu" class="main-menu-tabs-group" aria-orientation="vertical">
+      {% endif %}
+    {% elseif menu_level == 1 %}
+      <ul role="menu" class="main-menu-title-group" aria-orientation="vertical"{{ attributes.removeClass('menu', 'list-inline') }}>
+    {% elseif menu_level == 2 %}
+      <ul role="menu" class="main-menu-items-group" aria-orientation="vertical"{{ attributes.removeClass('menu', 'list-inline') }}>
+    {% endif %}
+    {% for item in items %}
+      {%
+        set item_classes = [
+          item.is_expanded? 'expanded',
+          item.is_expanded and menu_level == 0 ? 'dropdown',
+          item.in_active_trail ? 'active',
+        ]
+      %}
+      {% if menu_level == 0 and item.is_expanded %}
+        <li role="presentation"{{ item.attributes.addClass(item_classes, "main-menu-tab") }}>
+        <a role="menuitem" href="{{ item.url }}" aria-haspopup="true" aria-controls="{{ item.title | clean_id }}" aria-expanded="false" data-index={{ loop.index0 }}>{{ item.title }}</a>
+      {% else %}
+        {% if menu_level == 1 %}
+          {# Primary link for each tab (title) #}
+          <li role="presentation"{{ item.attributes.addClass(item_classes, "main-menu-title") }}>
+          <a role="menuitem" href="{{ item.url }}">
+            <span class="main-menu-title__text">{{ item.title }}</span>
+            <span class="main-menu-title__cta" aria-hidden="true">{{ "View all"|tc }}</span>
+          </a>
+        {% else %}
+          {# Secondary links #}
+          <li role="presentation"{{ item.attributes.addClass(item_classes, "main-menu-item") }}>
+          {{ link(item.title, item.url, {'role':['menuitem']}) }}
+        {% endif %}
+      {% endif %}
+      {% if item.below %}
+        {{ menus.menu_links(item.below, attributes.removeClass('nav', 'navbar-nav'), menu_level + 1) }}
+      {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
