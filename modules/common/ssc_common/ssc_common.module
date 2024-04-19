@@ -131,11 +131,13 @@ function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id)
     $form['revision_information']['#weight'] = 9;
     // Redo Save button
     $form_object = $form_state->getFormObject();
-    $entity = $form_object->getEntity();
-    if (!$entity || !$entity->hasTranslation('fr')) {
-      $form["actions"]["submit"]["#value"] = t('Save and translate');
-      $form['actions']['submit']['#submit'][] = '_redirect_to_translate';
-      unset($form['moderation_state']['widget'][0]['state']['#options']['published']);
+    if ($form_object instanceof EntityFormInterface) {
+      $entity = $form_object->getEntity();
+      if (!$entity || !$entity->hasTranslation('fr')) {
+        $form["actions"]["submit"]["#value"] = t('Save and translate');
+        $form['actions']['submit']['#submit'][] = '_redirect_to_translate';
+        unset($form['moderation_state']['widget'][0]['state']['#options']['published']);
+      }
     }
   }
 
