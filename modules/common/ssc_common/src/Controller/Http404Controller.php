@@ -71,25 +71,30 @@ class Http404Controller extends ControllerBase implements ContainerInjectionInte
     $form = \Drupal::formBuilder()->buildForm('Drupal\views\Form\ViewsExposedForm', $form_state);
 
     // 404 Fallback message.
-    $header = '
-    <h1>' . $this->t("Page not found") . '</h1>
-    <div class="box">
-      <div class="row">
-        <div class="col-xs-9 col-sm-10 col-md-10">
-          <p>' . $this->t('This page may have been moved or deleted.') . '</p>
-        </div>
-      </div>
-    </div>';
+    $header =
+      '<h1>' . $this->t("Page not found") . '</h1>' .
+      '<p>' . $this->t('This page may have been moved or deleted.') . '</p>';
 
     return [
+      // Full-width parent container to allow for full-width background.
       '#type' => 'container',
-      '#markup' => $header,
       '#attributes' => [
-        'class' => '404 error',
+        'class' => 'container-full-width page-not-found',
       ],
-      'form' => $form,
-      '#weight' => 0,
+      '#attached' => [
+        'library' => [
+          'ssc_common/page-not-found',
+        ],
+      ],
+      // Nested child container to center content on the page.
+      'child' => [
+        '#type' => 'container',
+        '#markup' => $header,
+        '#attributes' => [
+          'class' => 'container',
+        ],
+        'form' => $form,
+      ],
     ];
   }
-
 }

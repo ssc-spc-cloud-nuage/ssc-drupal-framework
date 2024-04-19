@@ -1,0 +1,70 @@
+/**
+ * @file
+ * Styles for the Page Not Found (404) page.
+ */
+.page-not-found {
+  padding-block: 60px 80px;
+}
+.page-not-found .container > * {
+  max-width: 485px;
+}
+
+/* Text */
+.page-not-found h1 {
+  margin-top: 0;
+  padding-bottom: 0;
+  border: none;
+}
+.page-not-found p {
+  font-size: 1.5rem;
+}
+
+/* Search bar */
+.page-not-found .views-exposed-form {
+  --size-input-border-radius: var(--size-border-radius-medium);
+  --size-input-height: 4rem;
+  --size-button-distance: 8px;
+  position: relative;
+  margin-top: 3rem;
+}
+.page-not-found .form-control {
+  width: 100%;
+  height: var(--size-input-height);
+  padding-inline: 1rem 3.5rem;
+  background-color: var(--clr-ssc-white-1);
+  border: solid 3px var(--clr-ssc-purple-1);
+  border-radius: 100vw !important;
+  color: var(--clr-ssc-black-1) !important;
+  font-size: 1.5rem;
+
+  &::placeholder {
+    opacity: 0.5;
+  }
+}
+.page-not-found .form-actions {
+  position: absolute;
+  top: var(--size-button-distance);
+  right: var(--size-button-distance);
+  width: calc(var(--size-input-height) - calc(var(--size-button-distance)* 2));
+  aspect-ratio: 1;
+  margin: 0 !important;
+}
+.page-not-found .form-submit {
+  width: 100%;
+  height: 100%;
+  border-radius: 100vw !important;
+}
+.page-not-found .icon {
+  margin: 0 !important;
+}
+
+/* Visually hidden elements */
+.page-not-found .control-label,
+.page-not-found .form-submit > span:not(.icon) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  overflow: hidden;
+}
