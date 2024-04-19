@@ -3,3 +3,5 @@ type: module
 description: 'Customizations for SSC Drupal sites which are common across all sites.'
 core_version_requirement: ^9 || ^10
 package: 'SSC'
+dependencies:
+  - message_notify:message_notify
