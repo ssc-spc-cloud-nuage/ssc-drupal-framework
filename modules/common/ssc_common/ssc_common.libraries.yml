@@ -22,3 +22,8 @@ header-link:
   css:
     theme:
       css/header-link.css: {}
+
+page-not-found:
+  css:
+    theme:
+      css/page-not-found.css: {}
