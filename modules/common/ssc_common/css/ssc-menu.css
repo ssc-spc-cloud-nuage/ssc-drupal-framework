@@ -1,0 +1,278 @@
+/**
+ * @file
+ * Styles for the SSC flyout menu, which is forked off of the WxT flyout menu.
+ */
+
+/* Layout */
+.ssc-menu {
+  --menu-gap: 14px;
+  --menu-shadow: 0 4px 20px rgb(0 0 0 / 30%);
+  position: relative;
+  margin-top: 0;
+  color: var(--clr-ssc-white-1);
+}
+.ssc-menu .container {
+  padding: 0;
+}
+.ssc-menu [aria-haspopup=true][aria-expanded=false] + [role=menu] {
+  display: none;
+}
+
+/* Menu button */
+.main-menu-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 18px 24px;
+  background-color: var(--clr-ssc-purple-1);
+  border: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0;
+  cursor: pointer;
+  transition: background-color var(--time-regular-transition);
+}
+.main-menu-button:is(:hover, [aria-expanded="true"]) {
+  background-color: var(--clr-ssc-pink-1);
+}
+.main-menu-button:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+}
+.main-menu-button > span {
+  position: relative;
+  bottom: -0.025em;
+}
+svg.menu-icon {
+  position: relative;
+  width: 1rem;
+  transition: background-color var(--time-regular-transition) ease-out;
+}
+svg.menu-icon path {
+  fill: none;
+  stroke: #FFF;
+  stroke-width: 18%;
+  stroke-linecap: butt;
+  stroke-linejoin: square;
+  transition: d var(--time-regular-transition) ease-out;
+}
+.main-menu-button[aria-expanded="true"] svg.menu-icon path {
+  d: path("M1,1 L9,9 M1,1 L9,9 M1,9 L 9,1");
+}
+
+/* Menu tabs */
+.ssc-menu .dropup,
+.ssc-menu .dropdown {
+  position: initial;
+}
+.main-menu-tabs-group {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background-color: var(--clr-ssc-black-1);
+  border: 0;
+  list-style: none;
+}
+@media screen and (max-width: 991px) {
+  .main-menu-tabs-group {
+    width: 720px;
+  }
+}
+@media screen and (max-width: 767px) {
+  body[class*="toolbar"] .main-menu-tabs-group {
+    margin-top: 39px;
+  }
+}
+.main-menu-tabs-group::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 1140px;
+  content: '';
+}
+@media screen and (max-width: 1199px) {
+  .main-menu-tabs-group::before {
+    width: 940px;
+  }
+}
+@media screen and (max-width: 991px) {
+  .main-menu-tabs-group::before {
+    width: auto;
+    height: auto;
+  }
+}
+@media screen and (max-width: 767px) {
+  .main-menu-tabs-group::before {
+    display: none;
+  }
+}
+.main-menu-tab {
+  width: 360px;
+}
+@media screen and (max-width: 991px) {
+  .main-menu-tab {
+    width: 100%;
+  }
+}
+.main-menu-tab:not(:last-of-type) {
+  border-bottom: solid 1px var(--clr-ssc-purple-4);
+}
+.main-menu-tab > a,
+.main-menu-tab > a:visited {
+  position: relative;
+  display: block;
+  padding: 12px 24px;
+  font-size: 1.125rem;
+  color: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color var(--time-regular-transition),
+    color var(--time-regular-transition);
+}
+.main-menu-tab > a:hover {
+  background-color: var(--clr-ssc-purple-4);
+  text-decoration: inherit;
+}
+.main-menu-tab > a[aria-expanded="true"] {
+  background-color: var(--clr-ssc-purple-5);
+  color: var(--clr-ssc-black-1);
+  text-decoration: inherit;
+}
+.main-menu-tab > a:focus-visible {
+  z-index: 1;
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+  text-decoration: inherit;
+}
+
+/* Menu title group */
+.main-menu-title-group {
+  position: absolute;
+  inset-block: 0;
+  left: 360px;
+  width: 780px;
+  min-height: auto;
+  margin: 0;
+  padding: 15px 30px;
+  background-color: var(--clr-ssc-purple-4);
+}
+@media screen and (max-width: 1199px) {
+  .main-menu-title-group {
+    width: 580px;
+  }
+}
+@media screen and (max-width: 991px) {
+  .main-menu-title-group {
+    position: static;
+    width: 100%;
+    padding: 24px;
+  }
+}
+
+/* Menu title */
+.main-menu-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--menu-gap);
+  height: 100%;
+}
+.main-menu-title > a,
+.main-menu-title > a:visited {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: inherit;
+  text-decoration: none;
+  font-size: 1.75rem;
+  font-weight: 500;
+}
+.main-menu-title > a:hover .main-menu-title__text {
+  text-decoration: underline;
+}
+.main-menu-title > a:focus-visible {
+  width: fit-content;
+  margin-inline: -0.5em;
+  padding-inline: 0.5em;
+  background-color: var(--focus-color);
+  box-shadow: var(--focus-shadow);
+  color: #000;
+}
+.main-menu-title .main-menu-title__cta {
+  display: inline-block;
+  padding: 0.4em 0.6em;
+  border: solid 1px;
+  border-radius: var(--size-border-radius-small);
+  color: var(--clr-ssc-purple-5);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color var(--time-regular-transition);
+}
+.main-menu-title > a:hover .main-menu-title__cta {
+  text-decoration: none;
+  color: #fff;
+}
+.main-menu-title > a:focus-visible .main-menu-title__cta {
+  color: #000;
+}
+
+/* Menu items group */
+.main-menu-items-group {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  row-gap: var(--menu-gap);
+  column-gap: calc(var(--menu-gap) * 2);
+  padding: 0;
+  padding-bottom: 16px;
+  height: 100%;
+  overflow-y: auto;
+  list-style: none;
+}
+
+/* Menu items */
+.main-menu-item {
+  width: calc(50% - var(--menu-gap));
+  line-height: 1.15;
+}
+.main-menu-item > a,
+.main-menu-item > a:visited {
+  display: inline-block;
+  font-size: 1.125rem;
+  text-decoration: none;
+  color: var(--clr-ssc-purple-5);
+}
+.main-menu-item > a:focus {
+  text-decoration: none;
+}
+.main-menu-item > a:is(:hover, :focus) {
+  color: var(--clr-ssc-white-1);
+  text-decoration: underline;
+}
+.main-menu-item > a:focus-visible {
+  background-color: var(--focus-color);
+  box-shadow: var(--focus-shadow);
+  color: #000;
+}
+
+/* Basic HTML (wbdisable) mode */
+.wb-disable .ssc-menu {
+  width: 100%;
+}
+.wb-disable .ssc-menu [role=menu] {
+  position: static;
+}
+.wb-disable .ssc-menu .main-menu-tabs-group,
+.wb-disable .ssc-menu .main-menu-title-group,
+.wb-disable .ssc-menu .main-menu-tab {
+  display: block !important;
+  width: 100%;
+}
+.wb-disable .ssc-menu .main-menu-tab > a {
+  display: none;
+}

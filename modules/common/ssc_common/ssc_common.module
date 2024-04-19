@@ -502,6 +502,12 @@ function ssc_common_theme(): array {
       ],
       'render element' => 'children',
     ],
+    'menu__main__ssc' => [
+      'variables' => [
+        'content' => NULL
+      ],
+      'render element' => 'children',
+    ],
   ];
 }
 
