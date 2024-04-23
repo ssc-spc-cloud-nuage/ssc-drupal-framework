@@ -914,18 +914,14 @@ function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state)
  * - don't do this for Views admin
  */
 function ssc_common_timezone_list_alter($zones) {
-  // Don't modify in Views UI
-  // @todo: might be easier to only do on Node/User forms?
-  $route_match = \Drupal::routeMatch();
-  $ignore = [
-    'views_ui.form_handler',
-    'entity.user.canonical',
+  // Only do this for Node (Event) edit/add form.
+  $allow = [
+    'node.add',
+    'entity.node.edit_form',
   ];
-  if (in_array($route_match->getRouteName(), $ignore)) {
-    return $zones;
-  }
-  // Don't modify list when saving user profile.
-  if ($route_match->getRouteName() == 'entity.user.edit_form' && isset($_POST['op']) && $_POST['op'] == 'Save') {
+  $route_match = \Drupal::routeMatch();
+
+  if (!in_array($route_match->getRouteName(), $allow)) {
     return $zones;
   }
 
