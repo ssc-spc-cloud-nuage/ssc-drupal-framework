@@ -438,6 +438,9 @@
             },
             "drupal/bootstrap_layouts": {
                 "3376161 - section admin labels": "https://www.drupal.org/files/issues/2023-07-21/add-admin-labels.patch"
+            },
+            "drupal/webform": {
+                "3419372 - large file upload fails": "https://www.drupal.org/files/issues/2024-02-06/Issue-3419372-Manage-files-js-BlockSubmit-rename-mis_0.patch"
             }
         },
         "patches-ignore": {
