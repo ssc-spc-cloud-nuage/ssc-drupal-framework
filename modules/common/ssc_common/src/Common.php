@@ -22,8 +22,12 @@ class Common {
    *      $options['fields'] = Message Template field values
    *      $options['attached'] = Attachment file
    */
-  function sendMail($template, $options = []) {
-    if (!isset($options['to'])) return NULL;
+  static function sendMail($template, $options = []) {
+    // If no To then nothing to do.
+    if (!isset($options['to'])) {
+      \Drupal::messenger()->addWarning(t('No To address provided form email.'));
+      return FALSE;
+    }
 
     $site_config = \Drupal::config('system.site');
     $site_name = $site_config->get('name');
@@ -41,6 +45,8 @@ class Common {
       'cc' => 'Cc',
       'bcc' => 'Bcc',
     ];
+    $headers = [];
+    $to_emails_string = '';
     foreach ($fields as $key => $field) {
       if (empty($options[$key])) continue;
       if (!is_array($options[$key])) $addresses = [$options[$key]];
@@ -69,7 +75,7 @@ class Common {
     }
 
     $notifier = \Drupal::service('message_notify.sender');
-    $message = Message::create(['template' => $template, 'uid' => $user->id()]);
+    $message = Message::create(['template' => $template, 'uid' => \Drupal::currentUser()->id()]);
 
     // Add in any Message fields passed in
     if (!empty($options['fields'])) {
