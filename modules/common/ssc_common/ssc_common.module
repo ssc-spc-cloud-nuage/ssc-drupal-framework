@@ -443,9 +443,14 @@ function _parent_page_form_validate(&$form, $form_state): void {
     return;
   }
 
-  $possible_parent = Node::load($form_state->getValue('field_parent_page')[0]['target_id']);
-  $tree = get_parent_tree($possible_parent);
+  $parent = $form_state->getValue('field_parent_page')[0]['target_id'];
+  // Parent isn't required.
+  if (!$parent) {
+    return;
+  }
 
+  $possible_parent = Node::load($parent);
+  $tree = get_parent_tree($possible_parent);
   // If no tree, validate (e.g. for Home).
   if (!$tree) {
     return;
