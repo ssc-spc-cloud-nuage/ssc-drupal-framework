@@ -196,11 +196,11 @@ svg.menu-icon path {
 }
 .main-menu-title > a:focus-visible {
   width: fit-content;
-  margin-inline: -0.5em;
-  padding-inline: 0.5em;
+  margin-inline: -4px;
+  padding-inline: 4px;
   background-color: var(--focus-color);
   box-shadow: var(--focus-shadow);
-  color: #000;
+  color: var(--clr-ssc-black-1) !important;
 }
 .main-menu-title .main-menu-title__cta {
   display: inline-block;
@@ -219,7 +219,7 @@ svg.menu-icon path {
   color: inherit !important;
 }
 .main-menu-title > a:focus-visible .main-menu-title__cta {
-  color: #000;
+  color: var(--clr-ssc-black-1) !important;
 }
 
 /* Menu items group */
@@ -229,7 +229,8 @@ svg.menu-icon path {
   flex-wrap: wrap;
   row-gap: var(--menu-gap);
   column-gap: calc(var(--menu-gap) * 2);
-  padding: 0;
+  margin: -8px;
+  padding: 8px;
   padding-bottom: 16px;
   height: 100%;
   overflow-y: auto;
@@ -257,8 +258,10 @@ svg.menu-icon path {
 }
 .main-menu-item > a:focus-visible {
   background-color: var(--focus-color);
+  margin: -4px;
+  padding: 4px;
   box-shadow: var(--focus-shadow);
-  color: #000;
+  color: var(--clr-ssc-black-1) !important;
 }
 
 /* Basic HTML (wbdisable) mode */
