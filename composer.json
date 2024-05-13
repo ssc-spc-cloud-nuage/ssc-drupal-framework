@@ -98,7 +98,7 @@
         "drupal/module_filter": "^4.0",
         "drupal/multiple_fields_remove_button": "^2",
         "drupal/o365": "^3.0",
-        "drupal/openid_connect": "^3",
+        "drupal/openid_connect": "3.0.0-alpha3",
         "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.1",
         "drupal/phpmailer_smtp": "^2",
@@ -401,9 +401,7 @@
                 "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
             },
             "drupal/openid_connect": {
-                "3011413 - autologin": "https://www.drupal.org/files/issues/2023-10-16/openid_connect-autologin-3011413-99.patch",
-                "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch",
-                "3355330 - array offset on null on settings form": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/82.diff"
+                "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch"
             },
             "drupal/openid_connect_windows_aad": {
                 "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
