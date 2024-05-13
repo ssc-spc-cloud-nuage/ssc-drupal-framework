@@ -145,7 +145,7 @@
         "drupaloverride/htmlmail": "dev-1",
         "drupaloverride/twig_extensions": "dev-1",
         "drupalwxt/wxt": "5.0.x-dev#884bfd54",
-        "drush/drush": "12.4.3",
+        "drush/drush": "12.5",
         "enshrined/svg-sanitize": "^0.16.0",
         "npm-asset/dompurify": "^3.0",
         "w8tcha/ckeditor-wordcount-plugin": "^1.17",
