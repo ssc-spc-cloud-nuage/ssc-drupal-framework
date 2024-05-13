@@ -445,6 +445,9 @@
             },
             "drupal/webform": {
                 "3419372 - large file upload fails": "https://www.drupal.org/files/issues/2024-02-06/Issue-3419372-Manage-files-js-BlockSubmit-rename-mis_0.patch"
+            },
+            "drupal/entityform_block": {
+                "2424739 - Select form mode": "https://www.drupal.org/files/issues/2022-06-01/fixed_EntityContextDefinition.patch"
             }
         },
         "patches-ignore": {
