@@ -1,7 +1,10 @@
 (function ($, wb) {
   ("use strict");
 
-  console.log({wb});
+  // Exit if the document is in "wb disable" mode
+  if (wb.isDisabled) {
+    return;
+  }
 
   const componentName = "ssc-menu";
   const selector = `.${componentName}`;
