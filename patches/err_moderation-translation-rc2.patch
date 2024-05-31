@@ -1,11 +1,12 @@
 diff --git a/entity_reference_revisions.module b/entity_reference_revisions.module
-index 82c3cd7..4ea32ee 100644
+index 3f0afbd..15b5979 100644
 --- a/entity_reference_revisions.module
 +++ b/entity_reference_revisions.module
-@@ -243,12 +243,8 @@ function entity_reference_revisions_entity_revision_create(ContentEntityInterfac
+@@ -264,13 +264,8 @@ function entity_reference_revisions_entity_revision_create(ContentEntityInterfac
+         $active_langcode = $entity->language()->getId();
          $target_storage = \Drupal::entityTypeManager()->getStorage($target_entity_type_id);
          if ($target_storage instanceof TranslatableRevisionableStorageInterface) {
- 
+-
 -          $items = $entity->get($field_name);
 -          $translation_items = NULL;
 -          if (!$new_revision->isDefaultTranslation() && $storage instanceof TranslatableRevisionableStorageInterface) {
@@ -17,10 +18,10 @@ index 82c3cd7..4ea32ee 100644
  
            $values = [];
            foreach ($items as $delta => $item) {
-@@ -275,7 +271,7 @@ function entity_reference_revisions_entity_revision_create(ContentEntityInterfac
-               $target_entity->addTranslation($active_langcode, $target_entity->toArray());
+@@ -299,7 +294,7 @@ function entity_reference_revisions_entity_revision_create(ContentEntityInterfac
+               }
+               $target_entity = $item->entity->getTranslation($active_langcode);
              }
-             $target_entity = $item->entity->getTranslation($active_langcode);
 -            $revised_entity = $target_storage->createRevision($target_entity, $new_revision->isDefaultRevision(), $keep_untranslatable_fields);
 +            $revised_entity = $target_storage->createRevision($target_entity, TRUE, $keep_untranslatable_fields);
  
