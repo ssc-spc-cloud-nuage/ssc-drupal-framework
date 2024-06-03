@@ -288,7 +288,6 @@
                 "3239705 - make link fields sortable": "https://www.drupal.org/files/issues/2021-10-06/make_link_fields_click_sortable-3239705-7.patch",
                 "3243125 - add 'has new content' sort handler": "https://www.drupal.org/files/issues/2021-10-20/has_new_sort-3243125-5.patch",
                 "2893740 - sidebar for other entities": "https://www.drupal.org/files/issues/2024-01-10/2893740_51.patch",
-                "2916876 = block visibility control for LB": "https://www.drupal.org/files/issues/2024-04-14/drupal-n2916876-223.patch",
                 "2941092 - ignore width property when saving translation": "https://www.drupal.org/files/issues/2021-04-15/2941092-19.patch",
                 "1699378 - allow tokens in arguments for entityref fields": "https://www.drupal.org/files/issues/2024-01-10/1699378-258.patch",
                 "2692289 - allow limiting autocomplete to 1": "https://www.drupal.org/files/issues/2021-12-10/2692289-25-9.3.0.patch",
