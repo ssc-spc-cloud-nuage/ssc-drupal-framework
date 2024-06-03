@@ -387,6 +387,7 @@
                 "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
             },
             "drupal/openid_connect": {
+                "3011413 - autologin": "https://www.drupal.org/files/issues/2023-10-16/openid_connect-autologin-3011413-99.patch",
                 "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch"
             },
             "drupal/openid_connect_windows_aad": {
