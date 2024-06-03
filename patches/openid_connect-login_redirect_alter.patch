@@ -1,0 +1,15 @@
+diff --git a/src/Controller/OpenIDConnectRedirectController.php b/src/Controller/OpenIDConnectRedirectController.php
+index 3f724e4..18b2f47 100644
+--- a/src/Controller/OpenIDConnectRedirectController.php
++++ b/src/Controller/OpenIDConnectRedirectController.php
+@@ -320,6 +320,11 @@ class OpenIDConnectRedirectController implements ContainerInjectionInterface, Ac
+     // @see \Drupal\openid_connect\OpenIDConnectSessionInterface::saveDestination()
+     $session = $this->session->retrieveDestination();
+     $destination = $session['destination'] ?: $this->configFactory->get('openid_connect.settings')->get('redirect_login');
++
++    $altered_destination = $this->moduleHandler
++      ->invokeAll('openid_connect_login_redirect', [$destination]);
++    $destination = !empty($altered_destination) ? $altered_destination[0] : $destination;
++
+     $langcode = $session['langcode'] ?: $this->languageManager->getCurrentLanguage()->getId();
+     $language = $this->languageManager->getLanguage($langcode);
