@@ -1,0 +1,15 @@
+diff --git a/core/lib/Drupal/Core/Datetime/TimeZoneFormHelper.php b/core/lib/Drupal/Core/Datetime/TimeZoneFormHelper.php
+index b45c1d88d0..0a91ba8b16 100644
+--- a/core/lib/Drupal/Core/Datetime/TimeZoneFormHelper.php
++++ b/core/lib/Drupal/Core/Datetime/TimeZoneFormHelper.php
+@@ -32,6 +32,10 @@ public static function getOptionsList(bool $blank = FALSE): array {
+     }
+     // Sort the translated time zones alphabetically.
+     asort($zones);
++
++    // Allow other modules to alter the time zone options list.
++    \Drupal::moduleHandler()->alter('timezone_list', $zones);
++
+     return $zones;
+   }
+ 

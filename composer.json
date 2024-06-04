@@ -309,7 +309,8 @@
                 "2700667 - Notice: Undefined index: #type in FormHelper": "https://www.drupal.org/files/issues/2021-05-12/2700667-133a.patch",
                 "3027240 - Undefined index: #parents FormState.php": "https://www.drupal.org/files/issues/2021-07-14/drupal-undefined_index_parents-3027240-fixed.patch",
                 "3353388 - Fix TypeError in FormElementHelper.php": "https://www.drupal.org/files/issues/2023-06-21/typeError_implode_3353388.patch",
-                "LB fails when custom block missing": "./patches/lb_inline-block-missing.patch"
+                "local - LB fails when custom block missing": "./patches/lb_inline-block-missing.patch",
+                "local - add TZ alter": "./patches/core-tz_alter.patch"
             },
             "drupal/address_static_map": {
                 "3358951 - PHP 8.1 support and sig fix": "https://www.drupal.org/files/issues/2023-05-08/php8_signature-3358951-2.patch"

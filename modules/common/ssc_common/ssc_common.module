@@ -13,6 +13,7 @@ use Drupal\Core\Form\SubformState;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\user\UserInterface;
@@ -918,7 +919,7 @@ function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state)
  *
  * - don't do this for Views admin
  */
-function ssc_common_timezone_list_alter($zones) {
+function ssc_common_timezone_list_alter(&$zones) {
   // Only do this for Node (Event) edit/add form.
   $allow = [
     'node.add',
@@ -927,33 +928,40 @@ function ssc_common_timezone_list_alter($zones) {
   $route_match = \Drupal::routeMatch();
 
   if (!in_array($route_match->getRouteName(), $allow)) {
-    return $zones;
+    return;
   }
 
   $keep = [
-    'Edmonton' => t('Mountain time'),
-    'Halifax' => t('Atlantic time') ,
-    'St Johns' => t('Newfoundland time'),
-    'Toronto' => t('Eastern time'),
-    'Vancouver' => t('Pacific time'),
-    'Winnipeg' => t('Central time'),
+    'America/Vancouver' => 'Vancouver ('. t('Pacific time') . ')',
+    'America/Edmonton' => 'Edmonton (' . t('Mountain time') . ')',
+    'America/Regina' => 'Regina (' . t('Saskatchewan time') . ')',
+    'America/Winnipeg' => 'Winnipeg (' . t('Central time') . ')',
+    'America/Toronto' => 'Toronto (' . t('Eastern time') . ')',
+    'America/Halifax' => 'Halifax ('. t('Atlantic time') . ')',
+    'America/St_Johns' => 'St Johns (' . t('Newfoundland time') . ')',
   ];
+  $keys = array_keys($keep);
   foreach ($zones as $optgroup => &$group) {
-    if ($optgroup != 'America') {
+    if (!stristr($optgroup, 'America')) {
+      unset($zones[$optgroup]);
+    }
+    elseif (!in_array($optgroup, $keys)) {
       unset($zones[$optgroup]);
     }
     else {
-      foreach ($zones['America'] as $index => $option) {
-        if (!in_array($option, array_keys($keep))) {
-          unset($zones['America'][$index]);
-        }
-        else {
-          $zones['America'][$index] .= ' (' . $keep[$option] . ')';
-        }
-      }
+      $zones[$optgroup] = new TranslatableMarkup($keep[$optgroup]);
     }
   }
-  return $zones;
+
+  // Re-order geographically.
+  $ordered = [];
+  foreach (array_keys($keep) as $key) {
+    if (isset($zones[$key])) {
+      $ordered[$key] = $zones[$key];
+    }
+  }
+
+  $zones = $ordered;
 }
 
 /**
