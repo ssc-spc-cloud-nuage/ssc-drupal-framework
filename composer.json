@@ -298,7 +298,7 @@
                 "2885278 - adds tabs to revision pages and removes double title": "https://www.drupal.org/files/issues/2023-08-08/drupal-n2885278-38-95x.patch",
                 "3325410 - show revision numbers": "https://www.drupal.org/files/issues/2022-12-05/add_revision_numbers-3325410-3.patch",
                 "2862828 - boolean filtering fail when not set - module for this now?": "https://www.drupal.org/files/issues/2022-03-24/boolean-no-value-2862828-47.patch",
-                "3185750 - add TZ support for date/daterange fields": "https://www.drupal.org/files/issues/2023-12-21/3185750-47.patch",
+                "3185750 - add TZ support for date/daterange fields": "https://www.drupal.org/files/issues/2023-12-21/3185750-48.patch",
                 "3261924 - remove new GD warning": "https://www.drupal.org/files/issues/2024-01-02/3261924-52.patch",
                 "local   - moderation": "./patches/moderation-translation-rc6.patch",
                 "2031149 - support other link protocols": "https://www.drupal.org/files/issues/2024-06-03/2031149-58.patch",
