@@ -19,7 +19,7 @@
         "drupal/backup_migrate": "^5",
         "drupal/better_exposed_filters": "6.0.3",
         "drupal/better_formats": "1.x-dev",
-        "drupal/bg_image_formatter": "1.16.0",
+        "drupal/bg_image_formatter": "1.17.0",
         "drupal/block_ajax": "3.0.0",
         "drupal/block_field": "1.0.0-rc4",
         "drupal/bootstrap_layout_builder": "2.1.1",
