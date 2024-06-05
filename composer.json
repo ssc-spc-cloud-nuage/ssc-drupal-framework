@@ -23,6 +23,7 @@
         "drupal/block_field": "1.0.0-rc4",
         "drupal/calendar": "^1.0@beta",
         "drupal/calendar_link": "2.1.4",
+        "drupal/chosen_lib": "^4.0",
         "drupal/ckwordcount": "2.1.0",
         "drupal/coder": "8.3.20",
         "drupal/color_field": "3.0.0",
