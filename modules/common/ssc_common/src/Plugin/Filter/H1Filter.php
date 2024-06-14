@@ -10,7 +10,7 @@ use Drupal\filter\Plugin\FilterBase;
  *   id = "h1_filter",
  *   title = @Translation("H1 Filter"),
  *   description = @Translation("Remove H1s from text (and replace with H2s)."),
- *   type = Drupal\filter\Plugin\FilterInterface::TYPE_HTML_RESTRICTOR,
+ *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  * )
  */
 class H1Filter extends FilterBase {

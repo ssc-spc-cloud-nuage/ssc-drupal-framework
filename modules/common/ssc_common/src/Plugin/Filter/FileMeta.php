@@ -13,7 +13,7 @@ use Drupal\filter\Plugin\FilterBase;
  *   id = "file_meta",
  *   title = @Translation("File Meta"),
  *   description = @Translation("Add meta info to file links."),
- *   type = Drupal\filter\Plugin\FilterInterface::TYPE_MARKUP_LANGUAGE,
+ *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  * )
  */
 class FileMeta extends FilterBase {

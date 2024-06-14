@@ -15,7 +15,7 @@ use Drupal\filter\Plugin\FilterBase;
  *   id = "new_marker",
  *   title = @Translation("NEW marker"),
  *   description = @Translation("Add NEW marker to content based on data-wb-label attr."),
- *   type = Drupal\filter\Plugin\FilterInterface::TYPE_MARKUP_LANGUAGE,
+ *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  *   settings = {
  *     "default_duration" = "42",
  *     "default_marker_text" = @Translation("New"),
