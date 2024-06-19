@@ -1,0 +1,9 @@
+# This has 'change-this-to-info' in the filename instead of 'info' so this
+# template isn't discovered as a module.
+name: ckeditor5 cite plugin
+type: module
+description: "Your CKEditor 5 plugin"
+package: CKEditor 5
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:ckeditor5
