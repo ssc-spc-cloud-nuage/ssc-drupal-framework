@@ -307,7 +307,8 @@
                 "3027240 - Undefined index: #parents FormState.php": "https://www.drupal.org/files/issues/2021-07-14/drupal-undefined_index_parents-3027240-fixed.patch",
                 "3353388 - Fix TypeError in FormElementHelper.php": "https://www.drupal.org/files/issues/2023-06-21/typeError_implode_3353388.patch",
                 "local - LB fails when custom block missing": "./patches/lb_inline-block-missing.patch",
-                "local - add TZ alter": "./patches/core-tz_alter.patch"
+                "local - add TZ alter": "./patches/core-tz_alter.patch",
+                "3358586 - clears orphaned permissions": "https://www.drupal.org/files/issues/2023-09-14/3358586-11.patch"
             },
             "drupal/address_static_map": {
                 "3358951 - PHP 8.1 support and sig fix": "https://www.drupal.org/files/issues/2023-05-08/php8_signature-3358951-2.patch"
@@ -432,6 +433,12 @@
             },
             "drush/drush": {
                 "fix symlink issue with 12.5.1+": "https://patch-diff.githubusercontent.com/raw/drush-ops/drush/pull/5755.patch"
+            },
+            "drupal/linkchecker": {
+                "3366753 - Filter out para rev results from report": "https://git.drupalcode.org/project/linkchecker/-/merge_requests/46.patch"
+            },
+            "drupal/page_manager": {
+                "titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch"
             }
         },
         "patches-ignore": {
