@@ -420,7 +420,7 @@
                 "3364865 - D10 compatability": "https://www.drupal.org/files/issues/2023-06-05/adobe_analytics.1.x-3364865-2.patch"
             },
             "drupal/facets": {
-                "3172373 - disable auto-submit": "https://www.drupal.org/files/issues/2023-08-24/disable-auto-refresh-3172373-21.patch"
+                "3379445 - fixes breaking ajax pagers": "https://www.drupal.org/files/issues/2024-05-09/3379445-41.patch"
             },
             "drupal/bootstrap_layouts": {
                 "3376161 - section admin labels": "https://www.drupal.org/files/issues/2023-07-21/add-admin-labels.patch"
