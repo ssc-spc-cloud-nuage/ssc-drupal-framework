@@ -362,7 +362,8 @@
                 "3371499 - fix private path": "./patches/imce-private-path-fix.patch"
             },
             "drupal/layout_builder_st": {
-                "3119208 - allow use with page manager": "https://www.drupal.org/files/issues/2020-12-09/layout_builder_st-more-defensive-handling-3119208-4.patch"
+                "3119208 - allow use with page manager": "https://www.drupal.org/files/issues/2020-12-09/layout_builder_st-more-defensive-handling-3119208-4.patch",
+                "3411037 - fix core removing contextual translation links": "https://git.drupalcode.org/project/layout_builder_st/-/merge_requests/5.patch"
             },
             "drupal/layout_library": {
                 "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
