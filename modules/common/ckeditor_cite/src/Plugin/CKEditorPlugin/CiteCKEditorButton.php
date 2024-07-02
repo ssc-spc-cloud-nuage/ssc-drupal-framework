@@ -29,8 +29,7 @@ class CiteCKEditorButton extends CKEditorPluginBase {
   public function getButtons() {
     // Make sure that the path to the image matches the file structure of
     // the CKEditor plugin you are implementing.
-    $path_to_module = \Drupal::service('extension.list.module')->getPath('ckeditor_cite');
-    $path = $path_to_module . '/js/plugins/cite';
+    $path = $this->getModulePath('ckeditor_cite') . '/js/plugins/cite';
     return [
       'cite' => [
         'label' => $this->t('Cite ckeditor button'),
@@ -45,8 +44,7 @@ class CiteCKEditorButton extends CKEditorPluginBase {
   public function getFile() {
     // Make sure that the path to the plugin.js matches the file structure of
     // the CKEditor plugin you are implementing.
-    $path_to_module = \Drupal::service('extension.list.module')->getPath('ckeditor_cite');
-    return $path_to_module . '/js/plugins/cite/plugin.js';
+    return $this->getModulePath('ckeditor_cite') . '/js/plugins/cite/plugin.js';
   }
 
   /**

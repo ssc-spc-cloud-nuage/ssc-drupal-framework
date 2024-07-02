@@ -27,6 +27,7 @@ function ckeditor_cite_help($route_name, RouteMatchInterface $route_match) {
       $output .= '<dd>' . t('To remove an cite title attribute, delete the explanation in the ckeditor cite dialog. In order to untag an cite, delete the cite in the ckeditor cite dialog.') . '</dd>';
       $output .= '</dl>';
       return $output;
+
     default:
   }
 }

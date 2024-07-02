@@ -1,8 +1,7 @@
 const path = require('path');
 const fs = require('fs');
-const webpack = require('webpack');
-const { styles, builds } = require('@ckeditor/ckeditor5-dev-utils');
-const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack'); // eslint-disable-line import/no-unresolved
+const TerserPlugin = require('terser-webpack-plugin'); // eslint-disable-line import/no-unresolved
 
 function getDirectories(srcpath) {
   return fs
@@ -58,7 +57,16 @@ getDirectories('./js/ckeditor5_plugins').forEach((dir) => {
       }),
     ],
     module: {
-      rules: [{ test: /\.svg$/, use: 'raw-loader' }],
+      rules: [
+        {
+          test: /\.svg$/,
+          use: 'raw-loader',
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
     },
   };
 

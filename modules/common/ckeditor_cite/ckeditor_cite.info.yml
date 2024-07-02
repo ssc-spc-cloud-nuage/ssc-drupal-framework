@@ -1,8 +1,10 @@
 name: CKEditor Cite
 type: module
-description: Adds CKEditor Cite and Span buttons.
-core_version_requirement: ^9 || ^10
+description: Adds CKEditor cite button.
+core_version_requirement: ^9.5 || ^10
 package: CKEditor
 dependencies:
-  - drupal:ckeditor
+  - drupal:ckeditor5
+test_dependencies:
+  - ckeditor:ckeditor
 

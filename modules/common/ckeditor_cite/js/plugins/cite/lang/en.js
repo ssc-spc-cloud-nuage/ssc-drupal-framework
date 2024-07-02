@@ -1,6 +1,6 @@
 /**
  * @file
- * The Cite language string definitions.
+ * The cite language string definitions.
  */
 
 "use strict"
@@ -10,4 +10,5 @@ CKEDITOR.plugins.setLang('cite', 'en', {
   menuItemTitle: 'Edit Cite',
   dialogTitle: 'Cite Properties',
   dialogCiteTitle: 'Cite',
+  dialogExplanationTitle: 'Explanation'
 });

@@ -1,0 +1,14 @@
+cite:
+  css:
+    theme:
+      css/cite.admin.css: { }
+  js:
+    js/build/cite.js: { preprocess: false, minified: true }
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/ckeditor5
+cite.admin:
+  css:
+    theme:
+      css/cite.admin.css: { }

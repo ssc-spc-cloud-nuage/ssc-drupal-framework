@@ -14,10 +14,9 @@ use Drupal\editor\Entity\Editor;
  * Provides an cite dialog for text editors.
  */
 class CkeditorCiteDialog extends FormBase {
+
   /**
-   * Gets the form's ID.
-   *
-   * @return string
+   * {@inheritdoc}
    */
   public function getFormId() {
     return 'ckeditor_cite_dialog';
@@ -25,19 +24,12 @@ class CkeditorCiteDialog extends FormBase {
 
   /**
    * {@inheritdoc}
-   *
-   * @param array $form
-   *   The form array.
-   * @param Drupal\Core\Form\FormStateInterface $form_state
-   *   The form's state.
-   * @param Drupal\editor\Entity\Editor $editor
-   *   The editor.
    */
   public function buildForm(array $form, FormStateInterface $form_state, Editor $editor = NULL) {
     // The default values are set directly from \Drupal::request()->request,
     // provided by the editor plugin opening the dialog.
     $user_input = $form_state->getUserInput();
-    $input = isset($user_input['editor_object']) ? $user_input['editor_object'] : [];
+    $input = $user_input['editor_object'] ?? [];
 
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'editor/drupal.editor.dialog';
@@ -47,13 +39,17 @@ class CkeditorCiteDialog extends FormBase {
     $form['attributes']['text'] = [
       '#title' => $this->t('Text'),
       '#type' => 'textfield',
-      '#default_value' => isset($input['text']) ? $input['text'] : '',
+      '#default_value' => $input['text'] ?? '',
+    ];
+    $form['attributes']['title'] = [
+      '#title' => $this->t('Title'),
+      '#type' => 'textfield',
+      '#default_value' => $input['title'] ?? '',
     ];
 
     $form['actions'] = [
       '#type' => 'actions',
     ];
-
     $form['actions']['save_modal'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save'),
@@ -61,20 +57,14 @@ class CkeditorCiteDialog extends FormBase {
       '#ajax' => [
         'callback' => '::submitForm',
         'event' => 'click',
-      ]
+      ],
     ];
 
     return $form;
   }
 
   /**
-   * {@inheritDoc}
-   *
-   * @param array $form
-   *   The form array.
-   * @param Drupal\Core\Form\FormStateInterface $form_state
-   *   The form's state.
-   * @return Drupal\Core\Ajax\AjaxResponse
+   * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
@@ -88,11 +78,13 @@ class CkeditorCiteDialog extends FormBase {
       ];
 
       $response->addCommand(new HtmlCommand('#ckeditor-cite-dialog-form', $form));
-    } else {
+    }
+    else {
       $response->addCommand(new EditorDialogSave($form_state->getValues()));
       $response->addCommand(new CloseModalDialogCommand());
     }
 
     return $response;
   }
+
 }

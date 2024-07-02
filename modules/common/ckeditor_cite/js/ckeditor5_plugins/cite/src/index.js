@@ -5,10 +5,10 @@
  *
  * I.e. this file's purpose is to make plugin(s) discoverable.
  */
-// cSpell:ignore simplebox
+// cSpell:ignore cite
 
-import SimpleBox from './simplebox';
+import Cite from './cite';
 
 export default {
-  SimpleBox,
+  Cite,
 };

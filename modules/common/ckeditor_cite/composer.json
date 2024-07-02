@@ -1,0 +1,19 @@
+{
+    "name": "drupal/ckeditor_cite",
+    "type": "drupal-module",
+    "description": "Adds CKEditor cite button.",
+    "keywords": ["Drupal"],
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.drupal.org/project/ckeditor_cite",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "http://drupal.org/project/issues/ckeditor_cite",
+        "source": "http://cgit.drupalcode.org/ckeditor_cite"
+    },
+    "require": {
+        "drupal/core": "^9.5 || ^10"
+    },
+    "require-dev": {
+        "drupal/ckeditor": "^1.0"
+    }
+}
