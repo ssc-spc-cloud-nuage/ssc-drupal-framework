@@ -486,10 +486,13 @@ function ssc_common_page_attachments(array &$page): void {
   // Add global library everywhere
   $page['#attached']['library'][] = 'ssc_common/global';
 
-  $request_uri = ltrim(\Drupal::request()->getRequestUri(), '/');
-  $args = explode('/', $request_uri);
   if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+    // Add admin theme-specific library
     $page['#attached']['library'][] = 'ssc_common/admin';
+  }
+  else {
+    // Add SSC theme-specific library
+    $page['#attached']['library'][] = 'ssc_common/ssc_theme';
   }
 }
 

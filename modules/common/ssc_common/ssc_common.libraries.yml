@@ -5,13 +5,16 @@ admin:
       css/forms.css: {}
       css/tables.css: {}
 
-global:
+ssc_theme:
   css:
     theme:
       css/ssc-menu.css: {}
   js:
-    js/global.js: {}
     js/ssc-menu.js: {}
+
+global:
+  js:
+    js/global.js: {}
   dependencies:
     - core/jquery
     - core/drupalSettings
