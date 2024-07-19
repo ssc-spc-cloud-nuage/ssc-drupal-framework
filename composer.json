@@ -388,6 +388,7 @@
             },
             "drupal/openid_connect": {
                 "local - add login redirect hook": "./patches/openid_connect-login_redirect_alter.patch",
+                "local - add autologin and showcore functionality (combine issue: 3011413 & 3441149)": "./patches/openid_connect-autologin-showcore.patch",
                 "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch",
                 "3383036 - remove lang prefix from redirec url": "https://www.drupal.org/files/issues/2024-04-04/3383036-36-3.0-alpha3.patch"
             },
