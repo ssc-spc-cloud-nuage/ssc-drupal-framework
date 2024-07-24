@@ -38,6 +38,12 @@ class LanguageSwitcherBlock extends LanguageBlock {
     return $build;
   }
 
+  /**
+   * Generates the language switcher links.
+   *
+   * @return array
+   *   An array containing the full and narrow switcher links.
+   */
   private function getSwitcher(): array {
     $current = $this->urlGenerator->generateFromRoute('<current>', [], [], TRUE)->getGeneratedUrl();
     $front = $this->aliasManager->getPathByAlias($current);
@@ -63,6 +69,17 @@ class LanguageSwitcherBlock extends LanguageBlock {
     // This may have used to return EN if there was no FR; but now return NULL which will cause an issue with setOption
     $links = $this->languageManager->getLanguageSwitchLinks($type, $url);
     $switch = $language == 'en' ? 'fr' : 'en';
+
+    // Modify the links based on your custom logic.
+    if ($route_match->getRouteName() === 'group.sg_reports' && isset($links->links[$switch])) {
+      $group = $route_match->getParameter('group');
+      $group_other = $group->getTranslation($switch);
+      $group_url = $group ? $group_other->toUrl()->toString() : NULL;
+      $report_path = $route_match->getParameter('pbi_report_path');
+      $translated_path = $this->getTranslatedPath($report_path, $switch);
+      $links->links[$switch]['url'] = Url::fromUri("internal:$group_url" . ($switch == 'fr' ? '/rapports' : '/reports') . "/{$translated_path}");
+    }
+
     // If there is no switch version then use original language.
     if (!isset($links->links[$switch])) {
       $label = $switch == 'fr' ? 'French' : 'English';
@@ -95,6 +112,7 @@ class LanguageSwitcherBlock extends LanguageBlock {
       // Add language to the links.
       $links->links[$switch]['url']->setOption('query', $links->links[$switch]['query']);
     }
+
     $links->links[$switch]['url']->setOption('language', $this->languageManager->getLanguage($switch));
 
     $output = [];
@@ -102,7 +120,7 @@ class LanguageSwitcherBlock extends LanguageBlock {
       '#type' => 'html_tag',
       '#tag' => 'abbr',
       '#attributes' => [
-        'title' => $title
+        'title' => $title,
       ],
       'child' => [
         '#type' => 'link',
@@ -110,9 +128,9 @@ class LanguageSwitcherBlock extends LanguageBlock {
         '#title' => substr($title, 0, 2),
         '#attributes' => [
           'lang' => $switch,
-          'class' => ['btn', 'header-link', 'header-link--icon']
-        ]
-      ]
+          'class' => ['btn', 'header-link', 'header-link--icon'],
+        ],
+      ],
     ];
 
     $output['full'] = [
@@ -122,11 +140,60 @@ class LanguageSwitcherBlock extends LanguageBlock {
       '#attributes' => [
         'lang' => $switch,
         'hreflang' => $switch,
-        'class' => ['btn', 'header-link', 'header-link--text']
-      ]
+        'class' => ['btn', 'header-link', 'header-link--text'],
+      ],
     ];
 
     return $output;
+  }
+
+  /**
+   * Method to fetch the translated path for a given report path.
+   *
+   * @param string $report_path
+   *   The original report path.
+   * @param string $langcode
+   *   The language code for the translation.
+   *
+   * @return string
+   *   The translated path if found, or the original path as a fallback.
+   */
+  private function getTranslatedPath($report_path, $langcode) {
+    $storage = \Drupal::entityTypeManager()->getStorage('pbi_report');
+    $query = $storage->getQuery();
+    $query->condition('path', $report_path);
+    $entity_ids = $query->execute();
+
+    if ($entity_ids) {
+      $entity_id = reset($entity_ids);
+      $entity = $storage->load($entity_id);
+
+      if ($entity) {
+        if ($langcode != 'en') {
+          // Load the language-specific configuration override for French.
+          $config_name = $entity->getConfigDependencyName();
+          $config_translation = \Drupal::languageManager()->getLanguageConfigOverride($langcode, $config_name);
+
+          if ($config_translation) {
+            $translated_path = $config_translation->get('path');
+            if ($translated_path) {
+              return $translated_path;
+            }
+          }
+        }
+        else {
+          // For English, return the original path from the raw configuration.
+          $config_name = $entity->getConfigDependencyName();
+          $config = \Drupal::config($config_name);
+          $original_path = $config->get('path');
+          if ($config) {
+            $raw_data = $config->getRawData();
+            return $raw_data['path'];
+          }
+        }
+      }
+    }
+    return $report_path; // Fallback to original if no translation found.
   }
 
 }
