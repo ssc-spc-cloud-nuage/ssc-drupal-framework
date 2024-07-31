@@ -6,5 +6,6 @@ services:
 
   ssc_common.twig.SSCTwig:
     class: Drupal\ssc_common\Twig\SSCTwig
+    arguments: ['@date.formatter']
     tags:
       - { name: twig.extension }
