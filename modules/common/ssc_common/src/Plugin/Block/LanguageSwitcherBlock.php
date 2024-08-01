@@ -70,7 +70,7 @@ class LanguageSwitcherBlock extends LanguageBlock {
     $links = $this->languageManager->getLanguageSwitchLinks($type, $url);
     $switch = $language == 'en' ? 'fr' : 'en';
 
-    // Modify the links based on your custom logic.
+    // SG only - Report pages.
     if ($route_match->getRouteName() === 'group.sg_reports' && isset($links->links[$switch])) {
       $group = $route_match->getParameter('group');
       $group_other = $group->getTranslation($switch);
@@ -166,34 +166,22 @@ class LanguageSwitcherBlock extends LanguageBlock {
 
     if ($entity_ids) {
       $entity_id = reset($entity_ids);
+
+      $language_manager = \Drupal::languageManager();
+      $switch_language = $language_manager->getLanguage($langcode);
+      $language_manager->setConfigOverrideLanguage($switch_language);
       $entity = $storage->load($entity_id);
 
       if ($entity) {
-        if ($langcode != 'en') {
-          // Load the language-specific configuration override for French.
-          $config_name = $entity->getConfigDependencyName();
-          $config_translation = \Drupal::languageManager()->getLanguageConfigOverride($langcode, $config_name);
-
-          if ($config_translation) {
-            $translated_path = $config_translation->get('path');
-            if ($translated_path) {
-              return $translated_path;
-            }
-          }
-        }
-        else {
-          // For English, return the original path from the raw configuration.
-          $config_name = $entity->getConfigDependencyName();
-          $config = \Drupal::config($config_name);
-          $original_path = $config->get('path');
-          if ($config) {
-            $raw_data = $config->getRawData();
-            return $raw_data['path'];
-          }
-        }
+        $report_path = $entity->getPath();
       }
+
+      // Not sure required; but set language back to original.
+      $original_language = $language_manager->getLanguage($langcode == 'en' ? 'fr' : 'en');
+      $language_manager->setConfigOverrideLanguage($original_language);
     }
-    return $report_path; // Fallback to original if no translation found.
+
+    return $report_path;
   }
 
 }
