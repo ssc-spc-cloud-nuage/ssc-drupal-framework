@@ -441,6 +441,9 @@
             },
             "drupal/page_manager": {
                 "titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch"
+            },
+            "drupal/url_embed": {
+                "3316376 - CKEditor 5 Support SVG fix": "https://www.drupal.org/files/issues/2024-01-11/url_embed-ckeditor5-support-3316376-37-svg-fix.patch"
             }
         },
         "patches-ignore": {
