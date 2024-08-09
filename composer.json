@@ -311,7 +311,8 @@
                 "3353388 - Fix TypeError in FormElementHelper.php": "https://www.drupal.org/files/issues/2023-06-21/typeError_implode_3353388.patch",
                 "local - LB fails when custom block missing": "./patches/lb_inline-block-missing.patch",
                 "local - add TZ alter": "./patches/core-tz_alter.patch",
-                "3358586 - clears orphaned permissions": "https://www.drupal.org/files/issues/2023-09-14/3358586-11.patch"
+                "3358586 - clears orphaned permissions": "https://www.drupal.org/files/issues/2023-09-14/3358586-11.patch",
+                "3332416 - fix CK5 extending out of container": "https://www.drupal.org/files/issues/2024-04-09/3332416-79.patch"
             },
             "drupal/address_static_map": {
                 "3358951 - PHP 8.1 support and sig fix": "https://www.drupal.org/files/issues/2023-05-08/php8_signature-3358951-2.patch"
