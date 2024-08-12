@@ -62,6 +62,7 @@ class FileMeta extends FilterBase {
       'XLSX' => $this->t('Excel'),
       'PPTX' => $this->t('Powerpoint'),
       'TXT' => $this->t('Plain text'),
+      'VCF' => $this->t('Virtual Contact'),
     ];
 
     $dom = Html::load($text);
@@ -126,9 +127,10 @@ class FileMeta extends FilterBase {
   public function cleanMime($mime) {
     if (stristr($mime, 'word')) return 'DOCX';
     if (stristr($mime, 'sheet')) return 'XLSX';
+    if (stristr($mime, 'vcard')) return 'VCF';
     if (stristr($mime, 'text')) return 'TXT';
     if (stristr($mime, 'pdf')) return 'PDF';
     if (stristr($mime, 'presentation')) return 'PPTX';
-  }
+   }
 
 }
