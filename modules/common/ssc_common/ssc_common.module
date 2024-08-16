@@ -91,9 +91,6 @@ function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id)
     if (isset($form['field_review_date'])) {
       $form['field_review_date']['#group'] = 'meta';
     }
-    if (isset($form['field_cancelled'])) {
-      $form['field_cancelled']['#group'] = 'meta';
-    }
     if (isset($form['status'])) {
       $form['status']['#group'] = 'meta';
     }
