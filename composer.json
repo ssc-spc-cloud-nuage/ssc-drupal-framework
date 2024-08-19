@@ -447,6 +447,9 @@
             },
             "drupal/url_embed": {
                 "3316376 - CKEditor 5 Support SVG fix": "https://www.drupal.org/files/issues/2024-01-11/url_embed-ckeditor5-support-3316376-37-svg-fix.patch"
+            },
+            "drupal/config_ignore": {
+                "3466656 - don't fail on missing config": "https://www.drupal.org/files/issues/2024-08-19/dont_fail_if_missing-3466656-4.patch"
             }
         },
         "patches-ignore": {
