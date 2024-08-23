@@ -223,6 +223,7 @@ function _get_breadcrumb_paths($node): string {
   $lang = $language_manager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
   $tree = &drupal_static('ssc_parent_tree');
   get_parent_tree($node);
+  $paths = [];
   foreach (array_reverse($tree[$lang]) as $branch) {
     $paths[]= $branch['crumb']['path'];
   }
@@ -235,7 +236,7 @@ function _get_breadcrumb_titles($node): string {
   $lang = $language_manager->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)->getId();
   $tree = &drupal_static('ssc_parent_tree');
   get_parent_tree($node);
-
+  $titles = [];
   foreach (array_reverse($tree[$lang]) as $branch) {
     $titles[]= $branch['crumb']['title'];
   }
