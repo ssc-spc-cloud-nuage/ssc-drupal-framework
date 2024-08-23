@@ -72,8 +72,13 @@ function get_parent_tree(Node $node) {
   }
 
   // Required, but just in case Parent not set.
+  // NEW (0824): not required on LPs which now set bcrumbs off Parent. But will only be
+  //  an issue for the Home page but easier to hide for all LPS.
   if (!$node->field_parent_page->getString()) {
-    \Drupal::messenger()->addError(t('Breadcrumb set to use Parent Page but value not set.'));
+    if ($node->bundle() != 'landing_page') {
+      \Drupal::messenger()
+        ->addError(t('Breadcrumb set to use Parent Page but value not set.'));
+    }
     return NULL;
   }
 
