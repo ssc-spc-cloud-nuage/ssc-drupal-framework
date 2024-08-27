@@ -7,13 +7,13 @@ use Drupal\filter\Plugin\FilterBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Delete all &nbsp; and whitespace from TDs and DIVs.
+ * Delete all &nbsp; and whitespace from configured HTML tags.
  *
  * @Filter(
  *   id = "remove_nbsp",
  *   module = "ssc_common",
  *   title = @Translation("Remove NBSP"),
- *   description = @Translation("Remove NBSP and whitespace from empty TDs and DIVs."),
+ *   description = @Translation("Remove NBSP and whitespace from configured HTML tags."),
  *   type = Drupal\filter\Plugin\FilterInterface::TYPE_TRANSFORM_IRREVERSIBLE,
  *   settings = {
  *     "tags" = "td div"
@@ -35,10 +35,10 @@ class RemoveNbsp extends FilterBase {
    */
   public function tips($long = FALSE) {
     $tips = [];
-    $tips[] = t('Remove NBSP and whitespace from empty TDs and DIVs.');
+    $tips[] = t('Remove NBSP and whitespace from empty tags specific in config.');
 
     if ($long) {
-      $tips[] = t('Remove NBSP and whitespace from empty TDs and DIVs.');
+      $tips[] = t('Remove NBSP and whitespace from empty tags specific in config.');
     }
 
     return implode(' ', $tips);
@@ -50,7 +50,7 @@ class RemoveNbsp extends FilterBase {
       '#title' => t('Tags'),
       '#default_value' => $this->settings['tags'] ?? 'td div',
       '#required' => TRUE,
-      '#description' => t('Tags to remove whitespace, separate each tag with space.'),
+      '#description' => t('Tags to remove whitespace. Separate each tag with a space.'),
     ];
 
     return $form;
