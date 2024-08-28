@@ -313,7 +313,8 @@
                 "local - add TZ alter": "./patches/core-tz_alter.patch",
                 "3358586 - clears orphaned permissions": "https://www.drupal.org/files/issues/2023-09-14/3358586-11.patch",
                 "3332416 - fix CK5 extending out of container": "https://www.drupal.org/files/issues/2024-04-09/3332416-79.patch",
-                "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch"
+                "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch",
+                "local - support headings in summary elements": "./patches/core-support_headings_in_summary_elements.patch"
             },
             "drupal/address_static_map": {
                 "3358951 - PHP 8.1 support and sig fix": "https://www.drupal.org/files/issues/2023-05-08/php8_signature-3358951-2.patch"
