@@ -98,6 +98,9 @@ class Common {
     }
     $message->save();
 
+    // Let's set Sender as From or else some clients show From as "Sender on behalf of From".
+    $headers['Sender'] = $headers['From'];
+
     $attachments = [];
     if (isset($options['attached'])) {
       $attachments[] = [
