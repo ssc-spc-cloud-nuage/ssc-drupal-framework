@@ -12,6 +12,7 @@
         "drupal/address": "1.11.0",
         "drupal/address_static_map": "1.1.1",
         "drupal/administration_language_negotiation": "2.0.0",
+        "drupal/adobe_analytics": "^1.0@beta",
         "drupal/adv_varnish": "4.0.7",
         "drupal/advagg": "^6",
         "drupal/ape": "^1.6",
@@ -133,7 +134,6 @@
         "drupal/views_field_view": "^1.0@beta",
         "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^2",
-        "drupaloverride/adobe_analytics": "dev-1",
         "drupaloverride/entity_field_condition": "dev-1",
         "drupaloverride/htmlmail": "dev-1",
         "drupaloverride/twig_extensions": "dev-1",
@@ -179,18 +179,6 @@
         {
             "type": "composer",
             "url": "https://drupalwxt.github.io/composer-extdeps/"
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "drupaloverride/adobe_analytics",
-                "version": "dev-1",
-                "type": "drupal-module",
-                "dist": {
-                    "type": "zip",
-                    "url": "https://ftp.drupal.org/files/projects/adobe_analytics-8.x-1.x-dev.zip"
-                }
-            }
         },
         {
             "type": "package",
@@ -423,9 +411,6 @@
             },
             "drupal/viewscss": {
                 "local - silence errors": "./patches/viewscss-silence_errors.patch"
-            },
-            "drupaloverride/adobe_analytics": {
-                "3364865 - D10 compatability": "https://www.drupal.org/files/issues/2023-06-05/adobe_analytics.1.x-3364865-2.patch"
             },
             "drupal/facets": {
                 "3379445 - fixes breaking ajax pagers": "https://www.drupal.org/files/issues/2024-05-09/3379445-41.patch"
