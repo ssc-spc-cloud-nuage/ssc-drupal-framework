@@ -132,6 +132,7 @@
         "drupal/views_bulk_edit": "^2.6",
         "drupal/views_bulk_operations": "4.2.7",
         "drupal/views_current_path": "^3.0",
+        "drupal/views_data_export": "^1.4",
         "drupal/views_field_view": "^1.0@beta",
         "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^2",
@@ -304,7 +305,8 @@
                 "3358586 - clears orphaned permissions": "https://www.drupal.org/files/issues/2023-09-14/3358586-11.patch",
                 "3332416 - fix CK5 extending out of container": "https://www.drupal.org/files/issues/2024-04-09/3332416-79.patch",
                 "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch",
-                "local - support headings in summary elements": "./patches/core-support_headings_in_summary_elements.patch"
+                "local - support headings in summary elements": "./patches/core-support_headings_in_summary_elements.patch",
+                "3025039 - remove error on non-translable field on translation": "https://www.drupal.org/files/issues/2024-05-01/3025039-94.patch"
             },
             "drupal/address_static_map": {
                 "3358951 - PHP 8.1 support and sig fix": "https://www.drupal.org/files/issues/2023-05-08/php8_signature-3358951-2.patch"
@@ -352,7 +354,7 @@
                 "2723703 - views relationships": "https://www.drupal.org/files/issues/2021-02-22/2723703-73.patch"
             },
             "drupal/footnotes": {
-                "Warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
+                "3381366 - warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
             },
             "drupal/imce": {
                 "3371499 - fix private path": "./patches/imce-private-path-fix.patch"
@@ -432,13 +434,16 @@
                 "3366753 - Filter out para rev results from report": "https://git.drupalcode.org/project/linkchecker/-/merge_requests/46.patch"
             },
             "drupal/page_manager": {
-                "titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch"
+                "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch"
             },
             "drupal/url_embed": {
                 "3316376 - CKEditor 5 Support SVG fix": "https://www.drupal.org/files/issues/2024-01-11/url_embed-ckeditor5-support-3316376-37-svg-fix.patch"
             },
             "drupal/config_ignore": {
                 "3466656 - don't fail on missing config": "https://www.drupal.org/files/issues/2024-08-19/dont_fail_if_missing-3466656-4.patch"
+            },
+            "dompdf/dompdf": {
+                "local - use local file streams to avoid certificate issues": "./patches/dompdf-change_local_http_uri_to_a_file.patch"
             }
         },
         "patches-ignore": {

@@ -1,0 +1,31 @@
+diff --git a/dompdf/src/Helpers.php b/dompdf/src/Helpers.php
+index b0fe8f7..63e218c 100644
+--- a/dompdf/src/Helpers.php
++++ b/dompdf/src/Helpers.php
+@@ -149,7 +149,7 @@ class Helpers
+         $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+         $query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+         $fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+-        
++
+         // partially reproduced from https://stackoverflow.com/a/1243431/264628
+         /* replace '//' or '/./' or '/foo/../' with '/' */
+         $re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
+@@ -1005,6 +1005,17 @@ class Helpers
+ 
+         try {
+             if ($is_local_path || ini_get('allow_url_fopen') || !$can_use_curl) {
++                if ($is_local_path === false) {
++                  // Replace "file://" with the Drupal scheme and http host.
++                  $base_url = \Drupal::request()->getSchemeAndHttpHost();
++                  $uri = str_replace($base_url, "file://" . DRUPAL_ROOT, $uri);
++                  $parsed_uri = parse_url($uri);
++                  // Keep only the scheme and path.
++                  $uri = $parsed_uri['scheme'] . '://' . $parsed_uri['path'];
++                  // Flag as a local path after the modification.
++                  $is_local_path = true;
++                  // Now weird network issues are avoided, it is a local resource.
++                }
+                 if ($is_local_path === false) {
+                     $uri = Helpers::encodeURI($uri);
+                 }
