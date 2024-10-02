@@ -2,7 +2,9 @@
 
 namespace Drupal\ssc_common;
 
+use Drupal\Core\Render\RenderContext;
 use Drupal\message\Entity\Message;
+use Drupal\views\Views;
 
 /**
  * Utilities common across all SSC sites.
@@ -122,6 +124,62 @@ class Common {
     // @todo: log failed attempt.
 
     return $result;
+  }
+
+  /**
+   * Renders a Views block in a specific language.
+   *
+   *  This should not be this difficult.. ughh.
+   *
+   * @return array
+   *   The render array for the Views block.
+   */
+  static function renderViewsBlock($view_id, $display_id, $langcode, array $arguments = []): array {
+    $output = [];
+
+    $language_manager = \Drupal::languageManager();
+    $custom_language_negotiator = Drupal::service('backlinks.language_negotiator');
+    $language_manager->setNegotiator($custom_language_negotiator);
+
+    // Get original "current language" so we can set it back later.
+    $original_language_id = $language_manager->getCurrentLanguage()->getId();
+
+    // Set new language by its langcode
+    $language_manager->reset(); // Needed to re-run language negotiation
+    $language_manager->getNegotiator()->setLanguageCode($langcode);
+
+    // Get the desired language.
+    $desired_language = $language_manager->getLanguage($langcode);
+    \Drupal::languageManager()->setConfigOverrideLanguage($desired_language);
+
+    // Load the view.
+    $view = Views::getView($view_id);
+    if ($view) {
+      // Set the display ID.
+      $view->setDisplay($display_id);
+
+      // Set any arguments if needed.
+      if (!empty($arguments)) {
+        $view->setArguments($arguments);
+      }
+
+      // Isolate the render context to avoid side effects.
+      $context = new RenderContext();
+      // Render the view block in the desired language.
+      $output = \Drupal::service('renderer')->executeInRenderContext($context, function () use ($view, $desired_language) {
+        // Execute and render the view.
+        $view->preExecute();
+        $view->execute();
+        return $view->render();
+      });
+    }
+
+    // Reset language back as it was.
+    $language_manager->reset();
+    $language_manager->getNegotiator()->setLanguageCode($original_language_id);
+
+    // Return the rendered block.
+    return $output;
   }
 
 }
