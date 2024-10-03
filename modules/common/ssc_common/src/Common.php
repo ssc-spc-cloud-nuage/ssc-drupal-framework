@@ -138,7 +138,7 @@ class Common {
     $output = [];
 
     $language_manager = \Drupal::languageManager();
-    $custom_language_negotiator = Drupal::service('backlinks.language_negotiator');
+    $custom_language_negotiator = \Drupal::service('backlinks.language_negotiator');
     $language_manager->setNegotiator($custom_language_negotiator);
 
     // Get original "current language" so we can set it back later.

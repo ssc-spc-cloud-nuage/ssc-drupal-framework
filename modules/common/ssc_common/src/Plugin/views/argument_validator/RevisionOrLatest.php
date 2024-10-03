@@ -49,6 +49,11 @@ class RevisionOrLatest extends ArgumentValidatorPluginBase {
       $this->argument->argument = $args[1];
       return TRUE;
     }
+    // Handle case when view called programmatically, e.g. ICN emails.
+    if ($argument == 'current') {
+      $this->argument->argument = $this->getCurrentRevision($args[0]);
+      return TRUE;
+    }
 
     return FALSE;
   }
