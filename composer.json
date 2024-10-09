@@ -142,7 +142,8 @@
         "drupalwxt/wxt": "5.2.2",
         "enshrined/svg-sanitize": "^0.16.0",
         "npm-asset/dompurify": "^3.0",
-        "w8tcha/ckeditor-wordcount-plugin": "^1.17"
+        "w8tcha/ckeditor-wordcount-plugin": "^1.17",
+        "wet-boew/theme-gcweb": "14.6.0 as 14.5.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3"
