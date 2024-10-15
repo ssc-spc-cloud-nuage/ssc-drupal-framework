@@ -2,6 +2,7 @@
 
 namespace Drupal\ssc_common;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Render\RenderContext;
 use Drupal\message\Entity\Message;
 use Drupal\views\Views;
@@ -80,9 +81,16 @@ class Common {
     $message = Message::create(['template' => $template, 'uid' => \Drupal::currentUser()->id()]);
 
     // Add in any Message fields passed in
+    // NEW (1024): if field is long formatted text, set to Full HTML
+
     if (!empty($options['fields'])) {
       foreach ($options['fields'] as $field => $value) {
-        $message->set($field, $value);
+        if (Common::isFormattedLongText($message, $field)) {
+          $message->set($field, ['value' => $value, 'format' => 'simple']);
+        }
+        else {
+          $message->set($field, $value);
+        }
       }
     }
 
@@ -94,7 +102,7 @@ class Common {
           $message->setOwner($entity);
         }
         else {
-          $message->addContext($entity_type, $entity) ;
+          $message->addContext($entity_type, $entity);
         }
       }
     }
@@ -127,6 +135,35 @@ class Common {
   }
 
   /**
+   * Check if a field is a formatted long text field based on its definition.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity (e.g., a node).
+   * @param string $field_name
+   *   The machine name of the field.
+   *
+   * @return bool
+   *   TRUE if the field is a formatted long text field, FALSE otherwise.
+   */
+  static function isFormattedLongText(EntityInterface $entity, string $field_name): bool {
+    if ($entity->hasField($field_name)) {
+      // Get the field definition.
+      $field_definition = $entity->getFieldDefinition($field_name);
+
+      // Check if the field type is 'text_long' (long text).
+      $field_type = $field_definition->getType();
+
+      // Check if the field allows formats (i.e., it has 'allowed_formats').
+      $allowed_formats = $field_definition->getSetting('allowed_formats');
+
+      // Return TRUE if it's a formatted long text field.
+      return $field_type === 'text_long' && isset($allowed_formats);
+    }
+
+    return FALSE;
+  }
+
+/**
    * Renders a Views block in a specific language.
    *
    *  This should not be this difficult.. ughh.
