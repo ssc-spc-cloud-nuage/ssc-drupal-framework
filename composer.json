@@ -357,6 +357,9 @@
             "drupal/footnotes": {
                 "3381366 - warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
             },
+            "drupal/group": {
+              "3336280 - Fixes /admin/content page in certain scenarios.": "https://git.drupalcode.org/project/group/-/merge_requests/121.patch"
+            },
             "drupal/imce": {
                 "3371499 - fix private path": "./patches/imce-private-path-fix.patch"
             },
