@@ -1,0 +1,181 @@
+{
+  "patches": {
+    "drupal/core": {
+        "2916876 - LB block visiblity": "https://www.drupal.org/files/issues/2023-12-19/drupal-n2916876-207.patch",
+        "2942975 - allow LB setup to be exported with content": "https://www.drupal.org/files/issues/2023-08-14/2942975-240.patch",
+        "2979914 - add placeholder to Views search field": "https://www.drupal.org/files/issues/2020-10-03/2979914-17.patch",
+        "2944173 - allow tokens in url of links (ckeditor)": "https://www.drupal.org/files/issues/2021-10-01/xss_attrs-2944173-60.patch",
+        "3239705 - make link fields sortable": "https://www.drupal.org/files/issues/2021-10-06/make_link_fields_click_sortable-3239705-7.patch",
+        "3243125 - add 'has new content' sort handler": "https://www.drupal.org/files/issues/2021-10-20/has_new_sort-3243125-5.patch",
+        "2893740 - sidebar for other entities": "https://www.drupal.org/files/issues/2024-01-10/2893740_51.patch",
+        "2941092 - ignore width property when saving translation": "https://www.drupal.org/files/issues/2021-04-15/2941092-19.patch",
+        "1699378 - allow tokens in arguments for entityref fields": "https://www.drupal.org/files/issues/2024-01-10/1699378-258.patch",
+        "2692289 - allow limiting autocomplete to 1": "https://www.drupal.org/files/issues/2021-12-10/2692289-25-9.3.0.patch",
+        "3101231 - multilingual layout edit context": "https://www.drupal.org/files/issues/2022-02-16/layout-builder-translation-issue-3101231-34.patch",
+        "3089151 - fix drag/drop (needed for Field Groups)": "https://www.drupal.org/files/issues/2023-12-26/3089151-51.patch",
+        "3052608 - fixes DateTime issue in Paragraph breaking media upload": "https://www.drupal.org/files/issues/2023-04-11/3052608-22.patch",
+        "local   - clean preview of views sql query": "./patches/clean_views_sql_preview.patch",
+        "2885278 - adds tabs to revision pages and removes double title": "https://www.drupal.org/files/issues/2023-08-08/drupal-n2885278-38-95x.patch",
+        "3325410 - show revision numbers": "https://www.drupal.org/files/issues/2022-12-05/add_revision_numbers-3325410-3.patch",
+        "2862828 - boolean filtering fail when not set - module for this now?": "https://www.drupal.org/files/issues/2022-03-24/boolean-no-value-2862828-47.patch",
+        "3185750 - add TZ support for date/daterange fields": "https://www.drupal.org/files/issues/2024-02-26/3185750-51.patch",
+        "3261924 - remove new GD warning": "https://www.drupal.org/files/issues/2024-01-02/3261924-52.patch",
+        "local   - moderation": "./patches/moderation-translation-rc6.patch",
+        "2031149 - support other link protocols": "https://www.drupal.org/files/issues/2024-06-03/2031149-58.patch",
+        "3300404 - PHP8.1 - removes unserialize deprecated warning": "https://www.drupal.org/files/issues/2022-08-01/3300404-4.patch",
+        "2950758 - dont show fields just because twig debug enabled": "https://www.drupal.org/files/issues/2023-04-03/2950758-41_0.patch",
+        "3306820 - show field name on Manage Display": "https://www.drupal.org/files/issues/2022-08-30/3306820-machine-name-in-field-ui-table_0.patch",
+        "local - CTA block failing to translate on Test": "./patches/core-hack-custom-block-config.patch",
+        "2700667 - Notice: Undefined index: #type in FormHelper": "https://www.drupal.org/files/issues/2021-05-12/2700667-133a.patch",
+        "3027240 - Undefined index: #parents FormState.php": "https://www.drupal.org/files/issues/2021-07-14/drupal-undefined_index_parents-3027240-fixed.patch",
+        "3353388 - Fix TypeError in FormElementHelper.php": "https://www.drupal.org/files/issues/2023-06-21/typeError_implode_3353388.patch",
+        "local - LB fails when custom block missing": "./patches/lb_inline-block-missing.patch",
+        "local - add TZ alter": "./patches/core-tz_alter.patch",
+        "3358586 - clears orphaned permissions": "https://www.drupal.org/files/issues/2023-09-14/3358586-11.patch",
+        "3332416 - fix CK5 extending out of container": "https://www.drupal.org/files/issues/2024-04-09/3332416-79.patch",
+        "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch",
+        "local - support headings in summary elements": "./patches/core-support_headings_in_summary_elements.patch",
+        "3025039 - remove error on non-translable field on translation": "https://www.drupal.org/files/issues/2024-05-01/3025039-94.patch"
+    },
+    "drupal/address_static_map": {
+        "3358951 - PHP 8.1 support and sig fix": "https://www.drupal.org/files/issues/2023-05-08/php8_signature-3358951-2.patch"
+    },
+    "drupal/better_exposed_filters": {
+      "2996297 - fix ajax on reset": "https://www.drupal.org/files/issues/2022-06-06/better_exposed_filters-reset_button_ajax_5x-2996297-70.patch"
+    },
+    "drupal/bg_image_formatter": {
+        "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
+    },
+    "drupal/calendar_link": {
+        "3249457 - views support": "https://www.drupal.org/files/issues/2021-11-17/views_support-3249457-8.patch"
+    },
+    "drupal/content_sync": {
+        "2979368 - ignore types": "https://www.drupal.org/files/issues/2020-09-22/2979368-17.patch"
+    },
+    "drupal/ctools": {
+        "3230847 - allow LB to use ajax block conditions": "https://www.drupal.org/files/issues/2022-09-11/ctools-condition-form-ajax-3230847-7.diff"
+    },
+    "drupal/custom_breadcrumbs": {
+        "3252347 - path matching": "https://www.drupal.org/files/issues/2021-12-02/translated_path_matching-3252347-3.patch",
+        "3271500 - allow array tokens": "https://www.drupal.org/files/issues/2022-03-24/array_tokens-3271500-3.patch"
+    },
+    "drupal/date_popup": {
+        "3042555 - fix undefined index error": "https://www.drupal.org/files/issues/2022-07-18/date_popup_3042555_35.patch"
+    },
+    "drupal/diff": {
+        "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
+    },
+    "drupal/eva": {
+        "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
+    },
+    "drupaloverride/entity_field_condition": {
+        "local - D10 compatability": "./patches/entity_field_condition-D10_compatability.patch",
+        "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2021-07-28/entity_field_condition-generic-fieldable-entity-field-value-plugin-3091898-19.patch"
+    },
+    "drupal/entity_reference_revisions": {
+        "2799479 - paragraph relationship to host": "https://www.drupal.org/files/issues/2022-06-01/entity_reference_revisions-relationship_host_id-2799479-176.patch",
+        "local - moderation support": "./patches/err_moderation-translation-rc2.patch"
+    },
+    "drupal/feeds": {
+        "3261687 - A stray renderRoot() invocation is causing bubbling of attached assets to break": "https://www.drupal.org/files/issues/2022-04-22/feeds-renderRoot-issue-3261687-5.patch"
+    },
+    "drupal/flag": {
+        "2723703 - views relationships": "https://www.drupal.org/files/issues/2021-02-22/2723703-73.patch"
+    },
+    "drupal/footnotes": {
+        "3381366 - warnings when no footnote value": "https://www.drupal.org/files/issues/2023-08-23/fix-warnings-when-leaving-values-empty-3381366-5_0.patch"
+    },
+    "drupal/imce": {
+        "3371499 - fix private path": "./patches/imce-private-path-fix.patch"
+    },
+    "drupal/layout_builder_st": {
+        "3119208 - allow use with page manager": "https://www.drupal.org/files/issues/2020-12-09/layout_builder_st-more-defensive-handling-3119208-4.patch",
+        "3411037 - fix core removing contextual translation links": "https://git.drupalcode.org/project/layout_builder_st/-/merge_requests/5.patch"
+    },
+    "drupal/layout_library": {
+        "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
+        "local - fixes issues saving layouts disabling LL": "./patches/ignore_layout_selection_field_saving_layout.patch"
+    },
+    "drupal/lb_tabs": {
+        "local - hide when empty": "./patches/lb_tabs-hide_empty.patch",
+        "local - modify anchors": "./patches/lb-tabs_custom.patch"
+    },
+    "drupal/masquerade": {
+        "local - better unlink link in block": "./patches/masquerade-better_unlink.patch"
+    },
+    "drupal/message": {
+        "2981259 - allow setting token contexts": "https://www.drupal.org/files/issues/2018-06-24/allow_token_contexts-3.patch",
+        "14238511 - set admin perm annotation": "https://www.drupal.org/files/issues/2021-09-28/admin_perm_annotation-14238511-7.patch"
+    },
+    "drupal/message_notify": {
+        "2965975 - use message language": "https://www.drupal.org/files/issues/2022-04-14/proper_language-2965975-9.patch"
+    },
+    "drupal/mimemail": {
+        "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
+    },
+    "drupal/openid_connect": {
+        "local - add login redirect hook": "./patches/openid_connect-login_redirect_alter.patch",
+        "local - add autologin and showcore functionality (combine issue: 3011413 & 3441149)": "./patches/openid_connect-autologin-showcore.patch",
+        "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch",
+        "3383036 - remove lang prefix from redirec url": "https://www.drupal.org/files/issues/2024-04-04/3383036-36-3.0-alpha3.patch"
+    },
+    "drupal/openid_connect_windows_aad": {
+        "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
+        "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2023-06-16/openid_connect_windows_aad-User_photo_submodule-3273039-7.patch",
+        "3400940 - Warning undefined array index end_session_endpoint.": "https://www.drupal.org/files/issues/2023-11-11/3400940-03.patch"
+    },
+    "drupal/paragraphs": {
+        "3068944 - paragraphs to follow translation setting for showing fields": "https://www.drupal.org/files/issues/2021-05-05/paragraphWidget-multilanguage-enable-buton.patch",
+        "2887353 - module to sync paragraph translations": "https://www.drupal.org/files/issues/2022-07-26/paragraphs-translation-sync-2887353-54.patch"
+    },
+    "drupal/readmore": {
+        "3055200 - allow changing Read More/Less text": "https://www.drupal.org/files/issues/2022-02-08/readmore-less-text-as-config-3055200-14.patch",
+        "2185649 - reduce effect": "https://www.drupal.org/files/issues/2021-12-02/remove_slide_effect-2185649-5.patch"
+    },
+    "drupal/redis": {
+        "3004561 - Enable ssl scheme": "https://www.drupal.org/files/issues/2021-11-19/redis-support_tls_on_predis-3004561-37.patch"
+    },
+    "drupal/smtp": {
+        "3063886 - fix debugging": "https://www.drupal.org/files/issues/2022-11-21/3063886-83.patch"
+    },
+    "drupal/views_bulk_operations": {
+        "local - remove tmpstore items on cancel": "./patches/empty_on_cancel-local.patch"
+    },
+    "drupal/viewscss": {
+        "local - silence errors": "./patches/viewscss-silence_errors.patch"
+    },
+    "drupal/facets": {
+        "3379445 - fixes breaking ajax pagers": "https://www.drupal.org/files/issues/2024-05-09/3379445-41.patch"
+    },
+    "drupal/group": {
+        "3336280 - Fixes /admin/content page in certain scenarios.": "https://git.drupalcode.org/project/group/-/merge_requests/121.patch"
+    },
+    "drupal/bootstrap_layouts": {
+        "3376161 - section admin labels": "https://www.drupal.org/files/issues/2023-07-21/add-admin-labels.patch"
+    },
+    "drupal/webform": {
+        "3419372 - large file upload fails": "https://www.drupal.org/files/issues/2024-02-06/Issue-3419372-Manage-files-js-BlockSubmit-rename-mis_0.patch"
+    },
+    "drupal/entityform_block": {
+        "2424739 - Select form mode": "https://www.drupal.org/files/issues/2022-06-01/fixed_EntityContextDefinition.patch"
+    },
+    "drush/drush": {
+        "fix symlink issue with 12.5.1+": "https://patch-diff.githubusercontent.com/raw/drush-ops/drush/pull/5755.patch"
+    },
+    "drupal/linkchecker": {
+        "3366753 - Filter out para rev results from report": "https://git.drupalcode.org/project/linkchecker/-/merge_requests/46.patch"
+    },
+    "drupal/page_manager": {
+        "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch"
+    },
+    "drupal/url_embed": {
+        "3316376 - CKEditor 5 Support SVG fix": "https://www.drupal.org/files/issues/2024-01-11/url_embed-ckeditor5-support-3316376-37-svg-fix.patch"
+    },
+    "drupal/config_ignore": {
+        "3466656 - don't fail on missing config": "https://www.drupal.org/files/issues/2024-08-19/dont_fail_if_missing-3466656-4.patch"
+    },
+    "dompdf/dompdf": {
+        "local - use local file streams to avoid certificate issues": "./patches/dompdf-change_local_http_uri_to_a_file.patch"
+    }
+  }
+}
