@@ -53,10 +53,19 @@ function ssc_common_requirements($phase): array {
     $git_info = @file_get_contents('./git_release.txt') ?: '';
     if ($git_info) {
       $lines = preg_split('/\s+/', $git_info);
+      $description[0] = t('Release/Commit: ') . $lines[0];
+      $description[1] = t('Release date: ') . $lines[1];
+      if (isset($lines[2])) {
+        $description[2] = t('Framework version: ') . $lines[2];
+      }
+      $build = [
+        '#theme' => 'item_list',
+        '#items' => $description,
+      ];
+
       $requirements['ssc-plus'] = [
         'title' => t('SSC'),
-        'value' => t('Release/Commit: ') . $lines[0],
-        'description' => t('Release date: ') . $lines[1],
+        'value' => \Drupal::service('renderer')->renderPlain($build),
         'severity' => REQUIREMENT_INFO,
       ];
     }
