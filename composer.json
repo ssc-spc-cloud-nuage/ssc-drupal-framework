@@ -125,6 +125,7 @@
         "drupal/timezone_detect": "^1.0@dev",
         "drupal/tranc": "^1.0.3",
         "drupal/translatable_menu_link_uri": "^2.1",
+        "drupal/twig_extensions": "^2.1",
         "drupal/twig_tweak": "^3",
         "drupal/ultimate_cron": "^2.0@alpha",
         "drupal/view_custom_table": "^2.0",
@@ -138,7 +139,6 @@
         "drupal/views_field_view": "^1.0@beta",
         "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^2",
-        "drupaloverride/twig_extensions": "dev-1",
         "drupalwxt/wxt": "5.2.2",
         "enshrined/svg-sanitize": "^0.16.0",
         "npm-asset/dompurify": "^3.0",
@@ -182,18 +182,6 @@
         {
             "type": "composer",
             "url": "https://drupalwxt.github.io/composer-extdeps/"
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "drupaloverride/twig_extensions",
-                "version": "dev-1",
-                "type": "drupal-module",
-                "dist": {
-                    "type": "zip",
-                    "url": "https://git.drupalcode.org/api/v4/projects/project%2Ftwig_extensions/repository/archive.zip?sha=10b6a1a6"
-                }
-            }
         }
     ],
     "scripts": {
