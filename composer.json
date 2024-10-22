@@ -68,6 +68,7 @@
         "drupal/fvm": "^2.0",
         "drupal/google_analytics": "^4.0",
         "drupal/hal": "^1.0",
+        "drupal/htmlmail": "4.0.0-beta1",
         "drupal/iek": "1.x-dev",
         "drupal/image_effects": "3.4",
         "drupal/imce": "3.0.8",
@@ -137,7 +138,6 @@
         "drupal/views_field_view": "^1.0@beta",
         "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^2",
-        "drupaloverride/htmlmail": "dev-1",
         "drupaloverride/twig_extensions": "dev-1",
         "drupalwxt/wxt": "5.2.2",
         "enshrined/svg-sanitize": "^0.16.0",
@@ -182,18 +182,6 @@
         {
             "type": "composer",
             "url": "https://drupalwxt.github.io/composer-extdeps/"
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "drupaloverride/htmlmail",
-                "version": "dev-1",
-                "type": "drupal-module",
-                "dist": {
-                    "type": "zip",
-                    "url": "https://git.drupalcode.org/api/v4/projects/project%2Fhtmlmail/repository/archive.zip?sha=dbd771f3"
-                }
-            }
         },
         {
             "type": "package",
