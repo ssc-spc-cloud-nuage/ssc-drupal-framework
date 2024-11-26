@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\wxt_ext_metatag\Plugin\metatag\Tag;
+namespace Drupal\ssc_common\Plugin\metatag\Tag;
 
 use Drupal\metatag\Plugin\metatag\Tag\MetaNameBase;
 
