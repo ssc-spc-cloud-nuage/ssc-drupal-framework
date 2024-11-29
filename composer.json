@@ -18,7 +18,7 @@
         "drupal/ape": "^1.6",
         "drupal/auto_entitylabel": "^3.3",
         "drupal/backup_migrate": "^5.1",
-        "drupal/better_exposed_filters": "7.0.2",
+        "drupal/better_exposed_filters": "6.0.6",
         "drupal/better_formats": "^1.0@beta",
         "drupal/bg_image_formatter": "1.17.0",
         "drupal/block_field": "1.0.0-rc5",
