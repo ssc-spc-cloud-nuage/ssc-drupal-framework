@@ -27,4 +27,5 @@ class AlertIconBlock extends BlockBase {
 
     return $build;
   }
+
 }
