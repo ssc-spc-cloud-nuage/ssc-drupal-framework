@@ -1,0 +1,75 @@
+/**
+ * @file
+ * Styles specific to Landing Page nodes.
+ */
+
+/* Buttons */
+.view-latest-news-buttons .view-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-block: 24px 48px;
+}
+
+/* Upcoming events */
+.upcoming-events {
+  margin-top: 1rem;
+}
+.upcoming-event {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  margin-inline: -0.5rem;
+  padding: 0.5rem;
+  border: solid 1px transparent;
+  border-radius: 8px;
+  line-height: 1;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color var(--time-regular-transition),
+      border-color var(--time-regular-transition);
+  }
+}
+.upcoming-event:hover {
+  background-color: var(--clr-ssc-violet-50);
+  border-color: var(--clr-ssc-violet-100);
+}
+.upcoming-event__date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  background-color: var(--clr-ssc-violet-light);
+  border-radius: 8px;
+}
+.upcoming-event__month {
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+.upcoming-event__day {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.upcoming-event__info {
+  flex: 1;
+  padding-block: 0.375rem;
+}
+.upcoming-event__title {
+  margin-bottom: 0.5rem;
+}
+.upcoming-event__title a {
+  font-size: 1rem;
+  text-decoration: none;
+  line-height: 1.2;
+  color: var(--clr-ssc-gray-regular);
+}
+.upcoming-event:hover .upcoming-event__title a {
+  color: var(--clr-ssc-black);
+}
+.upcoming-event__language {
+  color: var(--clr-ssc-gray-regular);
+  font-size: 0.875rem;
+}

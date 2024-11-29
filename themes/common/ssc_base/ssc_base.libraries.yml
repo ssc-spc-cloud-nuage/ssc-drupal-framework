@@ -1,0 +1,99 @@
+global:
+  css:
+    base:
+      css/base/elements.css: {}
+      css/base/variables.css: {}
+    layout:
+      css/layout/guide-page.css: {}
+      css/layout/news.css: {}
+      css/layout/search-results.css: {}
+      css/layout/structured-page.css: {}
+    component:
+      css/components/alerts.css: {}
+      css/components/archived-banner.css: {}
+      css/components/breadcrumb.css: {}
+      css/components/buttons.css: {}
+      css/components/card-promo.css: {}
+      css/components/cards.css: {}
+      css/components/collaborators.css: {}
+      css/components/collapsible.css: {}
+      css/components/content-footer.css: {}
+      css/components/event-session.css: {}
+      css/components/exposed-form.css: {}
+      css/components/facets.css: {}
+      css/components/featured-news.css: {}
+      css/components/file-download.css: {}
+      css/components/guide-pager.css: {}
+      css/components/images.css: {}
+      css/components/inputs.css: {}
+      css/components/pager.css: {}
+      css/components/panels.css: {}
+      css/components/readmore.css: {}
+      css/components/related-topics.css: {}
+      css/components/sidebar-blocks.css: {}
+      css/components/site-improvement.css: {}
+      css/components/slick-slider.css: {}
+      css/components/topics.css: {}
+      css/components/ui-dialog.css: {}
+      css/components/wells.css: {}
+    theme:
+      css/theme/forms.css: {}
+      css/theme/print.css: {}
+      css/theme/temp.css: {}
+      css/theme/theme.css: {}
+      css/theme/views.css: {}
+      css/theme/wet-overrides.css: {}
+      css/utilities/color.css: {}
+      css/utilities/layout.css: {}
+      css/utilities/print.css: {}
+      css/utilities/spacing.css: {}
+      css/utilities/temp.css: {}
+      css/utilities/typography.css: {}
+  js:
+    js/global.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/drupal.dialog.ajax
+
+entity_moderation_form:
+  css:
+    component:
+      css/components/entity-moderation.css: {}
+
+footer:
+  css:
+    component:
+      css/components/footer.css: {}
+
+header:
+  css:
+    component:
+      css/components/header.css: {}
+      css/components/header-link.css: {}
+      css/components/mobile-dock.css: {}
+  js:
+    js/mobile-navigation.js: {}
+
+login_page:
+  css:
+    layout:
+      css/layout/login-page.css: {}
+
+page_not_found:
+  css:
+    layout:
+      css/layout/page-not-found.css: {}
+
+splash:
+  css:
+    layout:
+      css/layout/splash.css: {}
+
+ssc_menu:
+  css:
+    component:
+      css/components/ssc-menu.css: {}
+  js:
+    js/ssc-menu.js: {}

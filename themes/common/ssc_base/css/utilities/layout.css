@@ -1,0 +1,30 @@
+/**
+ * @file
+ * Utility classes for layouts.
+ */
+
+/* Flexbox */
+.flex-align-vertical {
+  display: flex;
+  align-items: center;
+}
+.flex-space-between {
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Width limiter (limits line length) */
+.width-limiter :is(h2, h3, h4, h5, h6, p, ol, ul, dl, hr, table, blockquote, details, .alert, .well, .panel) {
+  max-width: 900px;
+}
+.width-limiter .no-limiter { max-width: initial; }
+
+/* Containers */
+.container-full-width {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}

@@ -1,0 +1,21 @@
+/**
+ * @file
+ * Styles specific to Guide nodes.
+ */
+
+.page-node-type-guide {
+  & .bs-2col {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  & .view-guide-steps .views-row {
+    margin-bottom: 2rem;
+  }
+  & .view-guide-steps h3 {
+    margin-bottom: 0.5em;
+    margin-top: 0;
+  }
+}
+.field--name-field-sidebar-blocks {
+  margin-bottom: 3em;
+}

@@ -1,0 +1,25 @@
+/**
+ * @file
+ * Styles for the image component.
+ */
+
+.field--name-field-credits {
+  background-color: var(--clr-ssc-gray-dark);
+  padding: 1.25rem 1.25rem 0;
+  color: var(--clr-ssc-cyan-regular);
+}
+.field--name-field-caption {
+  background-color: var(--clr-ssc-gray-dark);
+  padding: 1.25rem 1.25rem 0;
+  color: var(--clr-ssc-white);
+}
+.field--name-field-primary-image {
+  margin-bottom: 1rem;
+  line-height: 1.5rem;
+  font-size: 1rem;
+
+  & .field--name-field-credits + .field--name-field-caption {
+    padding-bottom: 1.25rem;
+    padding-top: 0.625rem;
+  }
+}

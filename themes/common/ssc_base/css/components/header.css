@@ -1,0 +1,53 @@
+/**
+ * @file
+ * Styles for the navbar component.
+ */
+
+.navbar-top {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: var(--size-navbar-height);
+  border-top: solid 6px var(--clr-ssc-gray-dark);
+
+  @media screen and (max-width: 767px) {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: 10;
+    background-color: var(--clr-ssc-white);
+    border-top-width: 3px;
+    transform: translateY(0);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition:
+        box-shadow var(--time-slow-transition) var(--ease-out-cubic),
+        transform var(--time-slow-transition) var(--ease-out-cubic);
+    }
+    &.navbar-top--shadow {
+      box-shadow: 0 0 12px rgb(0 0 0 / 25%);
+    }
+    &.navbar-top--hidden {
+      transform: translateY(-105%);
+    }
+    /*Fix top spacing when admin toolbar is visible on mobile */
+    body[class*="toolbar"] & {
+      margin-top: 39px;
+    }
+  }
+  & > .container {
+    display: grid;
+
+    @media screen and (max-width: 767px) {
+      width: 100%;
+    }
+    &::before,
+    &::after {
+      display: none;
+      content: none;
+    }
+  }
+  & .block {
+    display: flex;
+  }
+}

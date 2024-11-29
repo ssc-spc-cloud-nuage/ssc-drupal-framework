@@ -29,7 +29,6 @@ class LanguageSwitcherBlock extends LanguageBlock {
   public function build() {
     $build = [];
     $build['#theme'] = 'language_switcher_block';
-    $build['#attached']['library'][] = 'ssc_common/header-link';
 
     $links = $this->getSwitcher();
     $build['#content']['full_switcher'] = $links['full'];
@@ -88,8 +87,7 @@ class LanguageSwitcherBlock extends LanguageBlock {
       $site_config = $this->configFactory->get('system.site');
       $page_404_url = $site_config->get('page.404');
       $links->links[$switch]['url'] = Url::fromUri('internal:' . $page_404_url);
-    }
-    else {
+    } else {
       $title = Markup::create($links->links[$switch]['title']);
 
       // If Search page, change Related Topic to FR version.
@@ -99,13 +97,13 @@ class LanguageSwitcherBlock extends LanguageBlock {
             ->condition('vid', 'topics')
             ->condition('name', $links->links[$switch]['query']['r'], '=')
             ->accessCheck(FALSE);
-           $ids = $query->execute();
-           $tid = current($ids);
-           $term = Term::load($tid);
-           if ($term && $term->hasTranslation($switch)) {
-              $translated_term = \Drupal::service('entity.repository')->getTranslationFromContext($term, $switch);
-              $links->links[$switch]['query']['r'] = Xss::filter($translated_term->getName());
-            }
+          $ids = $query->execute();
+          $tid = current($ids);
+          $term = Term::load($tid);
+          if ($term && $term->hasTranslation($switch)) {
+            $translated_term = \Drupal::service('entity.repository')->getTranslationFromContext($term, $switch);
+            $links->links[$switch]['query']['r'] = Xss::filter($translated_term->getName());
+          }
         }
       }
 
@@ -183,5 +181,4 @@ class LanguageSwitcherBlock extends LanguageBlock {
 
     return $report_path;
   }
-
 }

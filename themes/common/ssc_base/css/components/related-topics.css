@@ -1,0 +1,46 @@
+/**
+ * @file
+ * Styles for related topics component.
+ */
+
+/* Block */
+[class*="related-topics-block"] > .block-title,
+[class*="blockrelated-topics"] > .block-title {
+  margin-top: 0;
+}
+
+/* Pills */
+.pill-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  & a {
+    position: relative;
+    z-index: 1;
+    font-size: 1rem;
+    color: var(--clr-ssc-gray-regular);
+    padding: 0.375em 0.75em;
+    background-color: var(--clr-ssc-gray-light);
+    border-radius: 100vw;
+    line-height: 1.5rem;
+    text-decoration: none;
+    font-weight: 400;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: background-color var(--time-regular-transition),
+        border-color var(--time-regular-transition),
+        color var(--time-regular-transition);
+    }
+    &:hover {
+      background-color: var(--clr-ssc-gray-dark);
+      text-decoration: inherit;
+      color: var(--clr-ssc-white);
+    }
+    &:focus-visible {
+      outline: var(--focus-outline);
+      outline-offset: var(--focus-outline-offset);
+      box-shadow: var(--focus-outline-inner);
+    }
+  }
+}

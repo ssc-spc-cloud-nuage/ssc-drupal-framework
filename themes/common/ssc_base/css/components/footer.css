@@ -1,0 +1,143 @@
+/**
+ * @file
+ * Styles for the footer component.
+ */
+.site-footer {
+  --clr-footer-text: var(--clr-ssc-white);
+  --clr-footer-bg: var(--clr-ssc-violet-dark);
+  --clr-subfooter-text: var(--clr-ssc-white);
+  --clr-subfooter-bg: var(--clr-ssc-black);
+
+  & a {
+    font-size: 1rem !important;
+    color: inherit;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+}
+
+/* Main section */
+.wb-navcurr {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  min-height: 380px;
+  width: 100dvw;
+  margin-inline: -50vw;
+  padding-block: 50px !important;
+  color: var(--clr-footer-text);
+  background-color: var(--clr-footer-bg);
+  background-image: var(--footer-bg-logo);
+  background-size: 360px auto;
+  background-repeat: no-repeat;
+  background-position: -180px center;
+
+  & [class*="col-"] {
+    float: none;
+  }
+  & h3 {
+    position: relative;
+    margin-top: 0 !important;
+    margin-bottom: 1.313rem !important;
+    padding-bottom: 1.313rem;
+    font-size: 1.375rem;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      display: block;
+      height: 1px;
+      background-color: var(--clr-footer-text);
+      opacity: 0.175;
+    }
+  }
+  & > li {
+    display: flex;
+    max-width: 1170px;
+    margin: 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  & a:focus-visible {
+    outline: none;
+    color: var(--clr-ssc-black);
+    background-color: var(--focus-color-light);
+    box-shadow: var(--focus-shadow);
+    text-decoration: none;
+  }
+}
+.footer__links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+
+  &::before,
+  &::after {
+    display: none;
+  }
+}
+
+/* Sub footer */
+.subfooter {
+  padding-block: 12px;
+  background-color: var(--clr-subfooter-bg);
+  color: var(--clr-subfooter-text);
+
+  & nav {
+    padding: 0 !important;
+  }
+  & ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  & li {
+    margin: 0 !important;
+  }
+  & a:focus-visible {
+    outline: none;
+    color: var(--clr-ssc-black);
+    background-color: var(--focus-color-light);
+    box-shadow: var(--focus-shadow);
+    text-decoration: none;
+  }
+}
+.site-footer .ftr-urlt-lnk li::before {
+  display: none;
+}
+
+/* Logos */
+.brand img {
+  width: unset;
+  height: unset;
+  margin: 0;
+}
+.brand__logos {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  column-gap: 12px;
+  padding-block: 0.5rem;
+}
+.brand__ssc-logo {
+  max-height: 24px;
+
+  @media screen and (max-width: 767px) {
+    max-height: 18px;
+  }
+}
+.brand__gc-logo {
+  max-height: 32px;
+
+  @media screen and (max-width: 767px) {
+    max-height: 24px;
+  }
+}

@@ -1,0 +1,70 @@
+/**
+ * @file
+ * Styles for the breadcrumb component.
+ *
+ * @summary
+ * This file primarily contains style overrides on top of WET4. Unfortunately,
+ * the `#wb-bc` ID selector is needed in order to match specificity.
+ */
+
+#wb-bc .breadcrumb {
+  margin-top: 2px;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+
+  @media screen and (max-width: 767px) {
+    white-space: nowrap;
+  }
+  & li {
+    padding: 0;
+    overflow: visible;
+
+    &::before {
+      position: relative;
+      top: 0;
+      padding: 0 5px;
+      font-family: var(--ff-glyphicons);
+      content: "\e092";
+      font-size: 0.7rem;
+      color: var(--clr-ssc-white);
+    }
+    &.active {
+      font-weight: 700;
+      color: var(--clr-ssc-gray-light);
+    }
+  }
+  & a {
+    position: relative;
+    padding: 0;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--clr-ssc-white);
+
+    &:focus-visible {
+      margin-inline: -0.25em;
+      padding-inline: 0.25em;
+      background-color: var(--focus-color-light);
+      outline: none;
+      box-shadow: var(--focus-shadow);
+      color: var(--clr-ssc-black);
+      text-decoration: none;
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -0.05em;
+      left: 0;
+      height: 1px;
+      width: 100%;
+      background-color: rgb(0 0 0 / 0);
+
+      @media (prefers-reduced-motion: no-preference) {
+        transition: background-color var(--time-regular-transition);
+      }
+    }
+    &:hover::after {
+      background-color: currentColor;
+    }
+  }
+}

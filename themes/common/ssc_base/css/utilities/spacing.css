@@ -1,0 +1,20 @@
+/**
+ * @file
+ * Utility classes for sizing.
+ */
+
+/* Padding */
+.padding-y {
+  padding-block: 48px;
+
+  @media screen and (max-width: 980px) {
+    padding-block: 16px;
+  }
+}
+.padding-y-1 { padding-block: 16px; }
+.padding-y-2 { padding-block: 32px; }
+.padding-y-3 { padding-block: 48px; }
+.padding-y-4 { padding-block: 72px; }
+.padding-top-0 { padding-top: 0 !important; }
+.padding-bottom-0 { padding-bottom: 0 !important; }
+.no-padding-x { padding-inline: 0 !important; }

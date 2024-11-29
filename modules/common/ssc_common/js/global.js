@@ -67,15 +67,6 @@
     $('#node-event-form label:contains("Country")').parent().hide();
   };
 
-  // Click outside menu closes menu
-  $(document).mouseup(function(e) {
-    var container = $("nav.gcweb-menu");
-    // if the target of the click isn't the container nor a descendant of the container
-    if (!container.is(e.target) && container.has(e.target).length === 0) {
-      $("nav.gcweb-menu button").attr('aria-expanded', 'false');
-    }
-  });
-
   // Set last dashboard tab
   $('li.tabs__tab').click(function() {
     cookies.set('dashboard_tab', $(this).find('a').attr('id'));

@@ -1,0 +1,25 @@
+{{ attach_library('ssc_base/footer') }}
+
+<footer id="wb-info" class="site-footer">
+  <div class="{{ container }}">
+    {{ page.footer }}
+  </div>
+  <div class="subfooter">
+    <div class="{{ container }}">
+      {{ page.branding }}
+    </div>
+  </div>
+  <div class="brand">
+    <div class="{{ container }}">
+      <div class="visible-sm visible-xs tofpg">
+        <a href="#wb-cont">{{ 'Top of Page'|tc }}<span class="glyphicon glyphicon-chevron-up"></span></a>
+      </div>
+      <div class="brand__logos">
+        <img src='{{ base_path ~ directory }}/assets/ssc-fip-{{ language }}.svg'
+              alt='{{ 'Symbol of Shared Services Canada'|tc }}' class="brand__ssc-logo"/>
+        <img src='{{ logo_bottom_svg }}' alt='{{ 'Symbol of the Government of Canada'|tc }}'
+              class="brand__gc-logo"/>
+      </div>
+    </div>
+  </div>
+</footer>

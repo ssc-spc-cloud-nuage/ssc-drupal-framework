@@ -1,0 +1,18 @@
+/**
+ * @file
+ * Styles for sidebar blocks.
+ */
+
+.field--name-field-sidebar-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+.sidebar-block {
+  font-size: 1.125rem;
+}
+
+/* Hybrid block */
+.field--name-field-sidebar-blocks .panel {
+  margin-bottom: 0;
+}

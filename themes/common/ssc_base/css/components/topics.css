@@ -1,0 +1,29 @@
+/**
+ * @file
+ * Styles for topic pages' grid component.
+ */
+
+.page-node-type-topic .header-region {
+  margin-bottom: 0 !important;
+}
+.page-node-type-topic .bg--purple-light {
+  padding-top: 2rem;
+  font-size: 1.5rem;
+  line-height: 2.125rem;
+}
+.page-node-type-topic .field--name-field-pages .paragraph,
+.page-node-type-topic .field--name-field-pages .paragraph > .field--item {
+  height: 100%;
+}
+@media screen and (max-width: 980px) {
+  .page-node-type-topic .field--name-field-pages {
+    margin-right: 0;
+    margin-left: 0;
+  }
+}
+.topics-grid :is(.field--items, .view-content) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-column-gap: 30px;
+  grid-row-gap: 30px;
+}

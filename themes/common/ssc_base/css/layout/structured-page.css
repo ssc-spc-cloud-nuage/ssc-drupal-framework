@@ -1,0 +1,29 @@
+/**
+ * @file
+ * Styles specific to Structured Page nodes.
+ */
+
+.page-node-type-structured-page {
+  & .field--name-field-h3-sections {
+    margin-top: 2rem;
+  }
+  & .field--name-body {
+    margin-left: -0.938rem;
+    margin-right: -0.938rem;
+  }
+  & .layout__region--content > :first-child:is(.structured-page__sections) {
+    margin-top: -2.375rem;
+  }
+}
+
+/* Collapsible section */
+details[open].collapsible-section {
+  padding: 0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+
+  & > summary {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
