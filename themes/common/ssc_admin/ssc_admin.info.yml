@@ -1,9 +1,20 @@
 name: SSC Admin Theme
-description: A custom SSC admin theme based on Claro.
 type: theme
-core_version_requirement: '>=9.2'
-package: SSC
 base theme: claro
-
+description: A custom SSC admin theme based on Claro.
+package: SSC
+core_version_requirement: ^10
 libraries:
   - ssc_admin/global
+regions:
+  header: Header
+  pre_content: Pre-content
+  breadcrumb: Breadcrumb
+  highlighted: Highlighted
+  help: Help
+  content: Content
+  page_top: Page top
+  page_bottom: Page bottom
+  sidebar_first: First sidebar
+regions_hidden:
+  - sidebar_first
