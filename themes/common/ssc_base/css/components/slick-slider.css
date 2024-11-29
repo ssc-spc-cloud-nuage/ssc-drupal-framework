@@ -1,0 +1,205 @@
+/**
+ * @file
+ * Styles for the Slick Slider component.
+ *
+ * @summary
+ * This component can only be used as a Drupal View format. To use it, select
+ * the "Slick Carousel" option along with the "SSC Carousel" optionset.
+ */
+
+.slick--optionset--ssc-carousel {
+  & .slick-track {
+    display: flex;
+    align-items: stretch;
+  }
+  & .slick-list {
+    margin-bottom: 2rem;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  & .slick-slide {
+    height: auto;
+    flex: 1;
+    margin-left: 15px;
+    margin-right: 15px;
+
+    & > article,
+    & > article > .content,
+    & .views-element-container,
+    & .view,
+    & .featured-news-item {
+      height: 100%;
+    }
+  }
+}
+
+/* Dots */
+.slick-dots li {
+  margin-inline: 15px;
+}
+.slick-dots li button:before {
+  display: none;
+}
+.slick-dots li button {
+  background-color: var(--clr-ssc-black);
+  border: 3px solid var(--clr-ssc-black);
+  box-shadow: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: all var(--time-regular-transition);
+  }
+}
+.slick-dots li.slick-active button {
+  background-color: var(--clr-ssc-white);
+}
+.slick-dots li button:hover {
+  background-color: var(--clr-ssc-gray-regular);
+}
+.slick-dots:focus-within .slick-active {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+  box-shadow: var(--focus-outline-inner);
+  border-radius: 100vw;
+}
+
+/* Slick Arrows */
+.slick-arrow {
+  top: calc(50% - 18px);
+}
+.slick-arrow::before {
+  color: var(--clr-ssc-black);
+  text-shadow: none;
+  font-family: var(--ff-font-awesome);
+  font-weight: 900;
+  font-size: 25px;
+  height: 40px;
+  width: 40px;
+  justify-content: center;
+  display: flex;
+  border-radius: 100vw;
+  align-items: center;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color var(--time-regular-transition),
+      color var(--time-regular-transition);
+  }
+}
+.bg--inverted .slick-arrow::before {
+  color: var(--clr-ssc-gray-light);
+}
+.slick-arrow:is(:hover, :focus) {
+  text-decoration: none !important;
+}
+.slick-arrow:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+  box-shadow: var(--focus-outline-inner);
+}
+.slick-arrow:hover::before {
+  background-color: var(--clr-ssc-black);
+  color: var(--clr-ssc-white);
+}
+.slick-next {
+  margin-right: -60px;
+}
+.slick-next::before {
+  content: "\f105" !important;
+}
+.slick-prev {
+  margin-left: -60px;
+}
+.slick-prev::before {
+  content: "\f104" !important;
+}
+
+/* Event Card Styling */
+.view-display-id-carousel_small_eva .slick__slide {
+  margin-block: 8px 24px;
+  overflow: visible !important;
+}
+@media screen and (min-width: 1200px) {
+  .view-display-id-carousel_small_eva .slick__slide {
+    max-width: 585px;
+  }
+}
+.view-display-id-carousel_small_eva .card {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  min-height: 180px;
+  max-width: 568px;
+  box-shadow: var(--shadow-elevation-low);
+  border-radius: var(--size-border-radius-large);
+  overflow: hidden;
+}
+.view-display-id-carousel_small_eva .card:hover {
+  box-shadow: var(--shadow-elevation-medium);
+}
+.view-display-id-carousel_small_eva .card__body {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.view-display-id-carousel_small_eva .card__title {
+  color: var(--clr-ssc-gray);
+  font-size: 1.25rem;
+}
+.view-display-id-carousel_small_eva .card__accent {
+  margin-block: 0 8px;
+  color: var(--clr-ssc-pink-regular);
+  font-size: 1rem;
+  font-weight: 500;
+}
+.view-display-id-carousel_small_eva .card__btn {
+  font-size: 1rem;
+}
+.view-display-id-carousel_small_eva .plus-icon {
+  height: 2.4rem;
+  width: 2.4rem;
+  background-color: var(--clr-ssc-white);
+  border: 2px solid var(--clr-card-border);
+}
+.view-display-id-carousel_small_eva .plus-icon svg {
+  background-color: var(--clr-ssc-gray-light);
+}
+.view-display-id-carousel_small_eva .plus-icon path {
+  stroke: var(--clr-ssc-gray-regular);
+}
+.view-display-id-carousel_small_eva .card:hover .plus-icon path {
+  stroke: var(--clr-ssc-black);
+}
+
+/* Carousel medium */
+.view-display-id-carousel_medium_eva .slick__slide {
+  margin-block: 8px 24px;
+  overflow: visible !important;
+
+  @media screen and (min-width: 1200px) {
+    max-width: 585px;
+  }
+}
+.view-display-id-carousel_medium_eva .card {
+  box-shadow: var(--shadow-elevation-low);
+  border-radius: var(--size-border-radius-large);
+  overflow: hidden;
+}
+.view-display-id-carousel_medium_eva .card:hover {
+  box-shadow: var(--shadow-elevation-medium);
+}
+.view-display-id-carousel_medium_eva .card__body {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.view-display-id-carousel_medium_eva .card__title {
+  color: var(--clr-ssc-gray);
+  font-size: 1.25rem;
+}
+.view-display-id-carousel_medium_eva .card__accent {
+  margin-block: 0 8px;
+  color: var(--clr-ssc-pink-regular);
+  font-size: 1rem;
+}

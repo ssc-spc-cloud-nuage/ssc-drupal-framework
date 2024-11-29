@@ -1,0 +1,116 @@
+/**
+ * @file
+ * Styles for views across MySSC+.
+ */
+
+/* View header */
+.view-header {
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--clr-ssc-black);
+  border-bottom: solid 1px var(--clr-ssc-gray-light);
+}
+
+/* No results styles */
+.message-no-results {
+  position: relative;
+  padding: 16px 16px 16px 64px;
+  background-color: var(--clr-ssc-gray-light);
+  border-left: solid 6px var(--clr-ssc-gray-regular);
+  border-radius: 6px;
+
+  &::before {
+    position: absolute;
+    left: 0.6em;
+    display: inline-block;
+    content: "\e086";
+    color: var(--clr-ssc-gray-regular);
+    font-family: var(--ff-glyphicons);
+    font-size: 1.8rem;
+    margin-top: -0.25em;
+  }
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* With exposed filters */
+.view--filters-exposed {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+
+  @media screen and (max-width: 991px) {
+    flex-direction: column;
+  }
+}
+.sidebar-filters,
+.view--filters-exposed .view-filters {
+  max-width: 360px;
+  height: fit-content;
+  padding: 24px;
+  background-color: var(--clr-ssc-gray-50);
+  border: solid 1px var(--clr-ssc-gray-200);
+  border-radius: 12px;
+}
+.view-filters--sticky {
+  position: sticky;
+  top: 24px;
+}
+.sidebar-filters .block-title,
+.view-filters__title {
+  margin-top: 0;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.sidebar-filters .form--inline,
+.views-exposed-form > .form-inline {
+  display: flex !important;
+  flex-direction: column;
+  gap: 24px;
+}
+.sidebar-filters .form--inline::before,
+.sidebar-filters .form--inline::after,
+.views-exposed-form > .form-inline::before,
+.views-exposed-form > .form-inline::after {
+  display: none !important;
+}
+.sidebar-filters .form-item,
+.view--filters-exposed .form-item {
+  display: block;
+}
+.sidebar-filters .view-main,
+.view--filters-exposed .view-main {
+  flex: 1;
+}
+.sidebar-filters .form-control,
+.view--filters-exposed .form-control {
+  width: 100%;
+  padding: 12px !important;
+  border: solid 1px var(--clr-ssc-gray-200);
+}
+.sidebar-filters .select-wrapper,
+.view--filters-exposed .select-wrapper {
+  width: 100% !important;
+}
+.views-exposed-form .checkbox input[type="checkbox"] {
+  margin: 0 0.375rem 0 0;
+}
+.views-exposed-form :is(.control-label, .fieldset-legend) {
+  margin-bottom: 0.25em;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--clr-ssc-gray-regular);
+}
+.text--white.views-exposed-form :is(.control-label, .fieldset-legend) {
+  color: var(--clr-ssc-white);
+}
+.views-exposed-form .form-checkboxes .control-label {
+  font-weight: 400;
+}
+.views-exposed-form .option {
+  margin-top: 4px;
+}
+.views-exposed-form .form-actions {
+  margin-top: 12px;
+}

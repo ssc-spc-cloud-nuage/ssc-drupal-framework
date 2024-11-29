@@ -29,7 +29,6 @@ class LanguageSwitcherBlock extends LanguageBlock {
   public function build() {
     $build = [];
     $build['#theme'] = 'language_switcher_block';
-    $build['#attached']['library'][] = 'ssc_common/header-link';
 
     $links = $this->getSwitcher();
     $build['#content']['full_switcher'] = $links['full'];

@@ -1,0 +1,49 @@
+/**
+ * @file
+ * Styles for well component.
+ */
+
+.well {
+  padding: 15px;
+  border: none;
+  box-shadow: none;
+  border-radius: var(--size-border-radius-medium);
+  background-color: var(--clr-ssc-gray-light);
+}
+.well-sm {
+  padding: 10px;
+  font-size: 1.125rem;
+}
+.well-lg {
+  padding: 30px;
+}
+:is(.well, .jumbotron) > :last-child {
+  margin-bottom: 0;
+}
+
+/* Well variants */
+.well-info {
+  border: 0;
+  position: relative;
+  padding: 2rem 2rem 2rem 6rem;
+  line-height: 30px;
+  box-shadow: none;
+
+  & .field--name-body::before {
+    color: #707070;
+    font-size: 50px;
+    position: absolute;
+    left: 24px;
+    top: 45px;
+    content: "\f05a";
+    font-family: var(--ff-font-awesome);
+    font-weight: 900;
+    display: block;
+  }
+  & .field--name-body p:last-of-type {
+    margin-bottom: 0;
+  }
+}
+.jumbotron p {
+  font-weight: inherit;
+}

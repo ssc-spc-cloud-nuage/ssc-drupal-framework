@@ -1,0 +1,141 @@
+/**
+ * @file
+ * Styles for the mobile dock component.
+ */
+
+/* Disable document scrolling when the mobile dock is open */
+html:has(.mobile-dock .main-menu-button[aria-expanded="true"]) {
+  overflow-y: hidden;
+}
+.mobile-dock {
+  position: fixed;
+  bottom: 0;
+  inset-inline: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  height: var(--dock-height);
+  background-color: var(--clr-ssc-black);
+
+  & > .container {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    height: 100%;
+  }
+}
+
+/* Buttons */
+.mobile-dock {
+  & .header-link.header-link {
+    --clr-header-link-bg: initial;
+    display: grid;
+    place-items: center;
+    min-width: var(--dock-height);
+    height: calc(var(--dock-height) - 24px);
+    margin: 0 !important;
+    padding: 0 12px !important;
+    background-color: var(--clr-header-link-bg) !important;
+    border: none;
+    border-radius: 100vw !important;
+    color: var(--clr-ssc-white) !important;
+    transition-delay: 100ms;
+
+    &:focus {
+      outline: none;
+    }
+    &:focus-visible {
+      outline: var(--focus-outline);
+      outline-offset: var(--focus-outline-offset);
+      box-shadow: var(--focus-outline-inner);
+    }
+    &:is(:hover, :focus) {
+      background-color: var(--clr-header-link-bg) !important;
+    }
+    &.header-link--accent {
+      background-color: var(--clr-ssc-violet-regular) !important;
+    }
+  }
+  &:has(.open, .main-menu-button[aria-expanded="true"]) .header-link--user {
+    --clr-header-link-bg: initial;
+  }
+}
+.mobile-dock__button-wrapper {
+  display: grid;
+  place-items: center;
+}
+.mobile-dock__button-wrapper:has(.open) .header-link,
+.mobile-dock__button-wrapper:has(.main-menu-button[aria-expanded="true"]) .header-link,
+body.path-user .header-link--user {
+  --clr-header-link-bg: var(--clr-ssc-pink-regular);
+}
+
+/* Menu */
+.mobile-dock {
+  & .main-menu-tabs-group {
+    position: fixed !important;
+    top: 0;
+    bottom: var(--dock-height);
+    left: 0;
+    width: 100% !important;
+    min-height: initial;
+    margin: 0;
+    overflow-y: auto;
+  }
+  & .main-menu-items-group {
+    position: static;
+  }
+  & .main-menu-button[aria-expanded="false"] + .main-menu-tabs-group {
+    display: none;
+  }
+}
+
+/* Search */
+.mobile-dock {
+  & .wb-bar-b {
+    bottom: var(--dock-height);
+    padding: 12px;
+    padding-bottom: 6px;
+    border-radius: 0;
+    background-color: var(--clr-ssc-black);
+    box-shadow: none;
+  }
+  & .overlay-def header {
+    padding: 0;
+  }
+  & .mfp-close {
+    display: none;
+  }
+  & .form-item {
+    width: 100%;
+  }
+  & .form-submit {
+    display: none;
+  }
+  & .control-label[for^="edit-ft"] {
+    clip: rect(1px, 1px, 1px, 1px);
+    height: 1px;
+    margin: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+  }
+  & .views-exposed-form [name="ft"] {
+    height: 40px;
+    padding-right: 3.5rem;
+    padding-left: 1rem;
+    border: 0;
+    border-radius: 1000px;
+    background-color: var(--clr-ssc-gray-light);
+    box-shadow: none;
+    color: var(--clr-ssc-black) !important;
+    width: 100%;
+  }
+}
+
+/* Fix top spacing when admin toolbar is visible on mobile */
+@media screen and (max-width: 767px) {
+  body[class*="toolbar"] .navbar-top {
+    margin-top: 39px;
+  }
+}

@@ -1,0 +1,40 @@
+/**
+ * @file
+ * Styles for the readmore component.
+ *
+ * @summary
+ * This component can currently be found on the Active alerts page, on alerts
+ * that have details to show.
+ */
+
+.readmore-container {
+  & p:has(.readless-link) {
+    margin-bottom: 0;
+  }
+}
+.readless-link {
+  display: block;
+  width: fit-content;
+  margin-top: 10px;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:is(:hover, :focus, :focus-visible) {
+    text-decoration: none;
+  }
+  &::after {
+    position: relative;
+    bottom: -0.125em;
+    margin-left: 0.5em;
+    font-family: var(--ff-glyphicons);
+    font-size: 0.8em;
+  }
+  &:not(.readmore-link)::after {
+    content: "\e113";
+  }
+}
+.readmore-link {
+  &::after {
+    content: "\e114";
+  }
+}

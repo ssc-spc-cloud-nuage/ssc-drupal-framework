@@ -1,0 +1,38 @@
+/**
+ * @file
+ * Styles whose purpose and/or utility should be identified, and that require
+ * some kind of refactoring.
+ *
+ *@ deprecated
+ * The styles in this file are deprecated and will be removed in the future.
+ */
+
+div#posted-on {
+  margin: 0 -15px 50px -15px;
+}
+
+/* Blog Post */
+.blog-node.blog-post div#posted-on {
+  height: unset;
+}
+
+/* Corp Message */
+.page-node-type-corporate-message .field--name-field-message-type a {
+  color: var(--clr-ssc-white);
+}
+section.block.block-layout-builder.block-field-blocknodecorporate-messagetitle.clearfix {
+  color: var(--clr-ssc-white);
+}
+div#posted-on {
+  background-color: #efecec;
+  height: 30px;
+}
+div#posted-on time {
+  vertical-align: sub;
+}
+.field--name-field-senders {
+  padding-top: 20px;
+}
+.field--name-field-person h2 {
+  margin-top: 5px;
+}

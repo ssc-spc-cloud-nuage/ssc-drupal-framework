@@ -1,0 +1,14 @@
+/**
+ * @file
+ * Styles for the file download component.
+ */
+
+.file-download__item:not(:last-of-type) {
+  padding-bottom: 0.875rem;
+  margin-bottom: 0.875rem;
+  border-bottom: solid 1px var(--clr-ssc-gray-light);
+}
+.file-download__details {
+  font-size: 1rem;
+  color: var(--clr-ssc-gray-regular);
+}

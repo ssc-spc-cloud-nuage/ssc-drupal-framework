@@ -1,0 +1,54 @@
+/**
+ * @file
+ * Styles for the content footer component.
+ */
+
+.pagedetails {
+  position: relative;
+  z-index: 10;
+  padding: 0;
+}
+.content-footer {
+  display: flex;
+  align-items: baseline;
+  gap: 24px 48px;
+  padding-block: 48px;
+  color: var(--clr-ssc-gray-regular);
+  font-size: 1rem;
+  line-height: 2;
+
+  @media screen and (max-width: 980px) {
+    flex-direction: column;
+  }
+  & * {
+    margin: 0 !important;
+    padding: 0;
+  }
+}
+
+/* Related topics pills */
+.content-footer .pill-links {
+  & .field-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  & .views-label {
+    white-space: nowrap;
+  }
+  & .views-field {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+}
+
+/* Date modified block */
+.block-date-modified-block {
+  margin-inline-start: auto;
+  white-space: nowrap;
+
+  @media screen and (max-width: 980px) {
+    margin-inline-start: initial;
+  }
+}

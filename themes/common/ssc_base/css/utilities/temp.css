@@ -1,0 +1,85 @@
+/**
+ * @file
+ * Utility classes that should be refactored, replaced or removed.
+ *
+ * @deprecated
+ * The styles in this file are deprecated and will be removed in the future.
+ */
+
+:root {
+  /* TODO: Replace every occurence of these tokens with the above ones */
+  /* Colors - Legacy */
+  --clr-ssc-white-1: #ffffff;
+  --clr-ssc-black-1: #131226;
+  --clr-ssc-black-2: #000000;
+  --clr-ssc-gray-1: #1c1c2a;
+  --clr-ssc-gray-2: #2a283d;
+  --clr-ssc-gray-3: #515068;
+  --clr-ssc-gray-4: #726f85;
+  --clr-ssc-gray-5: #e4e3e8;
+  --clr-ssc-gray-6: #f8f7ff;
+  --clr-ssc-purple-1: #4b3e99;
+  --clr-ssc-purple-2: #63489d;
+  --clr-ssc-purple-3: #8f3d97;
+  --clr-ssc-purple-4: #221f42;
+  --clr-ssc-purple-5: #d1cdff;
+  --clr-ssc-purple-6: #f1f0ff;
+  --clr-ssc-pink-1: #a9206f;
+  --clr-ssc-pink-2: #bc5aa2;
+  --clr-ssc-pink-3: #aa086d;
+  --clr-ssc-blue-1: #1f419a;
+  --clr-ssc-blue-2: #41bded;
+  --clr-ssc-blue-3: #0049cc;
+  --clr-ssc-cyan-1: #008caf;
+  --clr-ssc-cyan-2: #03a398;
+  --clr-ssc-cyan-3: #23b683;
+}
+
+/* Background */
+.bg--inverted {
+  --clr-section-bg: 0deg 0% 0%;
+  color: var(--clr-ssc-white);
+}
+.bg--purple-light {
+  background-color: var(--clr-ssc-violet-light);
+}
+.bg--gray-light {
+  background-color: var(--clr-ssc-gray-light);
+}
+.bg--gray-1 {
+  background-color: var(--clr-ssc-gray-1);
+}
+.bg--gray-5 {
+  background-color: var(--clr-ssc-gray-5);
+}
+.bg--gray-6 {
+  background-color: var(--clr-ssc-gray-6);
+}
+
+/* Sections */
+.bg--section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+.bg--section-home-aoi {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Text */
+.text-white,
+.text--white {
+  color: var(--clr-ssc-white);
+}
+.text-white a,
+.text-white a:visited {
+  color: var(--clr-ssc-cyan-2);
+}
+.text-white a:hover,
+.text-white a:focus {
+  color: var(--clr-ssc-pink-2);
+}
+.text-pink-1,
+.text--pink-1 {
+  color: var(--clr-ssc-pink-1);
+}

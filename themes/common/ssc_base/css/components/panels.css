@@ -1,0 +1,112 @@
+/**
+ * @file
+ * Styles for panel component.
+ */
+
+.panel {
+  --clr-border-panel: transparent;
+  --clr-heading-panel: transparent;
+  --clr-title-panel: var(--clr-ssc-black);
+  background-color: initial;
+  border: solid 1px var(--clr-border-panel);
+  border-radius: var(--size-border-radius-medium);
+  box-shadow: none;
+}
+.panel-heading {
+  padding: 0;
+}
+.panel-title {
+  margin: 0 0 0.5em !important;
+  padding: 0 !important;
+  color: var(--clr-title-panel) !important;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.panel-body {
+  padding: 0;
+}
+.panel-footer {
+  margin: 0.5em 0 0 !important;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+:is(.panel-body, .panel-footer) > :last-child {
+  margin-bottom: 0;
+}
+
+/* Panel variants */
+.panel[class*="panel-"] {
+  background-color: var(--clr-ssc-white);
+  overflow: hidden;
+}
+.panel[class*="panel-"] .panel-heading {
+  padding: 10px 15px;
+  background-color: var(--clr-heading-panel) !important;
+  border-bottom-color: var(--clr-border-panel) !important;
+  border-radius: 0;
+}
+.panel[class*="panel-"] .panel-title {
+  margin: 0 !important;
+}
+.panel[class*="panel-"] .panel-body {
+  padding: 15px;
+}
+.panel[class*="panel-"] .panel-footer {
+  margin: 0 !important;
+  padding: 15px;
+  background-color: var(--clr-ssc-gray-light);
+  border-top: solid 1px var(--clr-ssc-gray-dark);
+}
+.panel-default {
+  --clr-border-panel: var(--clr-ssc-gray-dark);
+  --clr-heading-panel: var(--clr-ssc-gray-light);
+  --clr-title-panel: var(--clr-ssc-gray-dark);
+}
+.panel-primary {
+  --clr-border-panel: var(--clr-ssc-violet-regular);
+  --clr-heading-panel: var(--clr-ssc-violet-regular);
+  --clr-title-panel: var(--clr-ssc-white);
+}
+.panel-success {
+  --clr-border-panel: #629339;
+  --clr-heading-panel: #dff0d8;
+  --clr-title-panel: rgb(60, 118, 61);
+}
+.panel-info {
+  --clr-border-panel: #2392A9;
+  --clr-heading-panel: #d9edf7;
+  --clr-title-panel: rgb(49, 112, 143);
+}
+.panel-warning {
+  --clr-border-panel: #BA8312;
+  --clr-heading-panel: #fcf8e3;
+  --clr-title-panel: rgb(138, 109, 59);
+}
+.panel-danger {
+  --clr-border-panel: #C16171;
+  --clr-heading-panel: #f2dede;
+  --clr-title-panel: rgb(169, 68, 66);
+}
+
+/* @TODO figure out where these styles apply */
+.panel .field--name-field-referenced-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+.panel .field--name-field-referenced-pages a {
+  flex: 1;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.panel .field--name-field-referenced-pages .field--item {
+  display: flex;
+  gap: 0.5rem;
+}
+.panel .field--name-field-referenced-pages .field--item::before {
+  content: "•";
+  color: var(--clr-ssc-gray-regular);
+  display: block;
+}

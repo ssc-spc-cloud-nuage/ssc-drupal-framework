@@ -1,0 +1,43 @@
+/**
+ * @file
+ * Styles for the archived banner component.
+ */
+
+.archived-wrapper {
+  --clr-banner-primary: #F9F4D4;
+  --clr-banner-accent: #FF9900;
+  --size-owner-min: 60px;
+  --size-owner-min-halfed: calc(var(--size-owner-min) / 2);
+  margin-top: 30px;
+  padding: 24px;
+  background-color: var(--clr-banner-primary);
+  border-radius: var(--size-border-radius-medium);
+  text-align: center;
+
+  :has(.archived-wrapper__owner) {
+    margin-bottom: var(--size-owner-min-halfed);
+    padding-bottom: 0;
+  }
+}
+.archived-wrapper__banner {
+  max-width: 60ch;
+  margin-inline: auto;
+}
+.archived-wrapper__icon {
+  font-size: 40px;
+  color: var(--clr-banner-accent);
+}
+.archived-wrapper__owner {
+  display: inline-grid;
+  place-content: center;
+  max-width: fit-content;
+  min-height: var(--size-owner-min);
+  margin-top: calc(var(--size-owner-min-halfed) * -1);
+  padding: 0.75em 1.25em;
+  background-color: var(--clr-banner-primary);
+  outline: solid 1px var(--clr-banner-accent);
+  outline-offset: -5px;
+  border-radius: 100vw;
+  font-size: 1.125rem;
+  transform: translateY(var(--size-owner-min-halfed));
+}

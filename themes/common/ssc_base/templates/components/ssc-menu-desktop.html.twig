@@ -1,0 +1,12 @@
+{{ attach_library('ssc_base/ssc_menu') }}
+
+<nav class="ssc-menu hidden-xs" data-trgt="mb-pnl" typeof="SiteNavigationElement">
+  <h2 class="wb-inv">{{ 'Menu'|tc }}</h2>
+  <button type="button" aria-haspopup="true" aria-expanded="false" class="main-menu-button">
+    <span>{{ 'Menu'|tc }}</span>
+    <svg viewBox="0 0 10 10" class="menu-icon">
+      <path d="M0,1 L10,1 M0,5 L10,5 M0,9 L 10,9" />
+    </svg>
+  </button>
+  {{ page.navigation }}
+</nav>

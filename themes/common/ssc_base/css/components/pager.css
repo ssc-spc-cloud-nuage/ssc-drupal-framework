@@ -1,0 +1,63 @@
+/**
+ * @file
+ * Styles for Views pager component.
+ */
+
+.pager {
+  margin: 0;
+  padding: 15px 0;
+
+  &.mini-pager {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  &:not(.mini-pager) .pager__items {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+  }
+  & li > a,
+  & :is(.no-prev, .no-next) {
+    display: grid;
+    place-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0 !important;
+    background-color: var(--clr-ssc-white);
+    border: solid 1px transparent;
+    border-radius: 100vw !important;
+    color: var(--clr-ssc-black);
+    font-size: 1rem;
+    line-height: 1;
+    font-weight: 600;
+  }
+  & li > a {
+    text-decoration: none;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: background-color var(--time-regular-transition);
+    }
+    &:is(:hover, :active) {
+      background-color: var(--clr-ssc-gray-light);
+      border-color: transparent;
+      color: var(--clr-ssc-black);
+    }
+    .is-active & {
+      background-color: var(--clr-accent-page);
+      border-color: transparent;
+      color: var(--clr-ssc-white);
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+  & :is(.no-prev, .no-next) {
+    opacity: 0.35;
+  }
+  & .glyphicon {
+    top: unset;
+  }
+}
