@@ -24,7 +24,6 @@ class AlertIconBlock extends BlockBase {
   public function build() {
     $build = [];
     $build['#theme'] = 'alert_icon_block';
-    $build['#attached']['library'][] = 'ssc_common/header-link';
 
     return $build;
   }

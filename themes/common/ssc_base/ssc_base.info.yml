@@ -1,0 +1,9 @@
+name: SSC Base Theme
+description: A WxT child theme leveraging Bootstrap 3.
+type: theme
+core_version_requirement: '>=9.2'
+package: SSC
+base theme: wxt_bootstrap
+
+libraries:
+  - ssc_base/global

@@ -1,0 +1,36 @@
+/**
+ * @file
+ * Styles for the site improvement form component.
+ */
+
+.site-improve-cta {
+  padding: 1em 0;
+  font-size: 1.125rem;
+  text-align: center;
+
+  & * {
+    margin-bottom: 0;
+  }
+  & .field--name-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--clr-ssc-white);
+  }
+  & .btn {
+    margin-left: 1em;
+    padding: 0.8em 1.2em;
+    background-color: var(--clr-ssc-black);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+    font-size: inherit;
+    font-weight: 500;
+    color: var(--clr-ssc-white);
+
+    &:is(:hover, :focus) {
+      opacity: 1;
+      background-color: var(--clr-ssc-white);
+      color: var(--clr-ssc-gray-dark);
+      text-decoration: none !important;
+    }
+  }
+}

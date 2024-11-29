@@ -1,0 +1,6 @@
+global:
+  css:
+    theme:
+      css/admin.css: {}
+      css/forms.css: {}
+      css/tables.css: {}

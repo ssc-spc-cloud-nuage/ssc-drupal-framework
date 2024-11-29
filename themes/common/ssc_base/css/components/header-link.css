@@ -1,0 +1,86 @@
+/**
+ * @file
+ * Styles for the site header buttons and links.
+ */
+
+/* All links */
+.header-link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 2.5rem;
+  background-color: var(--clr-ssc-black);
+  border-radius: 100vw !important;
+  font-weight: 600;
+  text-decoration: none;
+  text-wrap: nowrap;
+  color: var(--clr-ssc-white) !important;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color var(--time-regular-transition);
+  }
+  @media screen and (max-width: 767px) {
+    height: 2rem;
+  }
+  &:hover {
+    background-color: var(--clr-ssc-violet-regular);
+    text-decoration: none;
+    color: var(--clr-ssc-white);
+  }
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+    box-shadow: var(--focus-outline-inner);
+    text-decoration: none;
+  }
+  & * {
+    margin: 0;
+  }
+}
+
+/* Accent links */
+.header-link--accent {
+  background-color: var(--clr-ssc-pink-regular);
+
+  &,
+  &:visited {
+    color: var(--clr-ssc-white);
+  }
+  &:hover {
+    background-color: var(--clr-ssc-violet-regular);
+  }
+  &:focus-visible {
+    background-color: var(--clr-ssc-pink-regular);
+  }
+}
+
+/* Icon-only links */
+.header-link--icon {
+  aspect-ratio: 1;
+  padding: 0 !important;
+
+  & > span {
+    font-size: 1.25rem;
+  }
+  & > svg {
+    fill: var(--clr-ssc-white);
+  }
+}
+
+/* Text-only links */
+.header-link--text {
+  padding-inline: 1em;
+  font-size: 1rem;
+}
+
+/* Dot indicator (notifications) */
+.header-link--indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: var(--clr-ssc-pink-regular);
+  border-radius: 100vw;
+  outline: solid 2px var(--clr-ssc-white);
+}

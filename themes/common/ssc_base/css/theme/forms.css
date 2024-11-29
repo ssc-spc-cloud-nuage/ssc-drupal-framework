@@ -1,0 +1,287 @@
+/**
+ * @file
+ * Styles for custom forms and form elements.
+ */
+
+.form-control {
+  /* Reset the WET4 default transition */
+  transition: none;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      border var(--time-regular-transition),
+      outline var(--time-regular-transition),
+      box-shadow var(--time-regular-transition),
+      color var(--time-regular-transition);
+  }
+}
+
+/* Default WxT/Bootstrap overrides */
+[data-drupal-selector="edit-date-wrapper"] {
+  width: 100%;
+}
+[data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"],
+[data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] .panel-heading,
+[data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] .panel-body {
+  margin: 0;
+  padding: 0;
+  background-color: transparent !important;
+  border: 0;
+  overflow: initial;
+}
+[data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] .panel-heading {
+  margin-bottom: 0.75em;
+}
+[data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] .panel-body {
+  display: flex;
+  gap: 12px;
+}
+[data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] .panel-body::before,
+[data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] .panel-body::after {
+  display: none;
+}
+[data-drupal-selector="edit-date-wrapper"] .panel-body > * {
+  flex: 1;
+  width: 0;
+}
+[data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] input {
+  min-width: 0;
+  padding: 6px 12px;
+}
+
+
+/* Webform submission forms */
+.webform-submission-form > *:not(:last-child),
+.webform-submission-form .form-group:not(:last-of-type),
+.webform-submission-form .fieldgroup:not(:last-of-type),
+.webform-submission-form .fieldset-wrapper > *:not(:last-child),
+.webform-submission-form .webform-section-wrapper > *:not(:last-child) {
+  margin-bottom: 1rem;
+}
+.webform-submission-form *:not(h2, h3, h4, h5, h6) {
+  line-height: 1.5 !important;
+}
+.webform-submission-form > .form-group:not(:last-of-type) {
+  margin-bottom: 1rem;
+}
+.webform-submission-form > h2 {
+  margin-block: 3rem 1rem;
+}
+.webform-submission-form .description {
+  font-size: 1.125rem;
+}
+.webform-submission-form .fieldgroup > legend {
+  margin-bottom: 0.25rem;
+}
+.webform-submission-form .form-item-meta-author {
+  /* Hide author name on rendered form */
+  display: none;
+}
+.webform-submission-form [data-drupal-selector="edit-actions"] {
+  margin-top: 2rem;
+}
+.webform-submission-form :is(.help-block, .control-group .help-inline) {
+  font-size: 1rem;
+}
+.webform-submission-form .form-inline .control-label {
+  margin-bottom: 5px;
+}
+.webform-section {
+  margin-bottom: 18px !important;
+}
+.help-block a {
+  color: var(--clr-ssc-blue);
+}
+
+/* jQuery UI Dialog form */
+.ui-dialog .webform .content > :not(.layout) {
+  /* Hide everything that is not the webform (e.g. banner) */
+  display: none;
+}
+.ui-dialog :is(input:not([type="checkbox"], [type="radio"]), select, textarea) {
+  width: 100%;
+}
+.ui-dialog .webform-submission-form .form-item:not(.wb-inv) {
+  margin-bottom: 1rem;
+}
+
+/* Gray sidebar form (seen on landing pages) */
+.ev-lnd-bg {
+  position: relative;
+  z-index: 10;
+}
+.ev-lnd-bg label {
+  margin-bottom: 0.25em !important;
+  font-weight: 400;
+  color: var(--clr-ssc-gray-dark);
+}
+.ev-lnd-bg .form-item {
+  display: block;
+  margin-bottom: 0.938rem;
+}
+.ev-lnd-bg :is(input[placeholder], [placeholder]) {
+  font-size: 1rem;
+  color: var(--clr-ssc-gray-dark) !important;
+}
+.ev-lnd-bg :is(.form-text, .form-control, .form-select) {
+  width: 100%;
+  padding: 15px !important;
+  color: var(--clr-ssc-gray-dark);
+}
+.ev-lnd-bg input[type="date"].form-control {
+  line-height: inherit;
+}
+.ev-lnd-bg .form-inline .checkbox input[type="checkbox"] {
+  margin-right: 0.375rem;
+}
+.ev-lnd-bg .select-wrapper {
+  width: 100% !important;
+}
+.ev-lnd-bg .select-wrapper:after {
+  color: var(--clr-ssc-gray-dark);
+}
+.ev-lnd-bg .bef-exposed-form .form--inline > .form-item {
+  float: none;
+}
+.ev-lnd-bg .panel-heading {
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+}
+.ev-lnd-bg .item-list__checkbox label {
+  font-weight: 400;
+}
+.ev-lnd-bg .panel-default {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  overflow: initial;
+}
+.ev-lnd-bg :is(.panel-body, .panel) {
+  padding: 0;
+  box-shadow: unset;
+}
+.ev-lnd-bg .form-checkboxes.bef-checkboxes .form-item {
+  margin-bottom: 0.375rem;
+}
+/* These styles should should only affect the filters column */
+.ev-lnd-bg .bs-region--right :is(.block-title, .panel-title, .fieldset-legend) {
+  display: inline-block;
+  margin: 2rem 0 1rem;
+  padding: 0;
+  color: var(--clr-ssc-gray-dark);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.ev-lnd-bg .form-actions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 24px 0 64px;
+}
+.ev-lnd-bg .form-actions .btn {
+  padding: 16px 32px;
+  background-color: var(--clr-accent-page);
+  border-radius: var(--size-border-radius-small);
+  font-size: 1.125rem;
+  line-height: 1.313rem;
+}
+.ev-lnd-bg .form-actions .btn:hover {
+  background-color: var(--clr-ssc-gray-dark);
+  color: var(--clr-ssc-white);
+}
+.ev-lnd-bg [data-drupal-selector="edit-date-wrapper"] {
+  margin-top: 2rem;
+}
+
+/* Webform multi-value input table */
+.webform-submission-form .webform-multiple-table th {
+  padding: 0;
+}
+.webform-submission-form .webform-multiple-table--operations {
+  display: flex;
+  gap: 8px;
+}
+.webform-submission-form .draggable {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+}
+.webform-submission-form .draggable:not(:last-of-type) {
+  margin-bottom: 4px;
+}
+.webform-submission-form .btn {
+  margin: 0;
+}
+.webform-submission-form .draggable > td {
+  width: auto;
+  border: none;
+}
+.webform-submission-form .draggable > td:nth-of-type(2) {
+  /* Input field for each draggable item */
+  flex: 1;
+  padding: 0;
+}
+.webform-submission-form .webform-multiple-table .icon,
+.webform-submission-form .webform-multiple-table .webform-multiple-table--handle,
+.webform-submission-form .webform-multiple-table .tabledrag-handle {
+  margin: 0;
+  padding: 0;
+}
+.webform-submission-form .webform-multiple-table .webform-multiple-table--handle {
+  padding-inline: 6px;
+}
+.webform-submission-form .webform-multiple-add {
+  /* Hide default multiple add block */
+  display: none;
+}
+
+/* Webform multi-page progress marker */
+.progress-marker {
+  --clr-progress-marker-primary: var(--clr-ssc-violet-regular);
+  --clr-progress-marker-secondary: var(--clr-ssc-gray-light);
+}
+.progress-marker::before {
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--clr-progress-marker-secondary) !important;
+  font-weight: 500;
+  color: var(--clr-ssc-gray-regular);
+  outline: solid 4px var(--clr-ssc-white);
+}
+.progress-step.is-active .progress-marker::before {
+  background-color: var(--clr-progress-marker-primary) !important;
+  color: var(--clr-ssc-white) !important;
+}
+.progress-marker::after {
+  top: 50%;
+  transform: translateY(-50%);
+  height: 2px;
+  background-color: var(--clr-progress-marker-secondary) !important;
+}
+
+/* Portal modal form */
+.portal-select-modal-form .form-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: var(--size-ui-dialog-padding);
+  margin-inline: calc(var(--size-ui-dialog-padding) * -1);
+  background-color: var(--clr-ssc-gray-light);
+  padding: var(--size-ui-dialog-padding);
+}
+.portal-select-modal-form .form-item {
+  margin: 0;
+  padding: 3px;
+  color: var(--clr-ssc-gray-regular);
+  font-weight: 600;
+}
+.portal-select-modal-form .form-item:has(input:checked) {
+  color: var(--clr-ssc-black);
+}
+.portal-select-modal-form button > .icon {
+  display: none;
+}

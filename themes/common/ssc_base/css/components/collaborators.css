@@ -1,0 +1,116 @@
+/**
+ * @file
+ * Styles for the collaborators component.
+ *
+ * @summary
+ * This component is typically found on news-type pages and includes
+ * collaborators' picture, name and (sometimes) their role.
+ */
+
+.collaborator {
+  --size-thumbnail-image: 60px;
+  --size-max-text-length: 28ch;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  max-width: var(--size-max-width);
+
+  & .collaborator--thumbnail {
+    height: var(--size-thumbnail-image);
+    aspect-ratio: 1;
+    align-self: flex-start;
+
+    & img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 100vw;
+    }
+  }
+  & .collaborator--name {
+    flex-grow: 1;
+    margin-block: -0.4em;
+    font-weight: bold;
+    line-height: 1.5;
+
+    & > * {
+      max-width: var(--size-max-text-length);
+    }
+  }
+  & .field--position {
+    font-weight: normal;
+  }
+}
+
+/* Signature block */
+.signature-block {
+  & .view-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 36px;
+    margin-top: 48px;
+  }
+  & .collaborator--thumbnail img {
+    outline: 2px solid var(--clr-ssc-violet-dark);
+  }
+  & .collaborator--name {
+    & .field--name {
+      color: var(--clr-ssc-black);
+      font-size: 1.125rem;
+    }
+    & .field--position {
+      color: var(--clr-ssc-gray-regular);
+      font-size: 1rem;
+
+      /* Add extra space between positions */
+      & .field--item {
+        margin-top: 0.25em;
+      }
+    }
+  }
+}
+
+/* Contact sidebar block */
+.paragraph--type--sidebar-block-contact {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 36px;
+  padding: 24px;
+  padding-top: 40px;
+  border-radius: var(--size-border-radius-medium);
+  background-color: var(--clr-ssc-gray-light);
+  text-align: center;
+  line-height: 1.5;
+
+  & .collaborator {
+    flex-direction: column;
+  }
+  & .collaborator--thumbnail {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    padding: 0;
+    transform: translate(-50%, -50%);
+  }
+  & .collaborator--thumbnail img {
+    background-color: var(--clr-ssc-white);
+    box-shadow: 0 0 4px rgb(0 0 0 / 25%);
+  }
+  & .collaborator--name {
+    margin: 0;
+    font-size: 1.375rem;
+  }
+  & .field--name-field-contacts-title {
+    font-size: 1rem;
+    color: var(--clr-ssc-gray-dark);
+  }
+  & .field--name-field-body {
+    margin-top: 0.25em;
+  }
+  & .btn {
+    display: block;
+    font-size: inherit;
+  }
+}

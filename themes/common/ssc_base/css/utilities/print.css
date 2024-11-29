@@ -1,0 +1,17 @@
+/**
+ * @file
+ * Utility classes for print CSS.
+ */
+
+@media print {
+  /* Push the content that follows onto a separate page */
+  .print-page-break { break-after: page; }
+  /* Hide on print */
+  .print-hidden { display: none; }
+  /* Show on print */
+  .print-block { display: block; }
+  /* Set font size to 12px */
+  .print-small { font-size: 0.75rem; }
+  /* Set font size to 10px */
+  .print-xsmall { font-size: 0.625rem; }
+}

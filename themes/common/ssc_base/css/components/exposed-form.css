@@ -1,0 +1,59 @@
+/**
+ * @file
+ * Styles for the Views exposed form component.
+ */
+
+/* Inline form */
+.exposed-form--inline {
+  .container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "title filters";
+    column-gap: 1em;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+  }
+  .fieldset-wrapper {
+    display: flex;
+    align-items: center;
+  }
+  .block-title {
+    grid-area: title;
+    align-self: center;
+  }
+  h2 {
+    margin: 0;
+  }
+  form {
+    grid-area: filters;
+    justify-self: end;
+    align-self: center;
+    flex-grow: 1;
+  }
+  .form-inline {
+    width: 100%;
+  }
+  .fieldgroup {
+    float: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    column-gap: 2em;
+  }
+  legend {
+    text-align: right;
+    flex-basis: content;
+  }
+  input {
+    margin-right: 6px;
+  }
+  .exposed-form--inline.bef-exposed-form .bef-checkboxes > * + * {
+    margin-left: 1.25rem;
+  }
+  .form-type-select {
+    display: flex;
+    align-items: center;
+    column-gap: 2em;
+  }
+}

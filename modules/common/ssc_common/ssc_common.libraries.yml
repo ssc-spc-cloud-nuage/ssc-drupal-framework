@@ -1,17 +1,3 @@
-admin:
-  css:
-    theme:
-      css/admin.css: {}
-      css/forms.css: {}
-      css/tables.css: {}
-
-ssc_theme:
-  css:
-    theme:
-      css/ssc-menu.css: {}
-  js:
-    js/ssc-menu.js: {}
-
 global:
   js:
     js/global.js: {}
@@ -20,13 +6,3 @@ global:
     - core/drupalSettings
     - core/drupal
     - core/js-cookie
-
-header-link:
-  css:
-    theme:
-      css/header-link.css: {}
-
-page-not-found:
-  css:
-    theme:
-      css/page-not-found.css: {}

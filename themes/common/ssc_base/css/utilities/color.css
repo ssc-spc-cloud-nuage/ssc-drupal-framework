@@ -1,0 +1,175 @@
+/**
+ * @file
+ * Utility classes for colors.
+ */
+
+/* Background - Generic */
+.bg-black {
+  background-color: var(--clr-ssc-black);
+  color: var(--clr-ssc-white);
+}
+.bg-white {
+  background-color: var(--clr-ssc-white);
+  color: var(--clr-ssc-black);
+}
+
+/* Background - Blue */
+.bg-blue-light {
+  background-color: var(--clr-ssc-blue-light);
+  color: var(--clr-ssc-black);
+}
+.bg-blue-regular {
+  background-color: var(--clr-ssc-blue-regular);
+  color: var(--clr-ssc-white);
+}
+.bg-blue-dark {
+  background-color: var(--clr-ssc-blue-dark);
+  color: var(--clr-ssc-white);
+}
+
+/* Background - Cyan */
+.bg-cyan-light {
+  background-color: var(--clr-ssc-cyan-light);
+  color: var(--clr-ssc-black);
+}
+.bg-cyan-regular {
+  background-color: var(--clr-ssc-cyan-regular);
+  color: var(--clr-ssc-black);
+}
+.bg-cyan-dark {
+  background-color: var(--clr-ssc-cyan-dark);
+  color: var(--clr-ssc-white);
+}
+
+/* Background - Gray */
+.bg-gray-light {
+  background-color: var(--clr-ssc-gray-light);
+  color: var(--clr-ssc-black);
+}
+.bg-gray-regular {
+  background-color: var(--clr-ssc-gray-600);
+  color: var(--clr-ssc-white);
+}
+.bg-gray-dark {
+  background-color: var(--clr-ssc-gray-dark);
+  color: var(--clr-ssc-white);
+}
+
+/* Background - Magenta */
+.bg-magenta-light {
+  background-color: var(--clr-ssc-magenta-light);
+  color: var(--clr-ssc-black);
+}
+.bg-magenta-regular {
+  background-color: var(--clr-ssc-magenta-regular);
+  color: var(--clr-ssc-black);
+}
+.bg-magenta-dark {
+  background-color: var(--clr-ssc-magenta-dark);
+  color: var(--clr-ssc-white);
+}
+
+/* Background - Pink */
+.bg-pink-light {
+  background-color: var(--clr-ssc-pink-light);
+  color: var(--clr-ssc-black);
+}
+.bg-pink-regular {
+  background-color: var(--clr-ssc-pink-regular);
+  color: var(--clr-ssc-white);
+}
+.bg-pink-dark {
+  background-color: var(--clr-ssc-pink-dark);
+  color: var(--clr-ssc-white);
+}
+
+/* Background - Purple */
+.bg-purple-light {
+  background-color: var(--clr-ssc-purple-light);
+  color: var(--clr-ssc-black);
+}
+.bg-purple-regular {
+  background-color: var(--clr-ssc-purple-regular);
+  color: var(--clr-ssc-white);
+}
+.bg-purple-dark {
+  background-color: var(--clr-ssc-purple-dark);
+  color: var(--clr-ssc-white);
+}
+
+/* Background - Slate */
+.bg-slate-light {
+  background-color: var(--clr-ssc-slate-light);
+  color: var(--clr-ssc-black);
+}
+.bg-slate-regular {
+  background-color: var(--clr-ssc-slate-600);
+  color: var(--clr-ssc-white);
+}
+.bg-slate-dark {
+  background-color: var(--clr-ssc-slate-dark);
+  color: var(--clr-ssc-white);
+}
+
+/* Background - Violet */
+.bg-violet-light {
+  background-color: var(--clr-ssc-violet-light);
+  color: var(--clr-ssc-black);
+}
+.bg-violet-regular {
+  background-color: var(--clr-ssc-violet-regular);
+  color: var(--clr-ssc-white);
+}
+.bg-violet-dark {
+  background-color: var(--clr-ssc-violet-dark);
+  color: var(--clr-ssc-white);
+}
+
+/* Text - Generic */
+.text-black { color: var(--clr-ssc-black); }
+.text-white { color: var(--clr-ssc-white); }
+
+/* Text - Blue */
+.text-blue-light { color: var(--clr-ssc-blue-light); }
+.text-blue-regular { color: var(--clr-ssc-blue-regular); }
+.text-blue-dark { color: var(--clr-ssc-blue-dark); }
+
+/* Text - Cyan */
+.text-cyan-light { color: var(--clr-ssc-cyan-light); }
+.text-cyan-regular { color: var(--clr-ssc-cyan-regular); }
+.text-cyan-dark { color: var(--clr-ssc-cyan-dark); }
+
+/* Text - Gray */
+.text-gray-light { color: var(--clr-ssc-gray-light); }
+.text-gray-regular { color: var(--clr-ssc-gray-regular); }
+.text-gray-dark { color: var(--clr-ssc-gray-dark); }
+
+/* Text - Magenta */
+.text-magenta-light { color: var(--clr-ssc-magenta-light); }
+.text-magenta-regular { color: var(--clr-ssc-magenta-regular); }
+.text-magenta-dark { color: var(--clr-ssc-magenta-dark); }
+
+/* Text - Pink */
+.text-pink-light { color: var(--clr-ssc-pink-light); }
+.text-pink-regular { color: var(--clr-ssc-pink-regular); }
+.text-pink-dark { color: var(--clr-ssc-pink-dark); }
+
+/* Text - Purple */
+.text-purple-light { color: var(--clr-ssc-purple-light); }
+.text-purple-regular { color: var(--clr-ssc-purple-regular); }
+.text-purple-dark { color: var(--clr-ssc-purple-dark); }
+
+/* Text - Slate */
+.text-slate-light { color: var(--clr-ssc-slate-light); }
+.text-slate-regular { color: var(--clr-ssc-slate-regular); }
+.text-slate-dark { color: var(--clr-ssc-slate-dark); }
+
+/* Text - Violet */
+.text-violet-light { color: var(--clr-ssc-violet-light); }
+.text-violet-regular { color: var(--clr-ssc-violet-regular); }
+.text-violet-dark { color: var(--clr-ssc-violet-dark); }
+
+/* Peter's trick to visually distringuish unpublished revisions */
+.unpublished {
+  background-color: beige;
+}

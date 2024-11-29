@@ -1,0 +1,113 @@
+/**
+ * @file
+ * Styles for the button component.
+ */
+
+.btn,
+.more-link a,
+.btn-primary a {
+  border: 0;
+  border-radius: var(--size-border-radius-small);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.25rem;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color var(--time-regular-transition),
+      color var(--time-regular-transition);
+  }
+}
+[class*="btn-"]:not([class*="mfp"]):is(:hover, :active, :focus, :focus-visible) {
+  /* Applies to every btn modifier classes (e.g. btn-primary) */
+  background-color: var(--clr-ssc-black);
+  color: var(--clr-ssc-white);
+  text-decoration: none;
+}
+[class*="btn"]:focus-visible {
+  outline: var(--focus-outline) !important;
+  outline-offset: var(--focus-outline-offset) !important;
+  box-shadow: var(--focus-outline-inner) !important;
+}
+.btn a {
+  display: block;
+  color: var(--clr-ssc-white);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1.25rem;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+/* Button variants */
+.btn-default,
+.btn-default:visited {
+  background-color: var(--clr-ssc-gray-regular);
+  color: var(--clr-ssc-white);
+}
+.btn-info {
+  background-color: var(--clr-ssc-blue-regular);
+}
+body .btn-primary,
+.button--primary {
+  /* The `body` selector was added to override the WET style */
+  background-color: var(--clr-ssc-violet-regular);
+  color: var(--clr-ssc-white);
+}
+.btn-secondary,
+.btn-secondary:visited {
+  background-color: var(--clr-ssc-gray-light);
+  color: var(--clr-ssc-gray-dark);
+}
+.more-link a,
+.btn-arrow,
+.more-link a:visited,
+.btn-arrow:visited {
+  display: block;
+  padding: 0.938rem 1.25rem;
+  background-color: var(--clr-ssc-violet-regular);
+  border-radius: var(--size-border-radius-small);
+  color: var(--clr-ssc-white);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1.25rem;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color var(--time-regular-transition);
+  }
+}
+.btn-arrow:is(:hover, :focus-visible) {
+  background-color: var(--clr-ssc-gray-dark) !important;
+}
+.more-link {
+  margin: 0;
+  padding-top: 2.5rem;
+  padding-bottom: 1.25rem;
+}
+
+/* Button sizes */
+.btn {
+  padding: 0.625em 0.875em;
+}
+.btn-lg {
+  padding: 0.875em 1.25em;
+}
+.btn-sm {
+  padding: 0.3125em 0.625em;
+}
+.btn-xs {
+  padding: 0.0625em 0.3125em;
+}
+
+/* Overrides */
+.btn:active:focus {
+  outline: none !important;
+}
+.btn-group {
+  background: none !important;
+}

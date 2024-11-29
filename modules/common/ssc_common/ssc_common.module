@@ -489,29 +489,6 @@ function ssc_common_sitewide_alert_presave($alert): void {
 }
 
 /**
- * Implements hook_page_attachments
- *
- * Add our admin library to all /admin pages.
- */
-function ssc_common_page_attachments(array &$page): void {
-  // Add global library everywhere
-  $page['#attached']['library'][] = 'ssc_common/global';
-
-  if (\Drupal::service('router.admin_context')->isAdminRoute()) {
-    // Add admin theme-specific library
-    $page['#attached']['library'][] = 'ssc_common/admin';
-  }
-
-  // Add SSC theme-specific library
-  // @todo - why is this not in the theme??
-  $theme_handler = \Drupal::service('theme.manager');
-  $active_theme = $theme_handler->getActiveTheme()->getName();
-  if ($active_theme == 'serving_gov' || $active_theme == 'ssc_intranet') {
-    $page['#attached']['library'][] = 'ssc_common/ssc_theme';
-  }
-}
-
-/**
  * Implements hook_theme().
  */
 function ssc_common_theme(): array {

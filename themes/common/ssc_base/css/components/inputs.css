@@ -1,0 +1,76 @@
+/**
+ * @file
+ * Styles for the form input component.
+ */
+
+input[type="date"] {
+  display: flex !important;
+  justify-content: space-between;
+}
+:is(input, textarea, select):focus-visible {
+  outline: var(--focus-outline) !important;
+  outline-offset: var(--focus-outline-offset);
+  box-shadow: var(--focus-outline-inner) !important;
+}
+:is(input[type="file"], input[type="radio"], input[type="checkbox"]):focus-visible {
+  outline-offset: 2px;
+}
+input::placeholder,
+input[placeholder],
+[placeholder],
+*[placeholder] {
+  color: var(--clr-ssc-gray-regular) !important;
+}
+legend {
+  color: inherit;
+}
+
+/* Drupal-specific form classes */
+.form-group {
+  margin-bottom: initial;
+}
+.form-control::placeholder {
+  color: var(--clr-ssc-gray-regular) !important;
+}
+
+/* File attachment inputs */
+.form-type-webform-image-file .form-managed-file {
+  margin-bottom: 8px;
+}
+.form-type-webform-image-file .icon {
+  padding: 0;
+}
+.form-type-webform-image-file .option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--clr-ssc-gray-light);
+  border-radius: var(--size-border-radius-medium);
+  font-size: 1.125rem !important;
+  color: var(--clr-ssc-blue-regular);
+}
+.form-type-webform-image-file .option input {
+  position: static;
+  margin: 0;
+}
+.form-type-webform-image-file .file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.form-type-webform-image-file .file * {
+  padding: 0;
+  background-color: transparent !important;
+  border: 0 !important;
+  font-size: 0.875rem;
+  color: inherit;
+}
+.form-type-webform-image-file .file-icon {
+  display: none;
+}
+.form-type-webform-image-file .btn {
+  background-color: var(--clr-ssc-gray-regular);
+  font-size: inherit !important;
+}

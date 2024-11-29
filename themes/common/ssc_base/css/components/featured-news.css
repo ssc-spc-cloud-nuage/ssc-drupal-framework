@@ -1,0 +1,22 @@
+/**
+ * @file
+ * Styles for the featured news component.
+ */
+
+.featured-news-container {
+  padding-bottom: 48px;
+
+  & .featured-news-item,
+  & .promoted,
+  & .content,
+  & .contextual-region,
+  & .views-element-container,
+  & .view-news-teaser {
+    height: 100%;
+  }
+  & .view-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5em;
+  }
+}

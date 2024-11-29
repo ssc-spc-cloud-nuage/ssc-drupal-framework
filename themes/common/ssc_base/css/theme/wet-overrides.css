@@ -1,0 +1,110 @@
+/**
+ * @file
+ * Styles for overriding some of the WET4 library defaults.
+ */
+
+/* Colour */
+.text-primary {
+  color: var(--clr-ssc-blue-regular);
+}
+.bg-primary {
+  background-color: var(--clr-ssc-blue-regular);
+}
+
+/* Dismissable Overrides */
+.wb-dismissable {
+  * > :first-child {
+    margin-top: 0;
+  }
+  * > :last-child {
+    margin-bottom: 0;
+  }
+}
+.wb-dismissable-container {
+  padding: 15px;
+  margin: 0 0 20px;
+  position: relative;
+  border-radius: var(--size-border-radius-medium);
+
+  & .mfp-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: block;
+    width: 48px;
+    height: 48px;
+    font-size: 36px;
+    line-height: 1;
+    opacity: 0.35;
+    color: var(--clr-ssc-black);
+
+    &:is(:hover, :focus) {
+      opacity: 1;
+      color: var(--clr-ssc-black);
+    }
+  }
+}
+.wb-dismissable-wrapper {
+  background-color: var(--clr-ssc-gray-light);
+
+  & .well {
+    background-color: transparent;
+    margin-bottom: 0;
+  }
+}
+
+/* Lightbox */
+a.wb-lbx {
+  &,
+  &:visited {
+    color: var(--clr-ssc-violet-regular);
+  }
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+}
+
+/* Badge */
+.badge {
+  min-width: 30px;
+  padding: 4px 8px;
+  background-color: var(--clr-ssc-gray-regular);
+  border-radius: 100vw;
+}
+
+/* Colcount lists */
+[class*="colcount"] > li {
+  /* Stop list item's content from breaking into multiple columns */
+  break-inside: avoid-column;
+}
+
+/* Override WET overriding BS to add a 1px min-height */
+[class*="col-"] {
+  min-height: 0;
+}
+
+/* Modals */
+.modal-content {
+  border-radius: var(--size-border-radius-large);
+}
+
+/* Tabs */
+.wb-tabs {
+  & > details,
+  & > .tabpanels > details {
+    background: white;
+  }
+}
+
+/* GCWeb default theme overrides */
+.pagedetails .row div:first-child a,
+.pagedetails .row div:first-child details,
+.pagedetails div + .wb-share-inited {
+  margin-top: 0;
+}
+
+/* Color overrides */
+.alert-success, .alert-info, .alert-warning, .alert-danger, .label-default, .label-default[href]:hover, .label-default[href]:focus, .label-default[href]:active, .label-primary, .label-primary[href]:hover, .label-primary[href]:focus, .label-primary[href]:active, .label-success, .label-success[href]:hover, .label-success[href]:focus, .label-success[href]:active, .label-info, .label-info[href]:hover, .label-info[href]:focus, .label-info[href]:active, .label-warning, .label-warning[href]:hover, .label-warning[href]:focus, .label-warning[href]:active, .label-danger, .label-danger[href]:hover, .label-danger[href]:focus, .label-danger[href]:active {
+  color: var(--clr-ssc-black);
+}

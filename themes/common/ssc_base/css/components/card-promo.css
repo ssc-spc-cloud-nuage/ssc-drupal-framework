@@ -1,0 +1,221 @@
+/**
+ * @file
+ * Styles for the promoted items component.
+ *
+ * @summary
+ * This grid-based component is used at the top of a homepage to promote
+ * content across various SSC web platforms.
+ */
+
+/* Container */
+.promo-block {
+  --gap: 20px;
+  display: flex;
+  gap: var(--gap);
+  padding-block: 36px;
+  min-height: 420px;
+
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+  }
+  .bs-region--main {
+    display: flex;
+  }
+}
+.promo-block__regular {
+  & .view-content {
+    display: grid;
+    gap: var(--gap);
+  }
+}
+.promo-block__featured {
+  & .contextual-region,
+  & .form-group,
+  & .promo-block__item,
+  & .view,
+  & .view-content,
+  & .views-element-container {
+    height: 100%;
+  }
+}
+
+/* 1-item variant */
+.promo-block--1 {
+  & > .promo-block__featured {
+    flex: 1;
+  }
+}
+
+/* 3-items variant */
+.promo-block--3 {
+  & > .promo-block__regular {
+    flex: 1;
+  }
+  & > .promo-block__featured {
+    flex: 2;
+  }
+}
+
+/* 5-items variant */
+.promo-block--5 {
+  & > .promo-block__regular {
+    flex: 2;
+  }
+  & > .promo-block__featured {
+    flex: 1;
+  }
+  & > .promo-block__regular .view-content {
+    grid-template-columns: repeat(2, 1fr);
+
+    @media screen and (max-width: 767px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* 6-items variant */
+.promo-block--6 {
+  & > .promo-block__regular .view-content {
+    grid-template-columns: repeat(3, 1fr);
+
+    @media screen and (max-width: 767px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* Promoted items */
+.card--promo {
+  --opacity-overlay: 0.6;
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    "gradient"
+    "content";
+  align-items: end;
+  min-height: 200px;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--size-border-radius-large);
+  outline: solid 4px rgb(0 0 0 / 0.1);
+  outline-offset: -4px;
+  color: rgb(var(--rgb-promo-text)) !important;
+  font-weight: 500;
+  line-height: 1.35;
+  text-decoration: none;
+  isolation: isolate;
+  overflow: hidden;
+
+  &:hover {
+    text-decoration: none;
+  }
+  &:focus-visible {
+    outline: var(--focus-outline) !important;
+    outline-offset: var(--focus-outline-offset);
+    box-shadow: var(--focus-outline-inner) !important;
+  }
+}
+.card--promo__link-gradient {
+  position: relative;
+  grid-area: gradient;
+  height: 100%;
+  opacity: var(--opacity-overlay);
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color var(--time-slow-transition) var(--ease-out-cubic);
+  }
+  .card--promo:is(:hover, :focus-visible) & {
+    background-color: rgb(var(--rgb-promo-bg));
+  }
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 70px;
+    /* Custom gradient easing generated from https://larsenwork.com/easing-gradients */
+    background: linear-gradient(to bottom,
+        rgb(var(--rgb-promo-bg) / 0) 0%,
+        rgb(var(--rgb-promo-bg) / 0.013) 8.1%,
+        rgb(var(--rgb-promo-bg) / 0.049) 15.5%,
+        rgb(var(--rgb-promo-bg) / 0.104) 22.5%,
+        rgb(var(--rgb-promo-bg) / 0.175) 29%,
+        rgb(var(--rgb-promo-bg) / 0.259) 35.3%,
+        rgb(var(--rgb-promo-bg) / 0.352) 41.2%,
+        rgb(var(--rgb-promo-bg) / 0.45) 47.1%,
+        rgb(var(--rgb-promo-bg) / 0.55) 52.9%,
+        rgb(var(--rgb-promo-bg) / 0.648) 58.8%,
+        rgb(var(--rgb-promo-bg) / 0.741) 64.7%,
+        rgb(var(--rgb-promo-bg) / 0.825) 71%,
+        rgb(var(--rgb-promo-bg) / 0.896) 77.5%,
+        rgb(var(--rgb-promo-bg) / 0.951) 84.5%,
+        rgb(var(--rgb-promo-bg) / 0.987) 91.9%,
+        rgb(var(--rgb-promo-bg)) 100%);
+  }
+}
+.card--promo__link-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  grid-area: content;
+  height: 100%;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgb(var(--rgb-promo-bg));
+    opacity: var(--opacity-overlay);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: opacity var(--time-regular-transition);
+    }
+  }
+}
+.card--promo__link-text {
+  position: relative;
+  bottom: 15px;
+  z-index: 1;
+  padding-inline: 20px;
+  text-shadow: rgba(0, 0, 0, 0.25) 0 1px 2px;
+
+  .promo-block__featured & {
+    font-size: 1.5rem;
+  }
+}
+.card--promo__link-image {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  @media (prefers-reduced-motion: no-preference) {
+    will-change: filter, scale;
+    transition:
+      filter var(--time-slow-transition) var(--ease-out-cubic),
+      scale var(--time-slow-transition) var(--ease-out-cubic);
+
+    .card--promo:is(:hover, :focus-visible) & {
+      filter: blur(1px);
+      scale: 1.03;
+    }
+  }
+}
+
+/* Large features */
+.promo-block .bs-region--right {
+  & :is(.views-element-container, .contextual-region, .view-content, .grid, .row) {
+    height: 100%;
+  }
+  & .card--promo h3 {
+    font-size: 1.5rem;
+
+    @media screen and (max-width: 991px) {
+      font-size: 1.125rem;
+    }
+  }
+}

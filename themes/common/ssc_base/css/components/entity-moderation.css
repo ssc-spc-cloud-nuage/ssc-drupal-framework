@@ -1,0 +1,58 @@
+/**
+ * @file
+ * Styles for the entity moderation form component.
+ *
+ * @summary
+ * This component is found on unpublished "latest version" pages, and allows
+ * you to conveniently change a node's moderation state.
+ */
+
+.entity-moderation {
+  margin-top: 2rem;
+}
+.entity-moderation .control-label {
+  width: initial !important;
+}
+.entity-moderation .control-label::after {
+  content: ":";
+}
+
+/* Form title */
+.entity-moderation .panel-title * {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+/* Form body */
+.entity-moderation__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2rem;
+
+  @media screen and (max-width: 991px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  & .form-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.2rem 1rem;
+
+    @media screen and (max-width: 991px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}
+.entity-moderation__revision-log,
+.entity-moderation__revision-log .form-control {
+  flex: 1;
+}
+.entity-moderation__submit > button {
+  padding: 0.3em 2em !important;
+}
+.entity-moderation__messages {
+  margin-block: 1rem 0;
+}

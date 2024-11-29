@@ -1,0 +1,90 @@
+/**
+ * @file
+ * Style adjustments for print format.
+ *
+ * Note: Adding the `.theme-gcweb` class to each selector to increase their
+ * specificity and avoid default styles overriding print styles.
+ */
+
+@media print {
+  /* Global styles */
+  .theme-gcweb img {
+    filter: grayscale(1);
+  }
+  .theme-gcweb .alert {
+    /* Set border color set black on all alert types */
+    --clr-alert-accent: black;
+  }
+  .theme-gcweb pre,
+  .theme-gcweb blockquote {
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    page-break-inside: avoid;
+  }
+  .theme-gcweb [class^='btn'],
+  .theme-gcweb.home .btn-arrow {
+    background-color: var(--clr-ssc-black) !important;
+    color: var(--clr-ssc-white) !important;
+  }
+  .theme-gcweb details > summary,
+  .theme-gcweb details[open] > summary {
+    color: var(--clr-ssc-black);
+  }
+  .theme-gcweb details,
+  .theme-gcweb details summary {
+    border: none;
+  }
+
+  /* Panels */
+  .theme-gcweb .panel,
+  .theme-gcweb-legacy .panel {
+    --clr-heading-panel: var(--clr-ssc-gray-light);
+    --clr-border-panel: var(--clr-ssc-black);
+    --clr-title-panel: var(--clr-ssc-black);
+  }
+
+  /* Page header styles */
+  .theme-gcweb .header-region,
+  .theme-gcweb .header-banner,
+  .theme-gcweb .header-banner .overlay {
+    min-height: auto;
+  }
+  .theme-gcweb .header-banner .overlay {
+    padding-block: 0;
+    text-align: left;
+  }
+  .theme-gcweb .header-region h1 {
+    padding-bottom: 16px;
+    border-bottom: solid 1px var(--clr-ssc-gray-light);
+  }
+
+  /* Hidden elements */
+  .theme-gcweb #sitewide-alert,
+  .theme-gcweb .sitewide-alert {
+    /* Dismissible sitewide alert */
+    display: none;
+  }
+  .region-fixed-content {
+    /* User actions (Watch/Share/Like) */
+    display: none;
+  }
+  .theme-gcweb details:not([open]) {
+    /* Closed details elements */
+    display: none;
+  }
+  .theme-gcweb .tabs--primary {
+    /* Tabs */
+    display: none;
+  }
+  .theme-gcweb .card--topic .card__footer {
+    /* Topic cards footer ("Read more") */
+    display: none;
+  }
+  .theme-gcweb .contextual,
+  .theme-gcweb .entity-moderation,
+  .theme-gcweb .status-message {
+    /* Drupal admin-specific elements */
+    display: none;
+  }
+}

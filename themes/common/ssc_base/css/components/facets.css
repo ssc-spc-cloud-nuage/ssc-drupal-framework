@@ -1,0 +1,33 @@
+/**
+ * @file
+ * Styles for the facets component.
+ */
+
+.block-facets {
+  --clr-facet-count-bg: var(--clr-ssc-violet-regular);
+  --clr-facet-count-text: var(--clr-ssc-violet-50);
+}
+.facet-item {
+  padding: 6px 2px !important;
+  border-color: var(--clr-ssc-slate-light) !important;
+  font-size: 1rem !important;
+
+  & > a {
+    /* Styles used before JavaScript finishes loading */
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    color: var(--clr-ssc-black);
+    text-decoration: none;
+  }
+  & label {
+    margin-left: 8px !important;
+  }
+  & input {
+    margin-top: 5px !important;
+  }
+}
+.facet-count {
+  background-color: var(--clr-facet-count-bg) !important;
+  color: var(--clr-facet-count-text);
+}

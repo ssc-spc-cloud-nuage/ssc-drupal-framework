@@ -1,0 +1,92 @@
+/**
+ * @file
+ * Styles for generic theme styling tweaks.
+ */
+
+/* Admin toolbar */
+.toolbar .toolbar-bar {
+  position: fixed;
+}
+
+/* Skip links */
+.skip-links {
+  position: relative;
+  z-index: 100;
+  top: 1.25rem;
+}
+.wb-slc .wb-sl,
+.wb-disable .wb-slc .wb-sl {
+  max-width: 20rem;
+  margin-inline: auto;
+  margin-bottom: 10px;
+  padding: 1em;
+  background-color: var(--clr-ssc-violet-regular);
+  border-radius: var(--size-border-radius-medium);
+  box-shadow: var(--shadow-elevation-medium);
+  color: var(--clr-ssc-white) !important;
+  font-weight: 500;
+  text-decoration: none;
+  z-index: 501;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: background-color var(--time-regular-transition);
+  }
+}
+.wb-slc .wb-sl:hover,
+.wb-disable .wb-slc .wb-sl:hover {
+  background-color: var(--clr-ssc-gray-dark);
+}
+.wb-sl,
+#wb-lng h2, #wb-glb-mn h2, #wb-srch h2, #wb-srch label, #wb-sm h2,
+#wb-bc h2, #wb-sec h2, #wb-info h2, #mb-pnl h3,
+.wb-calevt-cal .cal-days td ul, .wb-fnote dt,
+#mb-pnl .srch-pnl label, .wb-invisible, .wb-inv, .wb-show-onfocus {
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+.wb-sl:focus, .wb-disable .wb-slc .wb-sl:focus, .wb-show-onfocus:focus {
+  clip: rect(auto, auto, auto, auto);
+  height: inherit;
+  margin: inherit;
+  overflow: inherit;
+  position: static;
+  width: inherit;
+}
+.wb-slc {
+  left: 0;
+  position: absolute;
+  text-align: center;
+  top: 10px;
+  width: 100%;
+  z-index: 3;
+}
+
+/* Main content */
+.region-content a:focus-visible:not([class^="btn"],
+  .no-default-focus,
+  .areas-of-interest__item,
+  .pill-links a) {
+  outline: none;
+  color: var(--clr-ssc-black);
+  background-color: var(--focus-color-light);
+  box-shadow: var(--focus-shadow);
+  text-decoration: none;
+}
+
+/* 404 page background */
+.page-not-found {
+  background-color: var(--clr-ssc-gray-light);
+  background-image: var(--page-not-found-bg-img);
+  background-position: right;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+
+  & .views-exposed-form {
+    width: fit-content;
+  }
+}
