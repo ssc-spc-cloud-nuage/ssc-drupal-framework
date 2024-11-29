@@ -143,8 +143,7 @@
         "drupal/w3c_validator": "^2.1",
         "drupalwxt/wxt": "5.3.0",
         "enshrined/svg-sanitize": "^0.16.0",
-        "npm-asset/dompurify": "^3.0",
-        "w8tcha/ckeditor-wordcount-plugin": "^1.17"
+        "npm-asset/dompurify": "^3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3"
