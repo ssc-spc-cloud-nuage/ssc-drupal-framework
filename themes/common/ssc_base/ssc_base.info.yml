@@ -1,9 +1,29 @@
 name: SSC Base Theme
 description: A WxT child theme leveraging Bootstrap 3.
 type: theme
-core_version_requirement: '>=9.2'
+core_version_requirement: '>=10'
 package: SSC
 base theme: wxt_bootstrap
+
+regions:
+  branding: "Branding"
+  breadcrumb: "Breadcrumbs"
+  header_first: "Header First"
+  header_second: "Header Second"
+  mobile_dock: "Mobile Dock"
+  navigation: "Navigation"
+  navigation_collapsible: "Navigation (Collapsible)"
+  header: "Header"
+  highlighted: "Highlighted"
+  help: "Help"
+  content: "Content"
+  fixed_content: "Fixed Content Region"
+  content_footer: "Content Footer"
+  sidebar_first: "Sidebar First"
+  sidebar_second: "Sidebar Second"
+  footer: "Footer"
+  page_top: "Page top"
+  page_bottom: "Page bottom"
 
 libraries:
   - ssc_base/global
