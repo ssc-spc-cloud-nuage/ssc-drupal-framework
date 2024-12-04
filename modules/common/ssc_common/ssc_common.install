@@ -1,0 +1,48 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Install, update and uninstall functions for the SSC Common module.
+ */
+
+/**
+ * Implements hook_update_N().
+ */
+function ssc_common_update_10001(): void {
+  // Step A: Install the jquery_ui_resizable module.
+  if (!\Drupal::moduleHandler()->moduleExists('jquery_ui_resizable')) {
+    \Drupal::service('module_installer')->install(['jquery_ui_resizable']);
+    \Drupal::logger('ssc_common')->info('Installed the jquery_ui_resizable module.');
+  }
+
+  // Step B: Install the ssc_base and ssc_admin themes.
+  $theme_handler = \Drupal::service('theme_installer');
+  $themes_to_install = ['ssc_base', 'ssc_admin'];
+  $installed_themes = \Drupal::service('theme_handler')->listInfo();
+
+  foreach ($themes_to_install as $theme) {
+    if (!isset($installed_themes[$theme])) {
+      $theme_handler->install([$theme]);
+      \Drupal::logger('ssc_common')->info('Installed the theme: @theme.', ['@theme' => $theme]);
+    }
+  }
+
+  // Step C: Delete the wxt.versions configuration.
+  $config_factory = \Drupal::service('config.factory');
+  $config_name = 'wxt.versions';
+  if ($config_factory->getEditable($config_name)->isNew() === FALSE) {
+    $config_factory->getEditable($config_name)->delete();
+    \Drupal::logger('ssc_common')->info('Deleted configuration: @config.', ['@config' => $config_name]);
+  }
+
+  // Step D: Delete the wxt_core.versions configuration.
+  $config_name = 'wxt_core.versions';
+  if ($config_factory->getEditable($config_name)->isNew() === FALSE) {
+    $config_factory->getEditable($config_name)->delete();
+    \Drupal::logger('ssc_common')->info('Deleted configuration: @config.', ['@config' => $config_name]);
+  }
+
+}
+
