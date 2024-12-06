@@ -21,12 +21,13 @@
   line-height: 1.5;
   color: var(--clr-ssc-blue-regular);
 
-  .card:where(:hover, :focus) & {
-    color: var(--clr-ssc-pink-regular);
-  }
   & > a {
+    font-weight: 500;
     text-decoration: none;
-    font-weight: 700;
+
+    &:hover {
+      color: var(--clr-ssc-blue-regular);
+    }
   }
 }
 .search-result__info {

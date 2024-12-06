@@ -65,6 +65,11 @@
   z-index: 3;
 }
 
+/* Page summary (before content) */
+.lb-last-child-mb-0 .field > :last-child {
+  margin-bottom: 0;
+}
+
 /* Main content */
 .region-content a:focus-visible:not([class^="btn"],
   .no-default-focus,
