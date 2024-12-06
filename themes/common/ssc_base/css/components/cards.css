@@ -120,7 +120,7 @@
 .card__title {
   margin: 0;
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 500;
 }
 .card__link {
   display: inline-block;
@@ -282,7 +282,7 @@
   & .card__accent {
     order: -1;
     margin: 0 0 0.5rem;
-    color: #8985ce;
+    color: var(--clr-ssc-violet-400);
     font-size: 1rem;
   }
   & .card__category {

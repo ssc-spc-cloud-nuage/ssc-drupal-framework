@@ -81,6 +81,11 @@ class Http404Controller extends ControllerBase implements ContainerInjectionInte
       '#attributes' => [
         'class' => 'container-full-width page-not-found',
       ],
+      '#attached' => [
+        'library' => [
+          'ssc_base/page_not_found',
+        ],
+      ],
       // Nested child container to center content on the page.
       'child' => [
         '#type' => 'container',
