@@ -2,8 +2,15 @@
  * @file
  * Styles for the Page Not Found (404) page.
  */
+
 .page-not-found {
   padding-block: 60px 80px;
+  background-color: var(--clr-ssc-gray-light);
+  background-image: var(--page-not-found-bg-img);
+  background-position: right;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
 
   & .container > * {
     max-width: 780px;

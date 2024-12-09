@@ -14,10 +14,12 @@
 }
 
 /* Width limiter (limits line length) */
-.width-limiter :is(h2, h3, h4, h5, h6, p, ol, ul, dl, hr, table, blockquote, details, .alert, .well, .panel) {
+.width-limiter :is(h2, h3, h4, h5, h6, p, ol, ul, dl, blockquote, details, .alert, .well, .panel) {
   max-width: 900px;
 }
-.width-limiter .no-limiter { max-width: initial; }
+.width-limiter .no-limiter {
+  max-width: initial;
+}
 
 /* Containers */
 .container-full-width {
