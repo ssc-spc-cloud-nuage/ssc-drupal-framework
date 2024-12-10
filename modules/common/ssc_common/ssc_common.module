@@ -969,3 +969,13 @@ function ssc_common_page_top(array &$page_top) {
     unset($page_top['sitewide_alert']);
   }
 }
+
+/**
+ * Implements hook_page_attachments
+ *
+ * Add our common Global library to all pages.
+ */
+function ssc_common_page_attachments(array &$page): void {
+  // Add global library everywhere
+  $page['#attached']['library'][] = 'ssc_common/global';
+}
