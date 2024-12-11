@@ -18,7 +18,7 @@
     // Hide Country selector on custom address for Session - painful to do with CSS
     $('#node-event-form label:contains("Country")').parent().hide();
 
-    once('ssc-admin', document.documentElement, context).forEach(function () {
+    once('ssc-common-admin', document.documentElement, context).forEach(function () {
       // Add form-required to the Start date input of the Campaign date field
       $('.field--name-field-campaign-date .fieldset__label').addClass('form-required');
       $('.field--name-field-campaign-date h4.form-item__label:contains("Start")').addClass('form-required');
