@@ -6,9 +6,9 @@
 (function ($, Drupal, once) {
   "use strict";
 
-  Drupal.behaviors.sscCommon = {};
-  Drupal.behaviors.sscCommon.attach = function (context, settings) {
-    once('ssc-common', document.documentElement, context).forEach(function () {
+  Drupal.behaviors.sscCommonGlobal = {};
+  Drupal.behaviors.sscCommonGlobal.attach = function (context, settings) {
+    once('ssc-common-global', document.documentElement, context).forEach(function () {
       // Override jQuery UI dialog string to become translatable
       $.widget("ui.dialog", $.ui.dialog, {
         options: {
