@@ -971,11 +971,22 @@ function ssc_common_page_top(array &$page_top) {
 }
 
 /**
- * Implements hook_page_attachments
- *
- * Add our common Global library to all pages.
+ * Implements hook_page_attachments().
  */
 function ssc_common_page_attachments(array &$page): void {
-  // Add global library everywhere
+  // Add global library everywhere.
   $page['#attached']['library'][] = 'ssc_common/global';
+
+  // Get the current active theme.
+  $active_theme = \Drupal::theme()->getActiveTheme();
+
+  // Check if the current active theme is the admin theme.
+  $admin_theme = \Drupal::config('system.theme')->get('admin');
+
+  if ($active_theme->getName() === $admin_theme) {
+    $page['#attached']['library'][] = 'ssc_common/admin';
+  }
+  else {
+    $page['#attached']['library'][] = 'ssc_common/site';
+  }
 }

@@ -4,5 +4,3 @@ global:
       css/admin.css: {}
       css/forms.css: {}
       css/tables.css: {}
-  js:
-    js/global.js: {}
