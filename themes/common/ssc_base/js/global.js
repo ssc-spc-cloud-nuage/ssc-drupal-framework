@@ -1,6 +1,6 @@
 /**
  * @file
- * Addional global interactivity.
+ * Addional global interactivity via the SSC Base theme.
  */
 
 (function ($, Drupal, once) {

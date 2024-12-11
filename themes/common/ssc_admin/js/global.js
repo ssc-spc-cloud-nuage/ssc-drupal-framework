@@ -1,6 +1,6 @@
 /**
  * @file
- * Addional global interactivity.
+ * Addional global interactivity via the SSC Admin theme.
  */
 
 (function ($, Drupal, once) {
@@ -19,7 +19,7 @@
       // Hide Country selector on custom address for Session - painful to do with CSS
       $('#node-event-form label:contains("Country")').parent().hide();
 
-      // Add form-required to Campaign Date
+      // Add form-required to the Start date input of the Campaign date field
       $('.field--name-field-campaign-date .fieldset__label').addClass('form-required');
       $('.field--name-field-campaign-date h4.form-item__label:contains("Start")').addClass('form-required');
       

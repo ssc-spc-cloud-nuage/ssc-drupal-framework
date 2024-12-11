@@ -1,4 +1,9 @@
-(function ($, Drupal, once, cookies) {
+/**
+ * @file
+ * Addional global interactivity via the SSC Common module.
+ */
+
+(function ($, Drupal, once) {
   "use strict";
 
   Drupal.behaviors.sscCommon = {};
