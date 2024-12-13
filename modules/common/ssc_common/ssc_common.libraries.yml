@@ -6,3 +6,11 @@ global:
     - core/drupalSettings
     - core/drupal
     - core/js-cookie
+
+site:
+  js:
+    js/site.js: {}
+
+admin:
+  js:
+    js/admin.js: {}

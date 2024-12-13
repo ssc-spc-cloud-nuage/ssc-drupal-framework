@@ -56,7 +56,6 @@ global:
     - core/drupal
     - core/drupalSettings
     - core/drupal.dialog.ajax
-    - ssc_common/global
 
 entity_moderation_form:
   css:
