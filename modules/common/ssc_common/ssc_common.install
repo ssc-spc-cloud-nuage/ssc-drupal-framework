@@ -51,6 +51,6 @@ function ssc_common_update_10001(): void {
  */
 function ssc_common_update_10002(): void {
   // This won't hurt either SG or MySSC+ and it will ensure the upgrade pre-requisites get performed in myssc+.
-  ssc_common_update_10002();
+  ssc_common_update_10001();
 }
 
