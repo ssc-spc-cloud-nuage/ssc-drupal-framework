@@ -38,6 +38,7 @@ global:
       css/components/wells.css: {}
     theme:
       css/theme/forms.css: {}
+      css/theme/layout-builder.css: {}
       css/theme/print.css: {}
       css/theme/temp.css: {}
       css/theme/theme.css: {}
