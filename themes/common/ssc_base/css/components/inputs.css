@@ -3,10 +3,6 @@
  * Styles for the form input component.
  */
 
-input[type="date"] {
-  display: flex !important;
-  justify-content: space-between;
-}
 :is(input, textarea, select):focus-visible {
   outline: var(--focus-outline) !important;
   outline-offset: var(--focus-outline-offset);
@@ -22,6 +18,7 @@ input[placeholder],
   color: var(--clr-ssc-gray-regular) !important;
 }
 legend {
+  float: initial;
   color: inherit;
 }
 
@@ -73,4 +70,19 @@ legend {
 .form-type-webform-image-file .btn {
   background-color: var(--clr-ssc-gray-regular);
   font-size: inherit !important;
+}
+
+/* Checkboxes & radios */
+.form-checkboxes,
+.form-radios {
+  & .form-item:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+}
+:is(.checkbox, .radio) .option {
+  display: flex;
+}
+:is(.checkbox, .radio) input {
+  margin: 0 0.375rem 0 0;
+  line-height: 1;
 }
