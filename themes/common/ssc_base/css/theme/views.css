@@ -93,9 +93,6 @@
 .view--filters-exposed .select-wrapper {
   width: 100% !important;
 }
-.views-exposed-form .checkbox input[type="checkbox"] {
-  margin: 0 0.375rem 0 0;
-}
 .views-exposed-form :is(.control-label, .fieldset-legend) {
   margin-bottom: 0.25em;
   font-size: 1rem;
@@ -109,7 +106,7 @@
   font-weight: 400;
 }
 .views-exposed-form .option {
-  margin-top: 4px;
+  margin-block: 4px;
 }
 .views-exposed-form .form-actions {
   margin-top: 12px;

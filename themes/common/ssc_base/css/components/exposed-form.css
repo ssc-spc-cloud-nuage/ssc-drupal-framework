@@ -5,7 +5,7 @@
 
 /* Inline form */
 .exposed-form--inline {
-  .container {
+  & .container {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-areas: "title filters";
@@ -13,27 +13,27 @@
     padding-top: 0.8em;
     padding-bottom: 0.8em;
   }
-  .fieldset-wrapper {
+  & .fieldset-wrapper {
     display: flex;
     align-items: center;
   }
-  .block-title {
+  & .block-title {
     grid-area: title;
     align-self: center;
   }
-  h2 {
+  & h2 {
     margin: 0;
   }
-  form {
+  & form {
     grid-area: filters;
     justify-self: end;
     align-self: center;
     flex-grow: 1;
   }
-  .form-inline {
+  & .form-inline {
     width: 100%;
   }
-  .fieldgroup {
+  & .fieldgroup {
     float: none;
     display: flex;
     flex-wrap: wrap;
@@ -41,17 +41,18 @@
     justify-content: flex-end;
     column-gap: 2em;
   }
-  legend {
+  & legend {
+    float: left;
     text-align: right;
     flex-basis: content;
   }
-  input {
+  & input {
     margin-right: 6px;
   }
-  .exposed-form--inline.bef-exposed-form .bef-checkboxes > * + * {
+  & .exposed-form--inline.bef-exposed-form .bef-checkboxes > * + * {
     margin-left: 1.25rem;
   }
-  .form-type-select {
+  & .form-type-select {
     display: flex;
     align-items: center;
     column-gap: 2em;
