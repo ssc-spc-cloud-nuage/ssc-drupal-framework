@@ -23,7 +23,7 @@
         "drupal/bg_image_formatter": "1.17.0",
         "drupal/block_field": "1.0.0-rc5",
         "drupal/calendar": "^1.0@beta",
-        "drupal/calendar_link": "3.0.3",
+        "drupal/calendar_link": "3.0.4",
         "drupal/chosen_lib": "^4.0",
         "drupal/ckeditor5_paste_filter": "^1.0",
         "drupal/ckeditor_codemirror": "^3.1.0",
@@ -269,9 +269,6 @@
             },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
-            },
-            "drupal/calendar_link": {
-                "3392784 - Fix WSOD if date is string": "https://www.drupal.org/files/issues/2024-12-06/3392784-20.patch"
             },
             "drupal/content_sync": {
                 "2979368 - ignore types": "https://www.drupal.org/files/issues/2020-09-22/2979368-17.patch"
