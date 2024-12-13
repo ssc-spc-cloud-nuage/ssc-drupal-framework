@@ -1,0 +1,21 @@
+/**
+ * @file
+ * Styles for Layout Builder.
+ */
+
+/* Specificity necessary to override WET */
+#drupal-off-canvas-wrapper {
+  & *:not(div),
+  & *:not(svg *),
+  & *::after,
+  & *::before {
+    max-width: 100%;
+  }
+  & a {
+    color: var(--clr-ssc-blue-light);
+  }
+  & label {
+    display: block;
+  }
+}
+
