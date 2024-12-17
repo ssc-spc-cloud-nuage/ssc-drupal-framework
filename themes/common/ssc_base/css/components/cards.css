@@ -3,7 +3,7 @@
  * Styles for the cards component and its multiple variations.
  */
 
-.views-view-grid {
+ .views-view-grid {
   & > .row,
   & > .card,
   & article,
@@ -125,7 +125,7 @@
 .card__link {
   display: inline-block;
   color: inherit;
-  text-decoration: none;
+  text-decoration: none !important;
 
   &:visited,
   &:hover,

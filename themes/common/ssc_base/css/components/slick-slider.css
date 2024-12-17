@@ -7,15 +7,15 @@
  * the "Slick Carousel" option along with the "SSC Carousel" optionset.
  */
 
-.slick--optionset--ssc-carousel {
+ .slick--optionset--ssc-carousel {
   & .slick-track {
     display: flex;
     align-items: stretch;
   }
   & .slick-list {
     margin-bottom: 2rem;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: -15px;
+    margin-right: -15px;
   }
   & .slick-slide {
     height: auto;
@@ -148,6 +148,7 @@
   font-size: 1.25rem;
 }
 .view-display-id-carousel_small_eva .card__accent {
+  order: -1;
   margin-block: 0 8px;
   color: var(--clr-ssc-pink-regular);
   font-size: 1rem;
