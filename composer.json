@@ -374,6 +374,9 @@
             },
             "dompdf/dompdf": {
                 "local - use local file streams to avoid certificate issues": "./patches/dompdf-change_local_http_uri_to_a_file.patch"
+            },
+            "drupal/better_exposed_filters": {
+                "3495331 - fix sort logic": "https://www.drupal.org/files/issues/2024-12-20/bef-sort_logic-3495331-2.patch"
             }
         },
         "patches-ignore": {
