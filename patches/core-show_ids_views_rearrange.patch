@@ -1,0 +1,13 @@
+diff --git a/core/modules/views_ui/src/Form/Ajax/Rearrange.php b/core/modules/views_ui/src/Form/Ajax/Rearrange.php
+index 52be994b276..bd9b7da52d6 100644
+--- a/core/modules/views_ui/src/Form/Ajax/Rearrange.php
++++ b/core/modules/views_ui/src/Form/Ajax/Rearrange.php
+@@ -111,7 +111,7 @@ public function buildForm(array $form, FormStateInterface $form_state) {
+         $name = $id;
+         $markup = $this->t('Broken field @id', ['@id' => $id]);
+       }
+-      $form['fields'][$id]['name'] = ['#markup' => $markup];
++      $form['fields'][$id]['name'] = ['#markup' => $markup . '<br>' . $id];
+ 
+       $form['fields'][$id]['weight'] = [
+         '#type' => 'textfield',
