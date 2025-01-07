@@ -265,7 +265,8 @@
                 "3332416 - fix CK5 extending out of container": "https://www.drupal.org/files/issues/2024-04-09/3332416-79.patch",
                 "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch",
                 "3025039 - remove error on non-translable field on translation": "https://www.drupal.org/files/issues/2024-05-01/3025039-94.patch",
-                "local - Show IDs in Views rearrange fields modal": "./patches/core-show_ids_views_rearrange.patch"
+                "local - Show IDs in Views rearrange fields modal": "./patches/core-show_ids_views_rearrange.patch",
+                "local - allow headings in summary elements": "./patches/core-ckeditor-summary-v43.3.1.patch"
             },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
