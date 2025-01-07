@@ -5,7 +5,7 @@ global:
     - core/jquery
     - core/drupalSettings
     - core/drupal
-    - core/js-cookie
+    - js_cookie/js-cookie
 
 site:
   js:
