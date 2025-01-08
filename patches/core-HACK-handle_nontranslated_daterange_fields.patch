@@ -1,0 +1,30 @@
+diff --git a/core/lib/Drupal/Core/Entity/EntityChangesDetectionTrait.php b/core/lib/Drupal/Core/Entity/EntityChangesDetectionTrait.php
+index ff411063bdd..fbe49a0ee4e 100644
+--- a/core/lib/Drupal/Core/Entity/EntityChangesDetectionTrait.php
++++ b/core/lib/Drupal/Core/Entity/EntityChangesDetectionTrait.php
+@@ -35,6 +35,10 @@ protected function getFieldsToSkipFromTranslationChangesCheck(ContentEntityInter
+       if ($field_definition->isComputed()) {
+         $fields[] = $field_name;
+       }
++      // HACK - also skip DateRange fields as core doesn't compare them properly
++      if ($field_definition->getType() == 'daterange') {
++        $fields[] = $field_name;
++      }
+     }
+ 
+     return $fields;
+diff --git a/core/lib/Drupal/Core/Entity/Plugin/Validation/Constraint/EntityUntranslatableFieldsConstraintValidator.php b/core/lib/Drupal/Core/Entity/Plugin/Validation/Constraint/EntityUntranslatableFieldsConstraintValidator.php
+index 56f0da64fe8..de849a87113 100644
+--- a/core/lib/Drupal/Core/Entity/Plugin/Validation/Constraint/EntityUntranslatableFieldsConstraintValidator.php
++++ b/core/lib/Drupal/Core/Entity/Plugin/Validation/Constraint/EntityUntranslatableFieldsConstraintValidator.php
+@@ -114,6 +114,10 @@ protected function hasUntranslatableFieldsChanges(ContentEntityInterface $entity
+       $items = $entity->get($field_name)->filterEmptyItems();
+       $original_items = $original->get($field_name)->filterEmptyItems();
+       if ($items->hasAffectingChanges($original_items, $entity->getUntranslated()->language()->getId())) {
++        \Drupal::messenger()
++          ->addMessage(t('The following non-translatable field has been modified: %field', [
++            '%field' => $field_name,
++          ]),'error');
+         return TRUE;
+       }
+     }
