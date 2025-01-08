@@ -173,7 +173,7 @@
   --time-slow-transition: 250ms;
 
   /* Focus states */
-  --focus-color-dark: var(--clr-ssc-cyan-500);
+  --focus-color-dark: var(--clr-ssc-cyan-600);
   --focus-color-light: var(--clr-ssc-cyan-300);
   --focus-outline: solid 3px var(--focus-color-dark);
   --focus-outline-offset: 3px;
