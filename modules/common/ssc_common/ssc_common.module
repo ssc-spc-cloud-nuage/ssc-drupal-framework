@@ -17,6 +17,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\row\EntityRow;
@@ -125,6 +126,25 @@ function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id)
     case 'node_topic_edit_form':
       $form['field_show_related']['#group'] = 'meta';
       break;
+
+    case 'node_event_form':
+    case 'node_event_edit_form':
+      // Set Session fieldset labels to "Date - Language".
+      $event = $form_state->getFormObject()->getEntity();
+      foreach ($form['field_sessions']['widget'] as $delta => &$subform) {
+        // Check that the delta key is numeric.
+        if (is_numeric($delta)) {
+          $session = Paragraph::load($event->field_sessions[$delta]->target_id);
+          if ($session) {
+            $start_date = $session->get('field_session_date')->start_date->format('Y-m-d');
+            $session_language = Term::load($session->field_session_language->target_id)->getName();
+
+            // Update the fieldset label.
+            $subform['subform']['#fieldgroups']['group_sessions']->label = "$start_date - $session_language";
+          }
+        }
+      }
+      break;
   }
 
   // Remove Clone option from Access Token table on Node edit forms
@@ -230,7 +250,7 @@ function ssc_common_form_content_moderation_entity_moderation_form_alter(&$form,
       'source' => 'en',
       'target' => 'fr',
     ],
-      ['query' => ['desitination' => $current_path]]
+      ['query' => ['destination' => $current_path]]
     )->toString();
     $text = t('This form is disabled until there is a French translation available. Click this link to %link.', [
       '%link' => $link,
@@ -400,7 +420,6 @@ function ssc_common_field_widget_single_element_paragraphs_form_alter(&$element,
 
     $element['#element_validate'][] = '_session_custom_predefined_location_validate';
     $element['subform']['field_custom_location']['widget'][0]['address']['#after_build'][] = '_session_custom_location_address_alter';
-
   }
 }
 
