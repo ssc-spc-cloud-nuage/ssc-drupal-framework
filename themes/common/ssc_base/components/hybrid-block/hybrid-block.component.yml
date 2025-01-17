@@ -1,0 +1,14 @@
+name: Hybrid block
+group: Block
+props:
+  type: object
+  additionalProperties: false
+  properties:
+    variant:
+      type: string
+      title: Variant
+      enum:
+        - default
+        - info
+        - primary
+      default: default
