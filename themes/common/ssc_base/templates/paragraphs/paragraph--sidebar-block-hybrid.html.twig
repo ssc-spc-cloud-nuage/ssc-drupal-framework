@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * Theme override to display a paragraph.
+ */
+#}
+
+{% set variant = paragraph.field_label_colour[0].entity.name.value|default('default') %}
+{% set body_content = content|without('field_label', 'field_cta_colour', 'field_label_colour', 'field_cta', 'field_cta_email') %}
+{% set has_cta = content.field_cta|render|striptags|trim or content.field_cta_email|render|striptags|trim %}
+
+{% block paragraph %}
+  {% embed "ssc_base:hybrid-block" with {
+    variant: variant
+  } %}
+    {% block title %}
+      {{ content.field_label }}
+    {% endblock %}
+
+    {% block content %}
+      {{ body_content }}
+
+      {% if has_cta %}
+        {{ content.field_cta }}
+        {{ content.field_cta_email }}
+      {% endif %}
+    {% endblock %}
+  {% endembed %}
+{% endblock %}

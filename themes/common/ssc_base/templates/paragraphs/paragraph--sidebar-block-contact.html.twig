@@ -1,0 +1,47 @@
+{#
+/**
+ * @file
+ * Theme override to display a paragraph.
+ */
+#}
+
+{% set email = content.field_cta_email|render|striptags|trim %}
+{% set link = content.field_cta|render|striptags|trim %}
+
+{% block paragraph %}
+  {% embed 'ssc_base:contact-block' %}
+    {% block name %}
+      {{ content.field_contact }}    
+    {% endblock %}
+
+    {% block title %}
+      {{ content.field_contacts_title }}
+    {% endblock %}
+
+    {% block content %}
+      <div class="field field--name-field-body field--type-text-with-summary field--label-hidden field--item">
+        {{ content.field_body }}
+      </div>
+
+      {% if email or link %}
+        <div class="field field--name-field-cta-email field--type-email field--label-hidden field--item">
+          {% if email %}
+            <a href="mailto://{{ content.field_cta_email.0 }}" class="btn btn-primary">
+              {% if content.field_email_text|render|striptags|trim %}
+                {{ content.field_email_text }}
+              {% else %}
+                {{ content.field_cta_email.0 }}
+              {% endif %}
+              <span class="wb-inv">{{ content.field_hidden_infomation|render|striptags|trim }}</span>
+            </a>
+          {% else %}
+            <a href="{{ content.field_cta.0['#url'] }}" class="btn btn-primary">
+              {{ content.field_cta.0['#title'] }}
+              <span class="wb-inv">{{ content.field_hidden_infomation|render|striptags|trim }}</span>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endblock %}
+  {% endembed %}
+{% endblock paragraph %}

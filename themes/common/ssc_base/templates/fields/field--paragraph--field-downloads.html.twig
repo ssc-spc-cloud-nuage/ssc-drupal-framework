@@ -1,0 +1,12 @@
+
+{% if items is not empty %}
+  {% for file in items %}
+    <div class="download-block__item">
+      <div class="download-block__link">{{ file.link }}</div>
+      {# Redefining the output of the file format, output of the file size by Format Bytes module #}
+      <div class="download-block__details">
+        ({{ file.type }}, {{ file.size|format_size }})
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}

@@ -1,0 +1,6 @@
+name: Contact block
+group: Block
+props:
+  type: object
+  additionalProperties: false
+  properties: {}

@@ -1,0 +1,6 @@
+name: Download block
+group: Block
+props:
+  type: object
+  additionalProperties: false
+  properties: {}
