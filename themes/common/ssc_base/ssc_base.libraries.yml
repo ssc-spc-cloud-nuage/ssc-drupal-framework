@@ -22,7 +22,6 @@ global:
       css/components/exposed-form.css: {}
       css/components/facets.css: {}
       css/components/featured-news.css: {}
-      css/components/file-download.css: {}
       css/components/guide-pager.css: {}
       css/components/images.css: {}
       css/components/inputs.css: {}
