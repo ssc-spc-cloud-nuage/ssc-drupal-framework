@@ -371,7 +371,8 @@
                 "3366753 - Filter out para rev results from report": "https://git.drupalcode.org/project/linkchecker/-/merge_requests/46.patch"
             },
             "drupal/page_manager": {
-                "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch"
+                "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch",
+                "3438993 - mandatory parameters missing for route entity.page.devel_load": "https://www.drupal.org/files/issues/2024-08-14/page-manager-3438993-MR34-24.patch"
             },
             "drupal/config_ignore": {
                 "3466656 - don't fail on missing config": "https://www.drupal.org/files/issues/2024-08-19/dont_fail_if_missing-3466656-4.patch"
