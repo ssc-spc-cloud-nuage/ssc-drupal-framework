@@ -83,7 +83,7 @@ function ssc_common_requirements($phase): array {
 function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
   // Disable HTML5 Validation on ALL forms - Admin theme only.
   $theme = \Drupal::service('theme.manager')->getActiveTheme()->getName();
-  if (!stristr($theme, 'ssc')) {
+  if ($theme == 'ssc_admin') {
     $form['#attributes']['novalidate'] = 'novalidate';
   }
 
