@@ -128,7 +128,7 @@
         "drupal/time_range": "^9.0",
         "drupal/timezone_detect": "^1.0@dev",
         "drupal/tranc": "^1.0.5",
-        "drupal/translatable_menu_link_uri": "^2.1",
+        "drupal/translatable_menu_link_uri": "2.1.1",
         "drupal/twig_extensions": "^2.2",
         "drupal/twig_tweak": "^3.4",
         "drupal/ultimate_cron": "^2.0@alpha",
