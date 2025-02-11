@@ -1,9 +1,4 @@
 services:
-  ssc_common.route_subscriber:
-    class: Drupal\ssc_common\Routing\RouteSubscriber
-    tags:
-      - { name: event_subscriber }
-
   ssc_common.twig.SSCTwig:
     class: Drupal\ssc_common\Twig\SSCTwig
     arguments: ['@date.formatter']
