@@ -384,6 +384,9 @@
             },
             "drupal/better_exposed_filters": {
                 "3495331 - fix sort logic": "https://www.drupal.org/files/issues/2024-12-20/bef-sort_logic-3495331-2.patch"
+            },
+            "drupal/wxt_bootstrap": {
+                "3506314 - footnotes are busted": "https://git.drupalcode.org/project/wxt_bootstrap/-/merge_requests/3.patch"
             }
         },
         "patches-ignore": {
