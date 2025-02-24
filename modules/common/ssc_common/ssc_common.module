@@ -133,7 +133,7 @@ function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id)
       $event = $form_state->getFormObject()->getEntity();
       foreach ($form['field_sessions']['widget'] as $delta => &$subform) {
         // Check that the delta key is numeric.
-        if (is_numeric($delta)) {
+        if (is_numeric($delta) && isset($event->field_sessions[$delta]->target_id)) {
           $session = Paragraph::load($event->field_sessions[$delta]->target_id);
           if ($session) {
             $start_date = $session->get('field_session_date')->start_date->format('Y-m-d');
