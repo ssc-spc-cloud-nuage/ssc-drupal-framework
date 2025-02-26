@@ -776,15 +776,25 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
  * Implements hook_views_data_alter().
  */
 function ssc_common_views_data_alter(array &$data): void {
-  $data['node']['parent_topic'] = array(
+  $data['node']['parent_topic'] = [
     'title' => t('Parent topic'),
     'group' => t('Content'),
-    'field' => array(
+    'field' => [
       'title' => t('Parent topic'),
       'help' => t('Top most topic parent page.'),
       'id' => 'parent_topic',
-    ),
-  );
+    ],
+  ];
+
+  // "Link to content" filter.
+  $data['node']['absolute_url_filter'] = [
+    'title' => t('Absolute URL'),
+    'help' => t('Filter content by its absolute URL.'),
+    'filter' => [
+      'id' => 'absolute_url_filter',
+      'exposed' => TRUE, // Explicitly mark it as an exposed filter.
+    ],
+  ];
 }
 
 /**
