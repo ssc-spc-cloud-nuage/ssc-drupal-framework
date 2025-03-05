@@ -28,7 +28,7 @@
           {% endif %}
 
           {% if show_readmore %}
-            {% embed 'ssc_base:card-readmore' with { size: 'large' } %}{% endembed %}
+            {% include('ssc_base:card-readmore', { size: 'large' }) %}
           {% endif %}
         </div>
     </div>
