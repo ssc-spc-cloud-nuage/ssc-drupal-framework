@@ -8,29 +8,29 @@
         {% block summary %}{% endblock %}
       </div>
 
-      {{ authors }}
+      {{- authors -}}
 
-        <div class="card__footer">
-          {% if type or date %}
-            <div>
-              {% if type %}
-                <span class="card__type">{{- type -}}</span>
-              {% endif %}
+      <div class="card__footer">
+        {% if type or date %}
+          <div>
+            {% if type %}
+              <span class="card__type">{{- type -}}</span>
+            {% endif %}
 
-              {% if type and date %}
-                {{ '–' }}
-              {% endif %}
+            {% if type and date %}
+              {{ '–' }}
+            {% endif %}
 
-              {% if date %}
-                <date class="card__date">{{- date -}}</date>
-              {% endif %}
-            </div>
-          {% endif %}
+            {% if date %}
+              <date class="card__date">{{- date -}}</date>
+            {% endif %}
+          </div>
+        {% endif %}
 
-          {% if show_readmore %}
-            {% include('ssc_base:card-readmore', { size: 'large' }) %}
-          {% endif %}
-        </div>
+        {% if show_readmore %}
+          {% include('ssc_base:card-readmore', { size: 'large' }) %}
+        {% endif %}
+      </div>
     </div>
   </article>
 </div>
