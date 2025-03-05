@@ -1,0 +1,53 @@
+/* Cards grid */
+
+
+/* Card component */
+.card.card-topic {
+  --size-card-border-radius: var(--size-border-radius-medium);
+  --clr-card-title: var(--clr-card-accent);
+
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: var(--shadow-elevation-medium);
+  }
+  &:hover::after {
+    box-shadow: inset 0 0 0 4px var(--clr-card-accent);
+  }
+  & .card__body {
+    color: var(--clr-ssc-black)
+  }
+  & .card__summary {
+    color: var(--clr-ssc-black);
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  & .card__summary p:last-of-type {
+    margin-bottom: 0;
+  }
+  & .card__source {
+    margin-block: 0.875rem 0;
+    color: var(--clr-ssc-gray-regular);
+    font-size: 0.925rem;
+    line-height: 1;
+
+    & .field--label {
+      padding-right: 0.25em;
+      font-weight: 400;
+    }
+  }
+  & .card__external {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35px;
+    height: 35px;
+  }
+  & .card__external-icon {
+    fill: var(--clr-card-border);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: fill var(--time-regular-transition);
+    }
+  }
+}

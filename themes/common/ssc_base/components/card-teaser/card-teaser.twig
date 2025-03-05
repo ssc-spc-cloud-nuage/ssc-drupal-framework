@@ -1,0 +1,51 @@
+{% set classes = ['card', 'card-teaser'] %}
+
+<div class="card-container">
+  <article class="{{ classes|join(' ') }}" data-card-id="{{ id }}" data-card-variant="{{ variant ? variant : 'regular' }}">
+    <div class="card__body">
+      <h3 class="card__title">
+        <a href="{{ link }}" class="stretched-link card__link">
+          {{- title -}}
+
+          {% if title_postfix %}
+            <span class="card__title-postfix">({{- title_postfix -}})</span>
+          {% endif %}
+        </a>
+      </h3>
+
+      {% if show_summary %}
+        <div class="card__summary">
+          {% block summary %}{% endblock %}
+        </div>
+      {% endif %}
+
+      <div class="card__footer">
+        {% if type or date %}
+          <div>
+            {% if type %}
+              <span class="card__type">{{- type -}}</span>
+            {% endif %}
+
+            {% if type and date %}
+              {{ '–' }}
+            {% endif %}
+
+            {% if date %}
+              <date class="card__date">{{- date -}}</date>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if pills %}
+          <div class="card__pills pill-links">{{- pills -}}</div>
+        {% endif %}
+
+        {% block footer %}{% endblock %}
+      </div>
+    </div>
+
+    {% if image %}
+      <div class="card__image">{{- image -}}</div>
+    {% endif %}
+  </article>
+</div>

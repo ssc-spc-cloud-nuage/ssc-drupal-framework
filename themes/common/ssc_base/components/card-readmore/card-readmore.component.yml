@@ -1,0 +1,17 @@
+name: Readmore icon
+group: Block
+
+props:
+  type: object
+  additionalProperties: false
+  properties:
+    text:
+      description: Readmore text
+      type: string
+    size:
+      description: Readmore size
+      type: string
+      enum:
+        - small
+        - medium
+        - large

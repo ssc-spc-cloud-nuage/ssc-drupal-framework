@@ -108,3 +108,8 @@ a.wb-lbx {
 .alert-success, .alert-info, .alert-warning, .alert-danger, .label-default, .label-default[href]:hover, .label-default[href]:focus, .label-default[href]:active, .label-primary, .label-primary[href]:hover, .label-primary[href]:focus, .label-primary[href]:active, .label-success, .label-success[href]:hover, .label-success[href]:focus, .label-success[href]:active, .label-info, .label-info[href]:hover, .label-info[href]:focus, .label-info[href]:active, .label-warning, .label-warning[href]:hover, .label-warning[href]:focus, .label-warning[href]:active, .label-danger, .label-danger[href]:hover, .label-danger[href]:focus, .label-danger[href]:active {
   color: var(--clr-ssc-black);
 }
+
+/* Date modified */
+#wb-dtmd {
+  margin: 0;
+}

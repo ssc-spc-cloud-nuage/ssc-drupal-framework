@@ -1,0 +1,54 @@
+name: Card teaser
+group: Block
+
+libraryOverrides:
+  dependencies:
+    - ssc_base/card_base
+
+props:
+  type: object
+  additionalProperties: false
+  properties:
+    id:
+      description: Teaser ID
+      type: ["string", "null"]
+    title:
+      description: Teaser title
+      type: ["string", "null"]
+    title_postfix:
+      description: Teaser title postfix
+      type: ["string", "null"]
+    link:
+      description: Teaser link
+      type: ["string", "null"]
+    date:
+      description: Teaser date
+      type: ["string", "null"]
+    type:
+      description: Teaser type
+      type: ["string", "null"]
+    pills:
+      description: Teaser pills
+      type: ["string", "null"]
+    image:
+      description: Teaser image
+      type: ["string", "null"]
+    variant:
+      description: Teaser variant
+      type: string
+      enum:
+        - regular
+        - large
+      default: regular
+    show_summary:
+      description: Show summary toggle
+      type: ["number", "null"]
+      default: 0
+
+slots:
+  summary:
+    title: Summary
+    description: Teaser summary
+  footer:
+    title: Footer
+    description: Teaser footer

@@ -1,0 +1,22 @@
+<div class="card-container">
+  <article class="card card-carousel" data-card-id="{{ id }}">
+    <div class="card__image">{{- image -}}</div>
+    <div class="card__body">
+      <h3 class="card__title">
+        <a href="{{ link }}" class="stretched-link card__link">{{- title -}}</a>
+      </h3>
+
+      {% if type %}
+        <div class="card__type">{{ type }}</div>
+      {% endif %}
+
+      <div class="card__footer">
+        <date class="card__date">{{- date -}}</date>
+
+        {% if show_readmore %}
+          {% include('ssc_base:card-readmore') %}
+        {% endif %}
+      </div>
+    </div>
+  </article>
+</div>

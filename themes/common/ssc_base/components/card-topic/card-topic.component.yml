@@ -1,0 +1,43 @@
+name: Card topic
+group: Block
+
+libraryOverrides:
+  dependencies:
+    - ssc_base/card_base
+
+props:
+  type: object
+  additionalProperties: false
+  properties:
+    title:
+      description: Topic title
+      type: ["string", "null"]
+    link:
+      description: Topic link
+      type: ["string", "null"]
+    source:
+      description: Topic source
+      type: ["string", "null"]
+    type:
+      description: Topic type
+      type: ["string", "null"]
+    date:
+      description: Topic date
+      type: ["string", "null"]
+    is_external:
+      description: External card flag
+      type: ["number", "null"]
+      default: 0
+    show_summary:
+      description: Show summary flag
+      type: ["number", "null"]
+      default: 0
+    show_date:
+      description: Show date flag
+      type: ["number", "null"]
+      default: 0
+
+slots:
+  summary:
+    title: Summary
+    description: Topic summary

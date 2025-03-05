@@ -8,13 +8,13 @@ global:
       css/layout/news.css: {}
       css/layout/search-results.css: {}
       css/layout/structured-page.css: {}
+      css/layout/teasers.css: {}
     component:
       css/components/alerts.css: {}
       css/components/archived-banner.css: {}
       css/components/breadcrumb.css: {}
       css/components/buttons.css: {}
       css/components/card-promo.css: {}
-      css/components/cards.css: {}
       css/components/collaborators.css: {}
       css/components/collapsible.css: {}
       css/components/content-footer.css: {}
@@ -56,6 +56,11 @@ global:
     - core/drupal
     - core/drupalSettings
     - core/drupal.dialog.ajax
+
+card_base:
+  css:
+    component:
+      css/components/card-base.css: {}
 
 entity_moderation_form:
   css:

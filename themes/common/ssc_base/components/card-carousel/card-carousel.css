@@ -1,0 +1,13 @@
+.card.card-carousel {
+  --size-card-gap: var(--size-card-padding-outer);
+  --size-card-border-radius: var(--size-border-radius-medium);
+
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  min-height: 180px;
+  max-width: 552px;
+
+  & .card__image {
+    border-radius: var(--size-card-image-border-radius);
+  }
+}
