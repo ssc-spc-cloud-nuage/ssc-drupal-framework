@@ -7,7 +7,7 @@
  * the "Slick Carousel" option along with the "SSC Carousel" optionset.
  */
 
- .slick--optionset--ssc-carousel {
+.slick--optionset--ssc-carousel {
   & .slick-track {
     display: flex;
     align-items: stretch;
@@ -117,11 +117,11 @@
 }
 
 /* Event Card Styling */
-.view-display-id-carousel_small_eva .slick__slide {
+/* .view-display-id-carousel_small_eva .slick__slide {
   margin-block: 8px 24px;
   overflow: visible !important;
-}
-@media screen and (min-width: 1200px) {
+} */
+/* @media screen and (min-width: 1200px) {
   .view-display-id-carousel_small_eva .slick__slide {
     max-width: 585px;
   }
@@ -171,10 +171,10 @@
 }
 .view-display-id-carousel_small_eva .card:hover .plus-icon path {
   stroke: var(--clr-ssc-black);
-}
+} */
 
 /* Carousel medium */
-.view-display-id-carousel_medium_eva .slick__slide {
+/* .view-display-id-carousel_medium_eva .slick__slide {
   margin-block: 8px 24px;
   overflow: visible !important;
 
@@ -203,4 +203,4 @@
   margin-block: 0 8px;
   color: var(--clr-ssc-pink-regular);
   font-size: 1rem;
-}
+} */

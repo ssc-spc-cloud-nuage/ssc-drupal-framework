@@ -9,14 +9,6 @@
   Drupal.behaviors.sscBase = {};
   Drupal.behaviors.sscBase.attach = function (context, settings) {
     once('ssc-base', document.documentElement, context).forEach(function () {
-      // Add stretched link class to search teasers
-      $(".search-result a").addClass("stretched-link");
-
-      // Re-adds stretched link class after an AJAX search form submission
-      $(document).ajaxComplete(function () {
-        $(".search-result a").addClass("stretched-link");
-      });
-
       // Add stretched link class to upcoming events teasers on the News landing page
       $(".upcoming-event a").addClass("stretched-link");
     });

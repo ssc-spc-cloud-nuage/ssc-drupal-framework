@@ -1,0 +1,36 @@
+<div class="card-container">
+  <article class="card card-featured" data-card-id="{{ id }}" data-card-theme="{{ theme }}">
+    <div class="card__image">{{- image -}}</div>
+    <div class="card__body">
+      <h3 class="card__title"><a href="{{ link }}" class="stretched-link card__link">{{- title -}}</a></h3>
+
+      <div class="card__summary">
+        {% block summary %}{% endblock %}
+      </div>
+
+      {{ authors }}
+
+        <div class="card__footer">
+          {% if type or date %}
+            <div>
+              {% if type %}
+                <span class="card__type">{{- type -}}</span>
+              {% endif %}
+
+              {% if type and date %}
+                {{ '–' }}
+              {% endif %}
+
+              {% if date %}
+                <date class="card__date">{{- date -}}</date>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          {% if show_readmore %}
+            {% embed 'ssc_base:card-readmore' with { size: 'large' } %}{% endembed %}
+          {% endif %}
+        </div>
+    </div>
+  </article>
+</div>

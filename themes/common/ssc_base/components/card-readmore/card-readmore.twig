@@ -1,0 +1,13 @@
+{% set classes = [
+  'card-readmore',
+  'card-readmore--' ~ (size ? size : 'medium'),
+] %}
+
+<div class="{{ classes|join(' ') }}" aria-hidden="true">
+  <div class="card-readmore__text">
+    {{- 'Read further'|tc -}}
+  </div>
+  <svg viewbox="0 0 10 10" class="card-readmore__icon">
+    <path d="M5,3 L5,5 L5,7 M3,5 L7,5"/>
+  </svg>
+</div>

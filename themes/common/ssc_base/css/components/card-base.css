@@ -1,0 +1,126 @@
+.card-container {
+  container-name: cardContainer;
+  container-type: inline-size;
+  height: 100%;
+}
+.card {
+  --size-card-padding-outer: 12px;
+  --size-card-padding-inner: 12px;
+  --size-card-gap: 24px;
+  --size-card-border-radius: var(--size-border-radius-large);
+  --size-card-image-border-radius: var(--size-border-radius-small);
+  --size-card-text: 1rem;
+  --size-card-title: 1.375rem;
+
+  --clr-card-bg: var(--clr-ssc-white);
+  --clr-card-accent: var(--clr-ssc-blue-regular);
+  --clr-card-border: var(--clr-ssc-gray-light);
+  --clr-card-text: var(--clr-ssc-black);
+  --clr-card-text-secondary: var(--clr-ssc-gray-regular);
+  --clr-card-title: var(--clr-card-text);
+
+  --shadow-color: var(--clr-section-bg, 0deg 0% 72%);
+  --shadow-elevation-low:
+    0px 0.4px 0.6px hsl(var(--shadow-color) / 0),
+    0px 0.7px 1px hsl(var(--shadow-color) / 0.13),
+    0px 1.3px 2px hsl(var(--shadow-color) / 0.26);
+  --shadow-elevation-medium:
+    0px 0.4px 0.6px hsl(var(--shadow-color) / 0),
+    0px 1.3px 2px hsl(var(--shadow-color) / 0.07),
+    0px 2.3px 3.5px hsl(var(--shadow-color) / 0.13),
+    0px 3.8px 5.7px hsl(var(--shadow-color) / 0.2),
+    0px 6.4px 9.6px hsl(var(--shadow-color) / 0.27);
+
+  position: relative;
+  z-index: 0;
+  display: flex;
+  gap: var(--size-card-gap);
+  height: 100%;
+  padding: var(--size-card-padding-outer);
+  background-color: var(--clr-card-bg);
+  border: solid 1px var(--clr-card-border);
+  border-radius: var(--size-card-border-radius);
+  color: var(--clr-text-primary);
+
+  @media screen and (max-width: 980px) {
+    --size-card-gap: 24px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      background-color var(--time-regular-transition),
+      border-color var(--time-regular-transition),
+      outline var(--time-regular-transition),
+      box-shadow var(--time-regular-transition);
+  }
+  &:hover,
+  &:focus {
+    --clr-card-bg: var(--clr-ssc-slate-50);
+    --clr-card-border: var(--clr-card-accent);
+  }
+}
+.card__image {
+  position: relative;
+  z-index: -1;
+  background-image: url("/themes/common/ssc_base/assets/pattern-bright-bg.png");
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+
+  & :is(picture, source, img) {
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    object-fit: cover;
+    object-position: center;
+  }
+}
+.card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: var(--size-card-padding-inner);
+  color: var(--clr-card-text);
+  font-size: var(--size-card-text);
+}
+.card__title {
+  max-width: 60rem;
+  margin-block: 0;
+  font-size: var(--size-card-title) !important;
+  font-weight: 500;
+}
+.card__summary {
+  max-width: 60rem;
+  margin-top: 0.625rem;
+}
+.card__link {
+  text-decoration: none;
+
+  &,
+  &:visited {
+    color: var(--clr-card-title);
+  }
+  .card:is(:hover, :focus) & {
+    text-decoration: none;
+    color: var(--clr-card-border);
+  }
+}
+.card__type {
+  font-weight: 700;
+}
+.card__footer {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block: auto 0;
+  padding-top: 1.125rem;
+  color: var(--clr-card-text-secondary);
+  font-size: 0.875rem;
+
+  &:not(:has(> *)) {
+    /* Hide the card footer if it contains no element */
+    display: none;
+  }
+  [data-card-theme="dark"] & {
+    --clr-card-text-secondary: var(--clr-card-text);
+  }
+}

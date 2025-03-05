@@ -1,0 +1,49 @@
+name: Card featured
+group: Block
+
+libraryOverrides:
+  dependencies:
+    - ssc_base/card_base
+
+props:
+  type: object
+  additionalProperties: false
+  properties:
+    id:
+      description: Teaser ID
+      type: ['string', 'null']
+    title:
+      description: Teaser title
+      type: ['string', 'null']
+    link:
+      description: Teaser link
+      type: ['string', 'null']
+    date:
+      description: Teaser date
+      type: ['string', 'null']
+    date_postfix:
+      description: Teaser date postfix
+      type: ['string', 'null']
+    type:
+      description: Teaser type
+      type: ['string', 'null']
+    authors:
+      descript: Teaser authors
+      type: ['string', 'null']
+    pills:
+      description: Teaser pills
+      type: ['string', 'null']
+    image:
+      description: Teaser image
+      type: ['string', 'null']
+    theme:
+      description: Teaser color theme
+      type: string
+      enum:
+        - light
+        - dark
+      default: light
+    show_readmore:
+      description: Show readmore flag
+      type: ['number', 'null']
+      default: 0

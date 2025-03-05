@@ -1,0 +1,33 @@
+name: Card carousel
+group: Block
+
+libraryOverrides:
+  dependencies:
+    - ssc_base/card_base
+
+props:
+  type: object
+  additionalProperties: false
+  properties:
+    id:
+      description: Card ID
+      type: ["string", "null"]
+    title:
+      description: Card title
+      type: ["string", "null"]
+    link:
+      description: Card link
+      type: ["string", "null"]
+    date:
+      description: Card date
+      type: ["string", "null"]
+    type:
+      description: Card type
+      type: ["string", "null"]
+    image:
+      description: Card type
+      type: ["string", "null"]
+    show_readmore:
+      description: Show readmore flag
+      type: ["number", "null"]
+      default: 0

@@ -18,9 +18,8 @@
   & a {
     position: relative;
     z-index: 1;
-    font-size: 1rem;
     color: var(--clr-ssc-gray-regular);
-    padding: 0.375em 0.75em;
+    padding: 0.25em 0.75em;
     background-color: var(--clr-ssc-gray-light);
     border-radius: 100vw;
     line-height: 1.5rem;
