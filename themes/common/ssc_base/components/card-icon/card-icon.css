@@ -1,0 +1,21 @@
+.card.card-icon {
+  --size-card-padding-outer: 24px;
+  --size-card-padding-inner: 0;
+  --size-card-gap: 36px;
+  --size-card-border-radius: var(--size-border-radius-medium);
+
+  &:hover {
+    box-shadow: var(--shadow-elevation-medium);
+  }
+  & .card__summary {
+    & > p:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+  & .card__image {
+    width: 60px;
+    height: fit-content;
+    background-image: none;
+    border-radius: var(--size-card-image-border-radius);
+  }
+}

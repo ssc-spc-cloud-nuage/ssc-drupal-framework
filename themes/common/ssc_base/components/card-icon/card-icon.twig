@@ -1,0 +1,17 @@
+{% set classes = ['card', 'card-icon'] %}
+
+<div class="card-container">
+  <article class="{{ classes|join(' ') }}">
+    <div class="card__body">
+      <h3 class="card__title">
+        <a href="{{ link }}" class="stretched-link card__link">{{- title -}}</a>
+      </h3>
+
+      <div class="card__summary">
+        {% block summary %}{% endblock %}
+      </div>
+    </div>
+
+    <div class="card__image">{{- image -}}</div>
+  </article>
+</div>
