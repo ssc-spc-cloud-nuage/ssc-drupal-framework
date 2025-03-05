@@ -1,0 +1,25 @@
+name: Card teaser
+group: Block
+
+libraryOverrides:
+  dependencies:
+    - ssc_base/card_base
+
+props:
+  type: object
+  additionalProperties: false
+  properties:
+    title:
+      description: Teaser title
+      type: ["string", "null"]
+    link:
+      description: Teaser link
+      type: ["string", "null"]
+    image:
+      description: Teaser image
+      type: ["string", "null"]
+
+slots:
+  summary:
+    title: Summary
+    description: Teaser summary
