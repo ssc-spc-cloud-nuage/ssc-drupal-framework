@@ -14,7 +14,7 @@
 
   --clr-card-bg: var(--clr-ssc-white);
   --clr-card-accent: var(--clr-ssc-blue-regular);
-  --clr-card-border: var(--clr-ssc-gray-light);
+  --clr-card-border: var(--clr-ssc-gray-200);
   --clr-card-text: var(--clr-ssc-black);
   --clr-card-text-secondary: var(--clr-ssc-gray-regular);
   --clr-card-title: var(--clr-card-text);
