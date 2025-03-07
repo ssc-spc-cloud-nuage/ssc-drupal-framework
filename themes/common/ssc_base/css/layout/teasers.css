@@ -2,11 +2,17 @@
  * @file
  * Styles specific to teasers lists.
  */
-
-.teasers-list > .view-content,
-.teasers-list > .view-main > .view-content {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 15px;
+/**
+ * @file
+ * Styles specific to teasers lists.
+ */
+.teasers-list {
+  & > .view-content,
+  & > .view-main > .view-content,
+  &.field-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
 }
