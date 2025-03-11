@@ -3,55 +3,13 @@
  * Styles specific to the Search page.
  */
 
-.search-result {
+.search-results .card__summary {
   & strong {
     padding: 0.1em 0.2em;
     background-color: var(--clr-ssc-gray-light);
-    font-weight: inherit;
+    font-weight: 500;
   }
   & strong + strong {
     margin-left: -0.2em;
-  }
-  & a:is(:hover, :focus) {
-    text-decoration: underline;
-  }
-}
-.search-result__title {
-  font-size: 1.375rem;
-  line-height: 1.5;
-  color: var(--clr-ssc-blue-regular);
-
-  & > a {
-    font-weight: 500;
-    text-decoration: none;
-
-    &:hover {
-      color: var(--clr-ssc-blue-regular);
-    }
-  }
-}
-.search-result__info {
-  margin: 0.5em 0;
-  font-size: 1rem;
-  color: var(--clr-ssc-gray-regular);
-}
-.search-result__summary {
-  font-size: 1rem;
-  color: var(--clr-ssc-black);
-}
-.search-result__related {
-  font-size: 1rem;
-  color: var(--clr-ssc-gray-regular);
-  margin-top: 0.5rem;
-}
-.search-results__filters {
-  & .form-actions {
-    display: block;
-  }
-  & ul {
-    margin: 0;
-  }
-  & .panel ul {
-    padding: 0;
   }
 }

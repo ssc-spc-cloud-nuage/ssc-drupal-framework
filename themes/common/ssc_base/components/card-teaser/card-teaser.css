@@ -11,6 +11,8 @@
     --size-card-text: 1.25rem;
     --size-card-title: 1.625rem;
 
+    min-height: 300px;
+
     @container cardContainer (max-width: 600px) {
       flex-direction: column;
     }
@@ -60,8 +62,12 @@
   & .card__type {
     color: var(--clr-card-accent);
   }
-  & .card__summary > :last-child {
-    margin-bottom: 0;
+  & .card__footer {
+    [data-card-variant="regular"] & {
+      @container cardContainer (max-width: 600px) {
+        flex-direction: column;
+      }
+    }
   }
   & .card__pills {
     margin-bottom: -0.6rem;
