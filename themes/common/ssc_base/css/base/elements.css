@@ -34,9 +34,12 @@ p {
 }
 :is(h1, h2, h3, h4, h5, h6),
 :is(.h1, .h2, .h3, .h4, .h5, .h6) {
-  margin-block: 1em 0.625em;
   font-family: inherit;
   line-height: 1.2;
+}
+:where(h1, h2, h3, h4, h5, h6),
+:where(.h1, .h2, .h3, .h4, .h5, .h6) {
+  margin-block: 1em 0.625em;
 }
 :is(h1, .h1) {
   font-size: 2.625rem;

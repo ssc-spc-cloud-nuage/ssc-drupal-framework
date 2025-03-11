@@ -19,6 +19,12 @@
         </div>
       {% endif %}
 
+      {% if authors %}
+        <div class="card__authors">
+          {{- authors -}}
+        </div>
+      {% endif %}
+
       <div class="card__footer">
         {% if type or date %}
           <div>
