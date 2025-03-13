@@ -21,6 +21,7 @@
     color: var(--clr-ssc-gray-regular);
     padding: 0.25em 0.75em;
     background-color: var(--clr-ssc-gray-light);
+    border: solid 1px var(--clr-ssc-gray-200);
     border-radius: 100vw;
     line-height: 1.5rem;
     text-decoration: none;
@@ -33,6 +34,7 @@
     }
     &:hover {
       background-color: var(--clr-ssc-gray-dark);
+      border-color: var(--clr-ssc-gray-dark);
       text-decoration: inherit;
       color: var(--clr-ssc-white);
     }

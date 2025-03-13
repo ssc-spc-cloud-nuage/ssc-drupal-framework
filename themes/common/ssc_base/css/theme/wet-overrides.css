@@ -57,7 +57,7 @@
 a.wb-lbx {
   &,
   &:visited {
-    color: var(--clr-ssc-violet-regular);
+    color: var(--clr-ssc-blue-regular);
   }
   &:hover,
   &:focus {

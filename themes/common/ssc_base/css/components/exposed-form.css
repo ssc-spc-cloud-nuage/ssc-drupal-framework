@@ -5,13 +5,11 @@
 
 /* Inline form */
 .exposed-form--inline {
-  & .container {
+  &.container {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-areas: "title filters";
     column-gap: 1em;
-    padding-top: 0.8em;
-    padding-bottom: 0.8em;
   }
   & .fieldset-wrapper {
     display: flex;

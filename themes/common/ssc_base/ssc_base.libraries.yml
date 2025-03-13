@@ -18,7 +18,6 @@ global:
       css/components/collaborators.css: {}
       css/components/collapsible.css: {}
       css/components/content-footer.css: {}
-      css/components/event-session.css: {}
       css/components/exposed-form.css: {}
       css/components/facets.css: {}
       css/components/featured-news.css: {}
