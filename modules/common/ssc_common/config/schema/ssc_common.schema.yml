@@ -11,3 +11,21 @@ ssc_common.settings:
     comment_login_info:
       type: text_format
       label: 'Comment login info'
+
+filter_settings.new_marker:
+  type: mapping
+  mapping:
+    default_duration:
+      type: string
+    default_marker_text_en:
+      type: string
+    default_marker_text_fr:
+      type: string
+    default_wrapper_classes:
+      type: string
+
+filter_settings.remove_nbsp:
+  type: mapping
+  mapping:
+    tags:
+      type: string
