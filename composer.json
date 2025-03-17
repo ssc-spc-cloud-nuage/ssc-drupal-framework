@@ -6,6 +6,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "ext-dom": "*",
         "ext-fileinfo": "*",
         "chi-teck/drupal-code-generator": "^3.0",
         "drupal/access_unpublished": "1.5.0",
