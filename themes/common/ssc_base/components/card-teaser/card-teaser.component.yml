@@ -40,6 +40,10 @@ props:
         - regular
         - large
       default: regular
+    is_external:
+      description: External card flag
+      type: ["number", "null"]
+      default: 0
     show_summary:
       description: Show summary toggle
       type: ["number", "null"]

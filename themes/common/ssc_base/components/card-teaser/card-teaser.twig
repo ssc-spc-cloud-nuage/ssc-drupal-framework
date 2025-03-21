@@ -2,6 +2,14 @@
 
 <div class="card-container">
   <article class="{{ classes|join(' ') }}" data-card-id="{{ id }}" data-card-variant="{{ variant ? variant : 'regular' }}">
+    {% if is_external %}
+      <div class="card__external" aria-hidden="true">
+        <svg viewbox="0 0 35 35">
+          <polygon class="card__external-icon" points="0 0 16.39 16.39 23.46 9.31 18.13 9.29 18.15 6.46 28.51 6.48 28.46 16.16 25.63 16.18 25.67 11.34 18.51 18.51 35 35 35 0 0 0" />
+        </svg>
+      </div>
+    {% endif %}
+
     <div class="card__body">
       <h3 class="card__title">
         <a href="{{ link }}" class="stretched-link card__link">
