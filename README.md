@@ -4,8 +4,8 @@ A framework for common modules, styles and functionality shared between SSC proj
 
 It's currently being used for:
 
-- MySSC+
-- Serving Government
+- [MySSC+](https://github.com/ssc-spc-cloud-nuage/myssc-drupalwxt)
+- [Serving Government](https://github.com/ssc-spc-cloud-nuage/serving-government)
 
 ## Updating the framework dependency in a project's Composer file
 
