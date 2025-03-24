@@ -4,9 +4,9 @@
   height: 100%;
 }
 .card {
-  --size-card-padding-outer: 12px;
-  --size-card-padding-inner: 12px;
-  --size-card-gap: 24px;
+  --size-card-padding-outer: 10px;
+  --size-card-padding-inner: 10px;
+  --size-card-gap: 20px;
   --size-card-border-radius: var(--size-border-radius-large);
   --size-card-image-border-radius: var(--size-border-radius-small);
   --size-card-text: 1rem;

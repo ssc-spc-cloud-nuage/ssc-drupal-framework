@@ -4,6 +4,9 @@
   overflow: hidden;
 
   &[data-card-variant="regular"] {
+    --size-card-padding-outer: 20px;
+    --size-card-padding-inner: 0;
+
     @container cardContainer (max-width: 400px) {
       flex-direction: column;
     }
