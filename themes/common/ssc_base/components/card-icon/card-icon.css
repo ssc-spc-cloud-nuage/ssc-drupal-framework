@@ -1,7 +1,7 @@
 .card.card-icon {
-  --size-card-padding-outer: 24px;
+  --size-card-padding-outer: 20px;
   --size-card-padding-inner: 0;
-  --size-card-gap: 36px;
+  --size-card-gap: 40px;
   --size-card-border-radius: var(--size-border-radius-medium);
 
   &:hover {

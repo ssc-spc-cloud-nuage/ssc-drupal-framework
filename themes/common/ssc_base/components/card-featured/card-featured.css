@@ -2,7 +2,8 @@
   --size-card-gap: 0;
   --size-card-text: 1.25rem;
   --size-card-title: 1.625rem;
-  --size-card-padding-inner: 24px;
+  --size-card-padding-outer: 0;
+  --size-card-padding-inner: 20px;
 
   box-shadow: var(--shadow-elevation-low);
   min-height: 360px;
