@@ -327,7 +327,8 @@
                 "local - better unlink link in block": "./patches/masquerade-better_unlink.patch"
             },
             "drupal/message": {
-                "2981259 - allow setting token contexts": "https://www.drupal.org/files/issues/2018-06-24/allow_token_contexts-3.patch"
+                "2981259 - allow setting token contexts": "https://www.drupal.org/files/issues/2018-06-24/allow_token_contexts-3.patch",
+                "local - allow inline styles (3183734 reworked for 2981259)": "./patches/message-allow_inline_styles.patch"
             },
             "drupal/message_notify": {
                 "2965975 - use message language": "https://www.drupal.org/files/issues/2022-04-14/proper_language-2965975-9.patch"

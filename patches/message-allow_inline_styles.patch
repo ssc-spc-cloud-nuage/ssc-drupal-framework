@@ -1,0 +1,15 @@
+diff --git a/src/Entity/Message.php b/src/Entity/Message.php
+index 6fbd229..4867e1a 100644
+--- a/src/Entity/Message.php
++++ b/src/Entity/Message.php
+@@ -330,8 +330,8 @@ class Message extends ContentEntityBase implements MessageInterface {
+       ];
+ 
+     foreach ($output as $key => $value) {
+-      $output[$key] = \Drupal::token()
+-        ->replace($value, $contexts, $options);
++      $output[$key] = Markup::create(\Drupal::token()
++        ->replace($value->__toString(), $contexts, $options));
+     }
+ 
+     return $output;
