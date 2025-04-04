@@ -235,7 +235,7 @@
         "patches": {
             "drupal/core": {
                 "2916876 - LB block visiblity": "https://www.drupal.org/files/issues/2023-12-19/drupal-n2916876-207.patch",
-                "2942975 - allow LB setup to be exported with content": "https://www.drupal.org/files/issues/2024-09-06/2942975-10.3.x.patch",
+                "2942975 - allow LB setup to be exported with content": "https://www.drupal.org/files/issues/2024-12-20/2942975-273_0.patch",
                 "2979914 - add placeholder to Views search field": "https://www.drupal.org/files/issues/2020-10-03/2979914-17.patch",
                 "2944173 - allow tokens in url of links (ckeditor)": "https://www.drupal.org/files/issues/2021-10-01/xss_attrs-2944173-60.patch",
                 "3239705 - make link fields sortable": "https://www.drupal.org/files/issues/2021-10-06/make_link_fields_click_sortable-3239705-7.patch",
