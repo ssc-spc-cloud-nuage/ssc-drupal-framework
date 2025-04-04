@@ -260,7 +260,6 @@
                 "2950758 - dont show fields just because twig debug enabled": "https://www.drupal.org/files/issues/2023-04-03/2950758-41_0.patch",
                 "3306820 - show field name on Manage Display": "https://www.drupal.org/files/issues/2022-08-30/3306820-machine-name-in-field-ui-table_0.patch",
                 "local - CTA block failing to translate on Test": "./patches/core-hack-custom-block-config.patch",
-                "2700667 - Notice: Undefined index: #type in FormHelper": "https://www.drupal.org/files/issues/2021-05-12/2700667-133a.patch",
                 "3027240 - Undefined index: #parents FormState.php": "https://www.drupal.org/files/issues/2021-07-14/drupal-undefined_index_parents-3027240-fixed.patch",
                 "3353388 - Fix TypeError in FormElementHelper.php": "https://www.drupal.org/files/issues/2023-06-21/typeError_implode_3353388.patch",
                 "local - LB fails when custom block missing": "./patches/lb_inline-block-missing.patch",
