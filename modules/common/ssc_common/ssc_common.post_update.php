@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Contains ssc_common.post_update.php.
+ */
+
+/**
  * Update the body field format for all nodes and paragraphs.
  */
 function ssc_common_post_update_body_format(&$sandbox) {
