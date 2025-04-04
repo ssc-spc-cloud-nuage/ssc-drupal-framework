@@ -243,7 +243,6 @@
                 "2893740 - sidebar for other entities": "https://www.drupal.org/files/issues/2024-07-31/core_allow_sidebar_for_content_entity_form_2893740_57.patch",
                 "2941092 - ignore width property when saving translation": "https://www.drupal.org/files/issues/2021-04-15/2941092-19.patch",
                 "1699378 - allow tokens in arguments for entityref fields": "https://www.drupal.org/files/issues/2024-07-07/1699378-drupal-10.3.x.patch",
-                "2630732 - WxT 5.3.0 conflict, will be fixed in 5.3.1.": "https://www.drupal.org/files/issues/2024-11-13/entity-fields-migration-destination-10.3.x-2630732-161.patch",
                 "2692289 - allow limiting autocomplete to 1": "https://www.drupal.org/files/issues/2021-12-10/2692289-25-9.3.0.patch",
                 "3101231 - multilingual layout edit context": "https://www.drupal.org/files/issues/2022-02-16/layout-builder-translation-issue-3101231-34.patch",
                 "3089151 - fix drag/drop (needed for Field Groups)": "https://www.drupal.org/files/issues/2023-12-26/3089151-51.patch",
@@ -397,9 +396,6 @@
         },
         "patches-ignore": {
             "drupalwxt/wxt": {
-                "drupal/core": {
-                    "2630732 - WxT 5.3.0 conflict, will be fixed in 5.3.1.": "https://git.drupalcode.org/project/drupal/-/merge_requests/6111.diff"
-                },
                 "drupal/diff": {
                     "Enter drupal/diff patch #3004705 description here": "https://www.drupal.org/files/issues/2018-12-03/ModerationState-error-of-translated-node-in-revision-overview-page-3004705-4.patch",
                     "Enter drupal/diff patch #3228798 description here": "https://www.drupal.org/files/issues/2021-08-19/diff-a11y-3228798-10.patch",
