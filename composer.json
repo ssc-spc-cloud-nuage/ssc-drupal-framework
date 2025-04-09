@@ -327,7 +327,8 @@
                 "local - allow inline styles (3183734 reworked for 2981259)": "./patches/message-allow_inline_styles.patch"
             },
             "drupal/message_notify": {
-                "2965975 - use message language": "https://www.drupal.org/files/issues/2022-04-14/proper_language-2965975-9.patch"
+                "2965975 - use message language": "https://www.drupal.org/files/issues/2022-04-14/proper_language-2965975-9.patch",
+                "3211901 - allow sending headers": "https://www.drupal.org/files/issues/2022-05-26/allow-sending-headers-3211901-8.patch"
             },
             "drupal/mimemail": {
                 "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
