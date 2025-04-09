@@ -268,7 +268,6 @@
                 "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch",
                 "3025039 - remove error on non-translable field on translation": "https://www.drupal.org/files/issues/2024-05-01/3025039-94.patch",
                 "local - Show IDs in Views rearrange fields modal": "./patches/core-show_ids_views_rearrange.patch",
-                "local - allow headings in summary elements": "./patches/core-ckeditor-summary-v43.3.1.patch",
                 "local - core HACK to handle daterange nontranslated bug": "./patches/core-HACK-handle_nontranslated_daterange_fields.patch"
             },
             "drupal/bg_image_formatter": {
