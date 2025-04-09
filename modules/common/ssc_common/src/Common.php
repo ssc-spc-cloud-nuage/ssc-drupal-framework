@@ -81,12 +81,11 @@ class Common {
     $message = Message::create(['template' => $template, 'uid' => \Drupal::currentUser()->id()]);
 
     // Add in any Message fields passed in
-    // NEW (1024): if field is long formatted text, set to Full HTML
-
+    // NEW (1024): if field is long formatted text, set to Email Templates format.
     if (!empty($options['fields'])) {
       foreach ($options['fields'] as $field => $value) {
         if (Common::isFormattedLongText($message, $field)) {
-          $message->set($field, ['value' => $value, 'format' => 'simple']);
+          $message->set($field, ['value' => $value, 'format' => 'email_templates']);
         }
         else {
           $message->set($field, $value);

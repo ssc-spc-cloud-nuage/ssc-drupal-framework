@@ -269,5 +269,5 @@ function _get_message_entity_ref_fields(): array {
     }
   }
 
-  return $results;
+  return array_unique($results);
 }
