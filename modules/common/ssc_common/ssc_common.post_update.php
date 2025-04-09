@@ -33,15 +33,5 @@ function ssc_common_post_update_body_format(&$sandbox) {
     ->condition('field_body_format', $old_format)
     ->execute();
 
-  $database->update('block_content__body')
-    ->fields(['field_body_format' => $format])
-    ->condition('field_body_format', $old_format)
-    ->execute();
-
-  $database->update('block_content_revision__body')
-    ->fields(['field_body_format' => $format])
-    ->condition('field_body_format', $old_format)
-    ->execute();
-
   $sandbox['#finished'] = 1;
 }
