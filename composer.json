@@ -147,7 +147,7 @@
         "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^2.1",
         "drupal/webform": "^6.3@beta",
-        "drupalwxt/wxt": "5.3.0",
+        "drupalwxt/wxt": "5.4.1",
         "enshrined/svg-sanitize": "^0.16.0",
         "npm-asset/dompurify": "^3.0"
     },
@@ -235,7 +235,7 @@
         "patches": {
             "drupal/core": {
                 "2916876 - LB block visiblity": "https://www.drupal.org/files/issues/2023-12-19/drupal-n2916876-207.patch",
-                "2942975 - allow LB setup to be exported with content": "https://www.drupal.org/files/issues/2024-09-06/2942975-10.3.x.patch",
+                "2942975 - allow LB setup to be exported with content": "https://www.drupal.org/files/issues/2024-12-20/2942975-273_0.patch",
                 "2979914 - add placeholder to Views search field": "https://www.drupal.org/files/issues/2020-10-03/2979914-17.patch",
                 "2944173 - allow tokens in url of links (ckeditor)": "https://www.drupal.org/files/issues/2021-10-01/xss_attrs-2944173-60.patch",
                 "3239705 - make link fields sortable": "https://www.drupal.org/files/issues/2021-10-06/make_link_fields_click_sortable-3239705-7.patch",
@@ -243,7 +243,6 @@
                 "2893740 - sidebar for other entities": "https://www.drupal.org/files/issues/2024-07-31/core_allow_sidebar_for_content_entity_form_2893740_57.patch",
                 "2941092 - ignore width property when saving translation": "https://www.drupal.org/files/issues/2021-04-15/2941092-19.patch",
                 "1699378 - allow tokens in arguments for entityref fields": "https://www.drupal.org/files/issues/2024-07-07/1699378-drupal-10.3.x.patch",
-                "2630732 - WxT 5.3.0 conflict, will be fixed in 5.3.1.": "https://www.drupal.org/files/issues/2024-11-13/entity-fields-migration-destination-10.3.x-2630732-161.patch",
                 "2692289 - allow limiting autocomplete to 1": "https://www.drupal.org/files/issues/2021-12-10/2692289-25-9.3.0.patch",
                 "3101231 - multilingual layout edit context": "https://www.drupal.org/files/issues/2022-02-16/layout-builder-translation-issue-3101231-34.patch",
                 "3089151 - fix drag/drop (needed for Field Groups)": "https://www.drupal.org/files/issues/2023-12-26/3089151-51.patch",
@@ -256,22 +255,19 @@
                 "3185750 - add TZ support for date/daterange fields": "https://www.drupal.org/files/issues/2024-06-28/3185850-54.patch",
                 "3261924 - remove new GD warning": "https://www.drupal.org/files/issues/2024-01-02/3261924-52.patch",
                 "local   - moderation": "./patches/moderation-translation-rc6.patch",
-                "2031149 - support other link protocols": "https://www.drupal.org/files/issues/2024-06-03/2031149-58.patch",
+                "2031149 - support other link protocols": "./patches/2031149-support-other-link-protocols.diff",
                 "3300404 - PHP8.1 - removes unserialize deprecated warning": "https://www.drupal.org/files/issues/2022-08-01/3300404-4.patch",
                 "2950758 - dont show fields just because twig debug enabled": "https://www.drupal.org/files/issues/2023-04-03/2950758-41_0.patch",
                 "3306820 - show field name on Manage Display": "https://www.drupal.org/files/issues/2022-08-30/3306820-machine-name-in-field-ui-table_0.patch",
                 "local - CTA block failing to translate on Test": "./patches/core-hack-custom-block-config.patch",
-                "2700667 - Notice: Undefined index: #type in FormHelper": "https://www.drupal.org/files/issues/2021-05-12/2700667-133a.patch",
                 "3027240 - Undefined index: #parents FormState.php": "https://www.drupal.org/files/issues/2021-07-14/drupal-undefined_index_parents-3027240-fixed.patch",
                 "3353388 - Fix TypeError in FormElementHelper.php": "https://www.drupal.org/files/issues/2023-06-21/typeError_implode_3353388.patch",
                 "local - LB fails when custom block missing": "./patches/lb_inline-block-missing.patch",
                 "local - add TZ alter": "./patches/core-tz_alter.patch",
-                "3358586 - clears orphaned permissions": "https://www.drupal.org/files/issues/2023-09-14/3358586-11.patch",
                 "3332416 - fix CK5 extending out of container": "https://www.drupal.org/files/issues/2024-04-09/3332416-79.patch",
                 "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch",
                 "3025039 - remove error on non-translable field on translation": "https://www.drupal.org/files/issues/2024-05-01/3025039-94.patch",
                 "local - Show IDs in Views rearrange fields modal": "./patches/core-show_ids_views_rearrange.patch",
-                "local - allow headings in summary elements": "./patches/core-ckeditor-summary-v43.3.1.patch",
                 "local - core HACK to handle daterange nontranslated bug": "./patches/core-HACK-handle_nontranslated_daterange_fields.patch"
             },
             "drupal/bg_image_formatter": {
@@ -369,9 +365,6 @@
             "drupal/entityform_block": {
                 "2424739 - Select form mode": "https://www.drupal.org/files/issues/2022-06-01/fixed_EntityContextDefinition.patch"
             },
-            "drush/drush": {
-                "fix symlink issue with 12.5.1+": "https://patch-diff.githubusercontent.com/raw/drush-ops/drush/pull/5755.patch"
-            },
             "drupal/linkchecker": {
                 "3366753 - Filter out para rev results from report": "https://git.drupalcode.org/project/linkchecker/-/merge_requests/46.patch"
             },
@@ -388,18 +381,12 @@
             "drupal/better_exposed_filters": {
                 "3495331 - fix sort logic": "https://www.drupal.org/files/issues/2024-12-20/bef-sort_logic-3495331-2.patch"
             },
-            "drupal/wxt_bootstrap": {
-                "3506314 - footnotes are busted": "https://git.drupalcode.org/project/wxt_bootstrap/-/merge_requests/3.patch"
-            },
             "drupal/rabbit_hole": {
                 "3463826 - fix js $action.next() error": "https://www.drupal.org/files/issues/2024-07-30/3463826-rh-node-js-textContent-issue-3.patch"
             }
         },
         "patches-ignore": {
             "drupalwxt/wxt": {
-                "drupal/core": {
-                    "2630732 - WxT 5.3.0 conflict, will be fixed in 5.3.1.": "https://git.drupalcode.org/project/drupal/-/merge_requests/6111.diff"
-                },
                 "drupal/diff": {
                     "Enter drupal/diff patch #3004705 description here": "https://www.drupal.org/files/issues/2018-12-03/ModerationState-error-of-translated-node-in-revision-overview-page-3004705-4.patch",
                     "Enter drupal/diff patch #3228798 description here": "https://www.drupal.org/files/issues/2021-08-19/diff-a11y-3228798-10.patch",

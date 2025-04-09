@@ -1,0 +1,240 @@
+diff --git a/core/lib/Drupal/Component/Utility/UrlHelper.php b/core/lib/Drupal/Component/Utility/UrlHelper.php
+index 14ae12a8e8b..acbc3b6cf78 100644
+--- a/core/lib/Drupal/Component/Utility/UrlHelper.php
++++ b/core/lib/Drupal/Component/Utility/UrlHelper.php
+@@ -262,11 +262,13 @@ public static function encodePath($path) {
+    * @param string $path
+    *   The internal path or external URL being linked to, such as "node/34" or
+    *   "http://example.com/foo".
++   * @param string[] $allowed_protocols
++   *   The list of custom allowed protocols.
+    *
+    * @return bool
+    *   TRUE or FALSE, where TRUE indicates an external path.
+    */
+-  public static function isExternal($path) {
++  public static function isExternal($path, $allowed_protocols = []) {
+     $colon_position = strpos($path, ':');
+     // Some browsers treat \ as / so normalize to forward slashes.
+     $path = str_replace('\\', '/', $path);
+@@ -283,7 +285,7 @@ public static function isExternal($path) {
+       // if any - as this would clearly mean it is not a URL.
+       || ($colon_position !== FALSE
+         && !preg_match('![/?#]!', substr($path, 0, $colon_position))
+-        && static::stripDangerousProtocols($path) == $path);
++        && static::stripDangerousProtocols($path, $allowed_protocols) == $path);
+   }
+ 
+   /**
+@@ -394,6 +396,8 @@ public static function setAllowedProtocols(array $protocols = []) {
+    *
+    * @param string $uri
+    *   A plain-text URI that might contain dangerous protocols.
++   * @param string[] $allowed_protocols
++   *   The list of custom allowed protocols.
+    *
+    * @return string
+    *   A plain-text URI stripped of dangerous protocols. As with all plain-text
+@@ -405,8 +409,8 @@ public static function setAllowedProtocols(array $protocols = []) {
+    * @see \Drupal\Core\Url::toString()
+    * @see \Drupal\Core\Url::fromUri()
+    */
+-  public static function stripDangerousProtocols($uri) {
+-    $allowed_protocols = array_flip(static::$allowedProtocols);
++  public static function stripDangerousProtocols($uri, $allowed_protocols = []) {
++    $allowed_protocols = array_flip(array_merge(static::$allowedProtocols, $allowed_protocols));
+ 
+     // Iteratively remove any invalid protocol found.
+     do {
+diff --git a/core/lib/Drupal/Core/Utility/UnroutedUrlAssembler.php b/core/lib/Drupal/Core/Utility/UnroutedUrlAssembler.php
+index b4746186bf3..ff2e0d2b7c6 100644
+--- a/core/lib/Drupal/Core/Utility/UnroutedUrlAssembler.php
++++ b/core/lib/Drupal/Core/Utility/UnroutedUrlAssembler.php
+@@ -52,13 +52,15 @@ public function __construct(RequestStack $request_stack, OutboundPathProcessorIn
+    * based on a check of whether the path is a valid external URL.
+    */
+   public function assemble($uri, array $options = [], $collect_bubbleable_metadata = FALSE) {
++    $allowed_protocols = !empty($options['allowed_protocols']) ? $options['allowed_protocols'] : [];
++
+     // Note that UrlHelper::isExternal will return FALSE if the $uri has a
+     // disallowed protocol.  This is later made safe since we always add at
+     // least a leading slash.
+     if (parse_url($uri, PHP_URL_SCHEME) === 'base') {
+       return $this->buildLocalUrl($uri, $options, $collect_bubbleable_metadata);
+     }
+-    elseif (UrlHelper::isExternal($uri)) {
++    elseif (UrlHelper::isExternal($uri, $allowed_protocols)) {
+       // UrlHelper::isExternal() only returns true for safe protocols.
+       return $this->buildExternalUrl($uri, $options, $collect_bubbleable_metadata);
+     }
+diff --git a/core/lib/Drupal/Core/Utility/UnroutedUrlAssemblerInterface.php b/core/lib/Drupal/Core/Utility/UnroutedUrlAssemblerInterface.php
+index 4422055b0f6..a7a32d77924 100644
+--- a/core/lib/Drupal/Core/Utility/UnroutedUrlAssemblerInterface.php
++++ b/core/lib/Drupal/Core/Utility/UnroutedUrlAssemblerInterface.php
+@@ -40,6 +40,8 @@ interface UnroutedUrlAssemblerInterface {
+    *   - 'https': Whether this URL should point to a secure location. If not
+    *     defined, the current scheme is used, so the user stays on HTTP or HTTPS
+    *     respectively. TRUE enforces HTTPS and FALSE enforces HTTP.
++   *   - 'allowed_protocols': An explicit list of protocols to be allowed
++   *     in addition to those traditionally allowed. Defaults to an empty array.
+    * @param bool $collect_bubbleable_metadata
+    *   (optional) Defaults to FALSE. When TRUE, both the generated URL and its
+    *   associated bubbleable metadata are returned.
+diff --git a/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldInstanceTest.php b/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldInstanceTest.php
+index e85f216de1c..e6b3108fa65 100644
+--- a/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldInstanceTest.php
++++ b/core/modules/field/tests/src/Kernel/Migrate/d6/MigrateFieldInstanceTest.php
+@@ -100,7 +100,7 @@ public function testFieldInstanceMigration(): void {
+     // Test a link field.
+     $field = FieldConfig::load('node.story.field_test_link');
+     $this->assertSame('Link Field', $field->label());
+-    $expected = ['title' => 2, 'link_type' => LinkItemInterface::LINK_GENERIC];
++    $expected = ['title' => 2, 'link_type' => LinkItemInterface::LINK_GENERIC, 'allowed_protocols' => []];
+     $this->assertSame($expected, $field->getSettings());
+     $this->assertSame('default link title', $entity->field_test_link->title, 'Field field_test_link default title is correct.');
+     $this->assertSame('https://www.drupal.org', $entity->field_test_link->uri);
+diff --git a/core/modules/link/config/schema/link.schema.yml b/core/modules/link/config/schema/link.schema.yml
+index e3a1ffab98e..823c74aed52 100644
+--- a/core/modules/link/config/schema/link.schema.yml
++++ b/core/modules/link/config/schema/link.schema.yml
+@@ -47,6 +47,12 @@ field.field_settings.link:
+     link_type:
+       type: integer
+       label: 'Allowed link type'
++    allowed_protocols:
++      type: sequence
++      label: 'Allowed protocols'
++      sequence:
++        type: string
++        label: 'Custom protocol'
+ 
+ field.value.link:
+   type: mapping
+diff --git a/core/modules/link/src/Plugin/Field/FieldFormatter/LinkFormatter.php b/core/modules/link/src/Plugin/Field/FieldFormatter/LinkFormatter.php
+index cefc5145652..96da2f5018f 100644
+--- a/core/modules/link/src/Plugin/Field/FieldFormatter/LinkFormatter.php
++++ b/core/modules/link/src/Plugin/Field/FieldFormatter/LinkFormatter.php
+@@ -256,6 +256,11 @@ protected function buildUrl(LinkItemInterface $item) {
+     if (!empty($settings['target'])) {
+       $options['attributes']['target'] = $settings['target'];
+     }
++    // Add the field definition's allowed_protocols for any future validation.
++    $allowed_protocols = $this->fieldDefinition->getSetting('allowed_protocols');
++    if (!empty($allowed_protocols)) {
++      $options['allowed_protocols'] = $allowed_protocols;
++    }
+ 
+     if (!empty($options['attributes'])) {
+       $options['attributes'] = AttributeXss::sanitizeAttributes($options['attributes']);
+diff --git a/core/modules/link/src/Plugin/Field/FieldType/LinkItem.php b/core/modules/link/src/Plugin/Field/FieldType/LinkItem.php
+index 2849b0ac83e..513e0a9e57c 100644
+--- a/core/modules/link/src/Plugin/Field/FieldType/LinkItem.php
++++ b/core/modules/link/src/Plugin/Field/FieldType/LinkItem.php
+@@ -39,6 +39,7 @@ public static function defaultFieldSettings() {
+     return [
+       'title' => DRUPAL_OPTIONAL,
+       'link_type' => LinkItemInterface::LINK_GENERIC,
++      'allowed_protocols' => [],
+     ] + parent::defaultFieldSettings();
+   }
+ 
+@@ -104,6 +105,15 @@ public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
+       ],
+     ];
+ 
++    $allowed_protocols = $this->getSetting('allowed_protocols');
++    $element['allowed_protocols'] = [
++      '#type' => 'textfield',
++      '#title' => $this->t('Allowed protocols'),
++      '#default_value' => !empty($allowed_protocols) ? implode(', ', $allowed_protocols) : '',
++      '#description' => $this->t('A comma-separated list of protocols to be allowed in external links in addition to the standard ones (e.g. "http", "https").'),
++      '#element_validate' => [[$this, 'validateSettingsFormElementAllowedProtocols']],
++    ];
++
+     $element['title'] = [
+       '#type' => 'radios',
+       '#title' => $this->t('Allow link text'),
+@@ -118,6 +128,16 @@ public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
+     return $element;
+   }
+ 
++  /**
++   * Validate the format of the allowed_protocols list.
++   */
++  public static function validateSettingsFormElementAllowedProtocols($element, FormStateInterface $form_state, $form) {
++    $allowed_protocols = array_map('trim', explode(',', $element['#value']));
++    $allowed_protocols = $allowed_protocols == [''] ? [] : $allowed_protocols;
++
++    $form_state->setValueForElement($element, $allowed_protocols);
++  }
++
+   /**
+    * {@inheritdoc}
+    */
+diff --git a/core/modules/link/src/Plugin/Validation/Constraint/LinkExternalProtocolsConstraintValidator.php b/core/modules/link/src/Plugin/Validation/Constraint/LinkExternalProtocolsConstraintValidator.php
+index 4395286a0f4..eacf057ff5a 100644
+--- a/core/modules/link/src/Plugin/Validation/Constraint/LinkExternalProtocolsConstraintValidator.php
++++ b/core/modules/link/src/Plugin/Validation/Constraint/LinkExternalProtocolsConstraintValidator.php
+@@ -27,11 +27,29 @@ public function validate($value, Constraint $constraint) {
+       catch (\InvalidArgumentException $e) {
+         return;
+       }
++
+       // Disallow external URLs using untrusted protocols.
+-      if ($url->isExternal() && !in_array(parse_url($url->getUri(), PHP_URL_SCHEME), UrlHelper::getAllowedProtocols())) {
++      $trusted_protocols = array_merge(UrlHelper::getAllowedProtocols(), $this->getAllowedProtocols($value));
++      if ($url->isExternal() && !in_array(parse_url($url->getUri(), PHP_URL_SCHEME), $trusted_protocols)) {
+         $this->context->addViolation($constraint->message, ['@uri' => $value->uri]);
+       }
+     }
+   }
+ 
++  /**
++   * Fetch the list of allowed protocols.
++   *
++   * @param mixed $value
++   *   The value that is being validated.
++   *
++   * @return array
++   *   The list of protocols.
++   */
++  protected function getAllowedProtocols($value) {
++    if (!is_null($value->getFieldDefinition()) && !empty($value->getFieldDefinition()->getSettings()['allowed_protocols'])) {
++      return $value->getFieldDefinition()->getSettings()['allowed_protocols'];
++    }
++    return [];
++  }
++
+ }
+diff --git a/core/modules/link/tests/src/Functional/LinkFieldUITest.php b/core/modules/link/tests/src/Functional/LinkFieldUITest.php
+index 6f6d8d79b06..96db56ef5d3 100644
+--- a/core/modules/link/tests/src/Functional/LinkFieldUITest.php
++++ b/core/modules/link/tests/src/Functional/LinkFieldUITest.php
+@@ -158,6 +158,7 @@ public function runFieldUIItem($cardinality, $link_type, $title, $label, $field_
+     $field_edit = [
+       'description' => $description,
+       'settings[link_type]' => (int) $link_type,
++      'settings[allowed_protocols]' => [],
+     ];
+     if (!empty($default_uri)) {
+       $field_edit['set_default_value'] = '1';
+diff --git a/core/profiles/demo_umami/config/install/field.field.block_content.banner_block.field_content_link.yml b/core/profiles/demo_umami/config/install/field.field.block_content.banner_block.field_content_link.yml
+index 0ee3a806cfd..f647887cd50 100644
+--- a/core/profiles/demo_umami/config/install/field.field.block_content.banner_block.field_content_link.yml
++++ b/core/profiles/demo_umami/config/install/field.field.block_content.banner_block.field_content_link.yml
+@@ -19,4 +19,5 @@ default_value_callback: ''
+ settings:
+   title: 2
+   link_type: 17
++  allowed_protocols: {  }
+ field_type: link
+diff --git a/core/profiles/demo_umami/config/install/field.field.block_content.footer_promo_block.field_content_link.yml b/core/profiles/demo_umami/config/install/field.field.block_content.footer_promo_block.field_content_link.yml
+index ae9ccf5495d..208ccb19621 100644
+--- a/core/profiles/demo_umami/config/install/field.field.block_content.footer_promo_block.field_content_link.yml
++++ b/core/profiles/demo_umami/config/install/field.field.block_content.footer_promo_block.field_content_link.yml
+@@ -19,4 +19,5 @@ default_value_callback: ''
+ settings:
+   title: 2
+   link_type: 17
++  allowed_protocols: {  }
+ field_type: link
