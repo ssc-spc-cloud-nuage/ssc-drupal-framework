@@ -55,10 +55,10 @@ function ssc_common_requirements($phase): array {
     if ($git_info) {
       $lines = preg_split('/\s+/', $git_info);
       $description[0] = t('Release/Commit: ') . $lines[0];
+      $description[1] = t('Release date: ') . $lines[1];
       if (isset($lines[2]) && !empty($lines[2])) {
-        $description[1] = t('Framework version: ') . $lines[2];
+        $description[2] = t('Framework version: ') . $lines[2];
       }
-      $description[2] = t('Release date: ') . $lines[1];
 
       $build = [
         '#theme' => 'item_list',
