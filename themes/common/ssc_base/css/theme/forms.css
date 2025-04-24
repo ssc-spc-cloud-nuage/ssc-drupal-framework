@@ -20,13 +20,6 @@
 [data-drupal-selector="edit-date-wrapper"] {
   width: 100%;
 }
-.radio input[type="radio"],
-.radio-inline input[type="radio"],
-.checkbox input[type="checkbox"],
-.checkbox-inline input[type="checkbox"] {
-  /* Fix broken default top margin */
-  margin-top: 0.275em;
-}
 [data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"],
 [data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] .panel-heading,
 [data-drupal-selector="edit-date-wrapper"] .panel[class*="panel-"] .panel-body {
