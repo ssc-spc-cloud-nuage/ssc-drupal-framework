@@ -1,6 +1,6 @@
 .ssc-spinner {
   --time-spinner-delay: 50ms;
-  --size-spinner-width: 60px;
+  --size-spinner-width: 80px;
 
   display: grid;
   place-content: center;
