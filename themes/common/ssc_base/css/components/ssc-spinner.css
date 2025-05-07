@@ -1,5 +1,9 @@
+/**
+ * @file
+ * Styles for the SSC loading spinner.
+ */
 .ssc-spinner {
-  --time-spinner-delay: 50ms;
+  --time-spinner-delay: 60ms;
   --size-spinner-width: 80px;
 
   display: grid;
@@ -14,19 +18,16 @@
   animation: glide-in 300ms var(--ease-out-cubic);
   animation-fill-mode: forwards;
 }
-
 .ssc-spinner--fullscreen {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 .ssc-spinner-icon {
   width: 100%;
   fill: #fff;
 }
-
 .ssc-spinner-icon > path {
   animation: rotate 1200ms var(--ease-out-cubic);
   animation-iteration-count: infinite;
@@ -45,6 +46,7 @@
   }
 }
 
+/* Keyframe animations */
 @keyframes glide-in {
   from {
     transform: translate(-50%, -50%) scale(0.8);
@@ -55,7 +57,6 @@
     opacity: 1;
   }
 }
-
 @keyframes rotate {
   0% {
     transform: rotateY(0deg);
