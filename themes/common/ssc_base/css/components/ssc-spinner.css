@@ -13,7 +13,7 @@
   padding: calc(var(--size-spinner-width) / 5);
   border-radius: 100vw;
   background-color: var(--clr-ssc-violet-regular);
-  box-shadow: var(--shadow-elevation-medium);
+  box-shadow: 0 6px 10px -6px rgb(0 0 0 / 0.5);
   transform: translate(-100%, -100%);
   animation: glide-in 300ms var(--ease-out-cubic);
   animation-fill-mode: forwards;
