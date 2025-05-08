@@ -72,6 +72,11 @@ legend {
   font-size: inherit !important;
 }
 
+/* Selects (dropdowns) */
+.select-wrapper {
+  max-width: 100%;
+}
+
 /* Checkboxes and radios */
 .form-checkboxes,
 .form-radios {
