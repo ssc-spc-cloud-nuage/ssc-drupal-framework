@@ -4,12 +4,27 @@
  */
 
 /* Font size */
-.lead { font-size: 1.6rem; }
-.regular { font-size: 1.2rem; }
-.small, small { font-size: 1rem; }
+.lead {
+  font-size: 1.6rem;
+}
+.regular {
+  font-size: 1.2rem;
+}
+.small, small {
+  font-size: 1rem;
+  line-height: 1.5;
+}
 
 /* Font weights */
-.font-weight-300 { font-weight: 300; }
-.font-weight-400 { font-weight: 400; }
-.font-weight-700 { font-weight: 700; }
-.font-weight-900 { font-weight: 900; }
+.font-weight-300 {
+  font-weight: 300;
+}
+.font-weight-400 {
+  font-weight: 400;
+}
+.font-weight-700 {
+  font-weight: 700;
+}
+.font-weight-900 {
+  font-weight: 900;
+}
