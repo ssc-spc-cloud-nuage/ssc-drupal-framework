@@ -25,6 +25,7 @@ legend {
 /* Drupal-specific form classes */
 .form-group {
   margin-bottom: initial;
+  max-width: 100%;
 }
 .form-control::placeholder {
   color: var(--clr-ssc-gray-regular) !important;
