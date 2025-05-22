@@ -1,0 +1,420 @@
+diff --git a/better_exposed_filters.post_update.php b/better_exposed_filters.post_update.php
+index 1fa8758d99d9bc512721b0dd743acfbfb2eab4b9..5c52191972fb208ce985acca4b5799d79a28471c 100644
+--- a/better_exposed_filters.post_update.php
++++ b/better_exposed_filters.post_update.php
+@@ -30,3 +30,14 @@ function better_exposed_filters_post_update_soft_limit(?array &$sandbox = NULL):
+     return $config_updater->updateSoftLimitParams($view);
+   });
+ }
++
++/**
++ * Add treat_as_false param key.
++ */
++function better_exposed_filters_post_update_single_checkbox_param_key(?array &$sandbox = NULL): void {
++  /** @var \Drupal\better_exposed_filters\BetterExposedFiltersConfigUpdater $config_updater */
++  $config_updater = \Drupal::classResolver(BetterExposedFiltersConfigUpdater::class);
++  \Drupal::classResolver(ConfigEntityUpdater::class)->update($sandbox, 'view', function (ViewEntityInterface $view) use ($config_updater): bool {
++    return $config_updater->updateSingleCheckboxFilters($view);
++  });
++}
+diff --git a/config/schema/better_exposed_filters.filter.schema.yml b/config/schema/better_exposed_filters.filter.schema.yml
+index 9bd212750f9019d0b47c02edc93d90bdf12a2cb8..5964cc37f52cc220ab8ad16049e8f7567ab59413 100644
+--- a/config/schema/better_exposed_filters.filter.schema.yml
++++ b/config/schema/better_exposed_filters.filter.schema.yml
+@@ -141,3 +141,11 @@ better_exposed_filters.filter.bef_number:
+       nullable: true
+       constraints:
+         FullyValidatable: ~
++
++better_exposed_filters.filter.bef_single:
++  label: 'Single On/Off Checkbox'
++  type: better_exposed_filters_filter_widget
++  mapping:
++    treat_as_false:
++      type: boolean
++      label: 'Uncheck to treat field as FALSE'
+\ No newline at end of file
+diff --git a/js/better_exposed_filters.js b/js/better_exposed_filters.js
+index 45170f879cb2fafbf35662a423d12801718e28b3..7cc201ad2a4c844a410fbf0fc3c410a0384ad85d 100644
+--- a/js/better_exposed_filters.js
++++ b/js/better_exposed_filters.js
+@@ -46,4 +46,36 @@
+     }
+   };
+ 
++  /**
++   * Fix duplicate parameters from being passed.
++   */
++  Drupal.behaviors.befSingleCheckboxFix = {
++    attach: function (context, settings) {
++      once('befSingleCheckboxFix', 'form.views-exposed-form', context).forEach((form) => {
++        const $form = $(form);
++        const $checkboxes = $form.find('input[type="checkbox"]');
++
++        $form.on('submit', function () {
++          // For each checkbox, handle the hidden input fallback.
++          $checkboxes.each(function () {
++            const $checkbox = $(this);
++            const name = $checkbox.attr('name');
++
++            // Remove any existing hidden inputs with this name to avoid duplicates.
++            $form.find('input[type="hidden"][name="' + name + '"]').remove();
++
++            if (!$checkbox.is(':checked')) {
++              // Add hidden input only when checkbox is unchecked.
++              $('<input>').attr({
++                type: 'hidden',
++                name: name,
++                value: 0,
++              }).appendTo($form);
++            }
++          });
++        });
++      });
++    }
++  };
++
+ })(jQuery, Drupal, once);
+diff --git a/src/BetterExposedFiltersConfigUpdater.php b/src/BetterExposedFiltersConfigUpdater.php
+index f5561f79f6eaccd82fd90a13395a9bf184f340ef..8a47e0ee6eb91a15e872325ff53de0e5075406bd 100644
+--- a/src/BetterExposedFiltersConfigUpdater.php
++++ b/src/BetterExposedFiltersConfigUpdater.php
+@@ -93,7 +93,44 @@ class BetterExposedFiltersConfigUpdater {
+       }
+     }
+     if ($changed) {
++      $view->set('display', $displays);
++    }
++    return $changed;
++  }
++
++  /**
++   * Add treat_as_false params to views.
++   *
++   * @param \Drupal\views\ViewEntityInterface $view
++   *   The View to update.
++   *
++   * @return bool
++   *   Whether the view as updated.
++   */
++  public function updateSingleCheckboxFilters(ViewEntityInterface $view): bool {
++    $changed = FALSE;
++    // Go through each display on each view.
++    $displays = $view->get('display');
++    foreach ($displays as &$display) {
++      if (isset($display['display_options']['exposed_form']['type'])) {
++        if ($display['display_options']['exposed_form']['type'] == 'bef') {
++          $exposed_form = $display['display_options']['exposed_form'];
+ 
++          $bef_settings = $exposed_form['options']['bef'];
++          foreach ($bef_settings["filter"] as $filter_id => $settings) {
++            if ($settings['plugin_id'] != 'bef_single') {
++              continue;
++            }
++            if (isset($settings['treat_as_false'])) {
++              continue;
++            }
++            $display['display_options']['exposed_form']['options']['bef']['filter'][$filter_id]['treat_as_false'] = FALSE;
++            $changed = TRUE;
++          }
++        }
++      }
++    }
++    if ($changed) {
+       $view->set('display', $displays);
+     }
+     return $changed;
+diff --git a/src/Plugin/better_exposed_filters/filter/Single.php b/src/Plugin/better_exposed_filters/filter/Single.php
+index a0c22b2fd632522d6ef93a0b77d72fb1d72b6849..87614ae2ea3f7b96e8259d4d3ca536bb87e2a04a 100644
+--- a/src/Plugin/better_exposed_filters/filter/Single.php
++++ b/src/Plugin/better_exposed_filters/filter/Single.php
+@@ -15,6 +15,15 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
+ )]
+ class Single extends FilterWidgetBase {
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function defaultConfiguration(): array {
++    return parent::defaultConfiguration() + [
++      'treat_as_false' => FALSE,
++    ];
++  }
++
+   /**
+    * {@inheritdoc}
+    */
+@@ -34,6 +43,22 @@ class Single extends FilterWidgetBase {
+     return $is_applicable;
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function buildConfigurationForm(array $form, FormStateInterface $form_state): array {
++    $form = parent::buildConfigurationForm($form, $form_state);
++
++    $form['treat_as_false'] = [
++      '#type' => 'checkbox',
++      '#title' => $this->t('Check to treat field as FALSE'),
++      '#default_value' => !empty($this->configuration['treat_as_false']),
++      '#description' => $this->t('A boolean field can be three values (TRUE, FALSE, ANY). So when unchecked default will be act like "ANY" but this setting will treat the filter as FALSE.'),
++    ];
++
++    return $form;
++  }
++
+   /**
+    * {@inheritdoc}
+    */
+@@ -55,21 +80,35 @@ class Single extends FilterWidgetBase {
+       // default. More, the default value for select values (i.e. 'Any') is
+       // reused which results in the checkbox always checked.
+       $input = $form_state->getUserInput();
++
+       // The input value ID is not always consistent.
+       // Prioritize the field ID, but default to exposed ID.
+       // @todo Remove $exposed_id once
+       //   https://www.drupal.org/project/drupal/issues/288429 is fixed.
+       $input_value = $input[$field_id] ?? ($input[$exposed_id] ?? NULL);
+-      $checked = FALSE;
+-      // We need to be super careful when working with raw input values. Let's
+-      // make sure the value exists in our list of possible options.
+-      if (in_array($input_value, array_keys($form[$field_id]['#options'])) && $input_value !== 'All') {
+-        $checked = (bool) $input_value;
+-      }
++
++      // Force checkbox submission with fallback value.
++      $form[$field_id . '_hidden'] = [
++        '#type' => 'hidden',
++        '#value' => 0,
++        '#attributes' => ['name' => $field_id],
++        '#weight' => $form[$field_id]['#weight'] ?? 0,
++      ];
++
+       $form[$field_id]['#type'] = 'checkbox';
+-      $form[$field_id]['#default_value'] = 0;
+       $form[$field_id]['#return_value'] = 1;
+-      $form[$field_id]['#value'] = $checked ? 1 : 0;
++
++      // Determine value from user input.
++      if (isset($input_value)) {
++        $false = 0;
++        if ($this->configuration['treat_as_false']) {
++          $false = FALSE;
++        }
++        $form[$field_id]['#value'] = ((string) $input_value === '1') ? 1 : $false;
++      }
++      else {
++        $form[$field_id]['#value'] = 0;
++      }
+     }
+   }
+ 
+diff --git a/tests/modules/bef_test/config/install/views.view.bef_test.yml b/tests/modules/bef_test/config/install/views.view.bef_test.yml
+index 1c80e551cb7bc9299f4decfc20b3381d146e7dd0..cd6aa1b16853096935a728806d3107f34ff3649d 100644
+--- a/tests/modules/bef_test/config/install/views.view.bef_test.yml
++++ b/tests/modules/bef_test/config/install/views.view.bef_test.yml
+@@ -1765,7 +1765,7 @@ display:
+           text_input_required_format: basic_html
+           bef:
+             general:
+-              autosubmit: true
++              autosubmit: false
+               autosubmit_exclude_textfield: true
+               autosubmit_textfield_delay: 500
+               autosubmit_textfield_minimum_length: 3
+@@ -1775,24 +1775,9 @@ display:
+               secondary_label: 'Advanced options'
+               secondary_open: false
+               reset_button_always_show: false
+-            sort:
+-              plugin_id: default
+-              advanced:
+-                combine: false
+-                combine_rewrite: ''
+-                combine_param: sort_bef_combine
+-                reset: false
+-                reset_label: ''
+-                collapsible: false
+-                collapsible_label: ''
+-                is_secondary: false
+-            pager:
+-              plugin_id: default
+-              advanced:
+-                is_secondary: false
+             filter:
+-              status:
+-                plugin_id: default
++              field_bef_letters_value:
++                plugin_id: bef
+                 advanced:
+                   sort_options: false
+                   rewrite:
+@@ -1802,8 +1787,11 @@ display:
+                   collapsible_disable_automatic_open: false
+                   is_secondary: false
+                   hide_label: false
+-              field_bef_letters_value:
+-                plugin_id: bef
++                select_all_none: false
++                select_all_none_nested: false
++                display_inline: false
++              status:
++                plugin_id: bef_single
+                 advanced:
+                   sort_options: false
+                   rewrite:
+@@ -1813,12 +1801,6 @@ display:
+                   collapsible_disable_automatic_open: false
+                   is_secondary: false
+                   hide_label: false
+-                select_all_none: false
+-                select_all_none_nested: false
+-                display_inline: false
+-                soft_limit: 0
+-                soft_limit_label_less: 'Show less'
+-                soft_limit_label_more: 'Show more'
+       sorts:
+         created:
+           id: created
+@@ -1922,6 +1904,49 @@ display:
+             default_group: All
+             default_group_multiple: {  }
+             group_items: {  }
++        status:
++          id: status
++          table: node_field_data
++          field: status
++          relationship: none
++          group_type: group
++          admin_label: ''
++          entity_type: node
++          entity_field: status
++          plugin_id: boolean
++          operator: '='
++          value: '1'
++          group: 1
++          exposed: true
++          expose:
++            operator_id: ''
++            label: 'Published status'
++            description: ''
++            use_operator: false
++            operator: status_op
++            operator_limit_selection: false
++            operator_list: {  }
++            identifier: status
++            required: false
++            remember: false
++            multiple: false
++            remember_roles:
++              authenticated: authenticated
++              anonymous: '0'
++              content_editor: '0'
++              administrator: '0'
++          is_grouped: false
++          group_info:
++            label: ''
++            description: ''
++            identifier: ''
++            optional: true
++            widget: select
++            multiple: false
++            remember: false
++            default_group: All
++            default_group_multiple: {  }
++            group_items: {  }
+       filter_groups:
+         operator: AND
+         groups:
+diff --git a/tests/src/FunctionalJavascript/BetterExposedCheckboxTest.php b/tests/src/FunctionalJavascript/BetterExposedCheckboxTest.php
+index 291fcefb13dbbf2ce36305120097d66545f1c71f..ec465ef2215c04f997c918ab628536682c68abd3 100644
+--- a/tests/src/FunctionalJavascript/BetterExposedCheckboxTest.php
++++ b/tests/src/FunctionalJavascript/BetterExposedCheckboxTest.php
+@@ -19,17 +19,71 @@ class BetterExposedCheckboxTest extends BetterExposedFiltersTestBase {
+ 
+     // Create a few test nodes.
+     $this->createNode([
+-      'title' => 'Page One',
++      'title' => 'Page published',
+       'field_bef_price' => '10',
+       'type' => 'bef_test',
++      'status' => 1,
+     ]);
+     $this->createNode([
+-      'title' => 'Page Two',
++      'title' => 'Page unpublished',
+       'field_bef_price' => '75',
+       'type' => 'bef_test',
++      'status' => 0,
+     ]);
+   }
+ 
++  /**
++   * Tests the single checkbox.
++   *
++   * @throws \Behat\Mink\Exception\ExpectationException
++   * @throws \Drupal\Core\Entity\EntityStorageException
++   */
++  public function testSingleCheckbox(): void {
++    $view = Views::getView('bef_test');
++    $session = $this->assertSession();
++
++    $this->drupalGet('/bef-test-checkboxes');
++    $session->checkboxChecked('status');
++    $session->pageTextContains('Page published');
++    $session->pageTextNotContains('Page unpublished');
++
++    $page = $this->getSession()->getPage();
++    $page->findField('status')->uncheck();
++    $page->pressButton('Apply');
++    $this->assertSession()->assertWaitOnAjaxRequest();
++
++    $session->checkboxNotChecked('status');
++    // Both should display because treat_as_false is unchecked.
++    $session->pageTextContains('Page published');
++    $session->pageTextContains('Page unpublished');
++
++    $this->setBetterExposedOptions($view, [
++      'filter' => [
++        'status' => [
++          'plugin_id' => 'bef_single',
++          'treat_as_false' => TRUE,
++        ],
++      ],
++    ], 'page_5');
++
++    // Now test the same again.
++    $this->drupalGet('/bef-test-checkboxes');
++    $this->drupalGet('/bef-test-checkboxes');
++    $session->checkboxChecked('status');
++    $session->pageTextContains('Page published');
++    $session->pageTextNotContains('Page unpublished');
++
++    $page = $this->getSession()->getPage();
++    $page->findField('status')->uncheck();
++    $page->pressButton('Apply');
++    $this->assertSession()->assertWaitOnAjaxRequest();
++
++    $session->checkboxNotChecked('status');
++    // Now only the unpublished should appear.
++    $session->pageTextNotContains('Page published');
++    $session->pageTextContains('Page unpublished');
++  }
++
+   /**
+    * Tests the soft limit feature.
+    *
+diff --git a/tests/src/FunctionalJavascript/BetterExposedFiltersAutoSubmitTest.php b/tests/src/FunctionalJavascript/BetterExposedFiltersAutoSubmitTest.php
+index 61bcd529941d67d925f7f35078280fb65fbbaefb..77910872982a779e9fb81ffd1ccfa22b1c70481f 100644
+--- a/tests/src/FunctionalJavascript/BetterExposedFiltersAutoSubmitTest.php
++++ b/tests/src/FunctionalJavascript/BetterExposedFiltersAutoSubmitTest.php
+@@ -219,6 +219,7 @@ class BetterExposedFiltersAutoSubmitTest extends BetterExposedFiltersTestBase {
+     $this->assertSession()->pageTextContains('Page Two');
+ 
+     $page->checkField('edit-field-bef-letters-value-a');
++    $page->pressButton('Apply');
+     $this->assertSession()->assertWaitOnAjaxRequest();
+ 
+     $this->assertSession()->pageTextContains('Page One');
