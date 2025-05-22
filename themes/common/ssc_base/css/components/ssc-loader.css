@@ -1,0 +1,51 @@
+/**
+ * @file
+ * Styles for the SSC loading spinner.
+ */
+.ssc-loader {
+  --time-loader-duration: 2000ms;
+  --size-loader-width: 100px;
+
+  display: grid;
+  place-content: center;
+  width: var(--size-loader-width);
+  aspect-ratio: 1;
+  padding: calc(var(--size-loader-width) / 5);
+  background-color: var(--clr-ssc-violet-800);
+  border-radius: 100vw;
+  box-shadow: 0 6px 10px -6px rgb(0 0 0 / 0.5);
+
+  & svg {
+    width: 100%;
+    fill: var(--clr-ssc-violet-800);
+  }
+  & circle {
+    animation: pulse var(--time-loader-duration) var(--ease-out-circ);
+    animation-iteration-count: infinite;
+  }
+  & g {
+    animation: fadeOut var(--time-loader-duration) var(--ease-in-quad);
+    animation-iteration-count: infinite;
+  }
+}
+.ssc-loader--fullscreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Keyframes animations */
+@keyframes pulse {
+  100% {
+    r: 120px;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    fill: var(--clr-ssc-white);
+  }
+  100% {
+    opacity: 0;
+  }
+}

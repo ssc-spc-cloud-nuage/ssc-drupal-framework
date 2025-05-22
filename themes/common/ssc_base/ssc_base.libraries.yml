@@ -28,7 +28,7 @@ global:
       css/components/panels.css: {}
       css/components/readmore.css: {}
       css/components/related-topics.css: {}
-      css/components/ssc-spinner.css: {}
+      css/components/ssc-loader.css: {}
       css/components/sidebar-blocks.css: {}
       css/components/site-improvement.css: {}
       css/components/slick-slider.css: {}
@@ -51,7 +51,7 @@ global:
       css/utilities/typography.css: {}
   js:
     js/global.js: {}
-    js/ssc-spinner.js: {}
+    js/ssc-loader.js: {}
   dependencies:
     - core/jquery
     - core/drupal
