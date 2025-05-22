@@ -21,7 +21,7 @@
     width: 100%;
     fill: var(--clr-ssc-violet-800);
   }
-  & circle {
+  & ellipse {
     animation: pulse var(--time-loader-duration) var(--ease-out-circ);
     animation-iteration-count: infinite;
   }
@@ -49,8 +49,14 @@
   }
 }
 @keyframes pulse {
+  0% {
+    rx: 0;
+    ry: 0;
+  }
+  75%,
   100% {
-    r: 120px;
+    rx: 120px;
+    ry: 100px;
   }
 }
 @keyframes fadeOut {

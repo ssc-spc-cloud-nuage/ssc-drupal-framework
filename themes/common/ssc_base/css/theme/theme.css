@@ -65,6 +65,12 @@
   z-index: 3;
 }
 
+/* Isolate the page's content wrapper; this ensures that the full-screen loader
+will always appear on top */
+.dialog-off-canvas-main-canvas {
+  isolation: isolate;
+}
+
 /* Page summary (before content) */
 .lb-last-child-mb-0 .field > :last-child {
   margin-bottom: 0;

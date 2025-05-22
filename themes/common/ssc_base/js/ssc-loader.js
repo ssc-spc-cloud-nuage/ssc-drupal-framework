@@ -8,7 +8,7 @@
           <div class="ssc-loader ssc-loader--fullscreen" aria-hidden="true">
             <svg viewBox="0 0 94.45 100">
               <clipPath id="ssc-loader-mask">
-                <circle cx="48" cy="94" />
+                <ellipse cx="48" cy="94" />
               </clipPath>
 
               <g clip-path="url(#ssc-loader-mask)">
