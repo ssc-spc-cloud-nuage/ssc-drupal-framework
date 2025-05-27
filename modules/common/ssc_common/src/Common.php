@@ -5,6 +5,7 @@ namespace Drupal\ssc_common;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Render\RenderContext;
 use Drupal\message\Entity\Message;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\views\Views;
 
 /**
@@ -216,6 +217,31 @@ class Common {
 
     // Return the rendered block.
     return $output;
+  }
+
+  static function textToArray($area) {
+    $items = explode("\r\n", $area);
+    $items = array_map('trim', $items);
+    $items = array_filter($items);
+    $items = array_unique($items);
+    $items = array_values($items);
+    sort($items);
+    return $items;
+  }
+
+  static function loadTermByName(string $name, string $vocabulary): ?Term {
+    $tids = \Drupal::entityQuery('taxonomy_term')
+      ->condition('name', $name)
+      ->condition('vid', $vocabulary)
+      ->range(0, 1)
+      ->accessCheck(FALSE)
+      ->execute();
+
+    if (!empty($tids)) {
+      return Term::load(reset($tids));
+    }
+
+    return NULL;
   }
 
 }
