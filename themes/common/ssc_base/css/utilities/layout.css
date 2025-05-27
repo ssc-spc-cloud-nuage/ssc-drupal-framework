@@ -27,6 +27,7 @@
   left: 50%;
   right: 50%;
   width: 100vw;
+  max-width: unset;
   margin-left: -50vw;
   margin-right: -50vw;
 }

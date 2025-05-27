@@ -1,0 +1,69 @@
+/**
+ * @file
+ * Styles for the SSC loading spinner.
+ */
+.ssc-loader {
+  --time-loader-duration: 2000ms;
+  --size-loader-width: 100px;
+
+  display: grid;
+  place-content: center;
+  width: var(--size-loader-width);
+  aspect-ratio: 1;
+  padding: calc(var(--size-loader-width) / 5);
+  background-color: var(--clr-ssc-violet-800);
+  border-radius: 100vw;
+  box-shadow: 0 6px 10px -6px rgb(0 0 0 / 0.5);
+  animation: glideIn 300ms var(--ease-out-cubic);
+  animation-fill-mode: forwards;
+
+  & svg {
+    width: 100%;
+    fill: var(--clr-ssc-violet-800);
+  }
+  & ellipse {
+    animation: pulse var(--time-loader-duration) var(--ease-out-circ);
+    animation-iteration-count: infinite;
+  }
+  & g {
+    animation: fadeOut var(--time-loader-duration) var(--ease-in-quad);
+    animation-iteration-count: infinite;
+  }
+}
+.ssc-loader--fullscreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Keyframes animations */
+@keyframes glideIn {
+  from {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes pulse {
+  0% {
+    rx: 0;
+    ry: 0;
+  }
+  75%,
+  100% {
+    rx: 120px;
+    ry: 100px;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    fill: var(--clr-ssc-white);
+  }
+  100% {
+    opacity: 0;
+  }
+}
