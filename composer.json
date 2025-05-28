@@ -20,7 +20,7 @@
         "drupal/auto_entitylabel": "^3.4",
         "drupal/azure_key_vault": "^1.0",
         "drupal/backup_migrate": "^5.1",
-        "drupal/better_exposed_filters": "7.1.x-dev#7b7074e6",
+        "drupal/better_exposed_filters": "7.1.x-dev#ced7cbc04",
         "drupal/better_formats": "^1.0@beta",
         "drupal/bg_image_formatter": "1.18.0",
         "drupal/block_field": "1.0.0-rc5",
@@ -100,7 +100,7 @@
         "drupal/message": "1.8",
         "drupal/message_notify": "1.5",
         "drupal/message_subscribe": "^2.0",
-        "drupal/metatag": "^2.0",
+        "drupal/metatag": "^1.28",
         "drupal/mimemail": "2.0.x-dev@dev",
         "drupal/module_filter": "^5.0",
         "drupal/multiple_fields_remove_button": "^2",
@@ -380,7 +380,6 @@
                 "local - use local file streams to avoid certificate issues": "./patches/dompdf-change_local_http_uri_to_a_file.patch"
             },
             "drupal/better_exposed_filters": {
-                "2921024 - Not possible to unselect the checkbox.": "./patches/2921024-bef-single-checkbox.patch",
                 "3495331 - fix sort logic": "https://www.drupal.org/files/issues/2024-12-20/bef-sort_logic-3495331-2.patch"
             },
             "drupal/rabbit_hole": {
