@@ -395,9 +395,6 @@
                 "drupal/entity_embed": {
                     "3272732 - CKE5 compatibility": "https://www.drupal.org/files/issues/2023-06-19/entity_embed-3272732-93.patch"
                 },
-                "drupal/layout_builder_st": {
-                    "3411037 - fix core removing contextual translation links": "https://git.drupalcode.org/project/layout_builder_st/-/merge_requests/5.patch"
-                },
                 "drupal/fontawesome": {
                     "3071758 - Fix multiple icons issue": "https://git.drupalcode.org/project/fontawesome/-/merge_requests/4.diff"
                 },
