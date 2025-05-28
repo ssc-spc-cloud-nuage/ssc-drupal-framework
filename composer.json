@@ -290,7 +290,6 @@
                 "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
             },
             "drupal/entity_field_condition": {
-                "3364284 - Deprecated function: preg_match(): passing null.": "https://git.drupalcode.org/project/entity_field_condition/-/commit/c0cc0ed93723c7c85559ac327134c794d8c89ab7.patch",
                 "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2023-11-11/3091898-43.patch"
             },
             "drupal/entity_reference_revisions": {
