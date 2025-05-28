@@ -307,9 +307,7 @@
               "3336280 - Fixes /admin/content page in certain scenarios.": "https://git.drupalcode.org/project/group/-/merge_requests/121.patch"
             },
             "drupal/layout_builder_st": {
-                "3119208 - allow use with page manager": "https://www.drupal.org/files/issues/2020-12-09/layout_builder_st-more-defensive-handling-3119208-4.patch",
-                "3420063 - Call to a member function getConfig() OverridesSectionStorage.php": "https://git.drupalcode.org/project/layout_builder_st/-/merge_requests/6.diff",
-                "3411037 - fix core removing contextual translation links": "https://www.drupal.org/files/issues/2024-05-23/3411037-contextual-links-removed-from-core.patch"
+                "3119208 - allow use with page manager": "https://www.drupal.org/files/issues/2020-12-09/layout_builder_st-more-defensive-handling-3119208-4.patch"
             },
             "drupal/layout_library": {
                 "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
