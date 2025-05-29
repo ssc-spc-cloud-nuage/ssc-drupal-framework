@@ -51,7 +51,7 @@
         "drupal/dynamic_entity_reference": "3.2.1",
         "drupal/encrypt": "^3.2",
         "drupal/entity_clone": "^2.1@beta",
-        "drupal/entity_field_condition": "^1.4",
+        "drupal/entity_field_condition": "1.4",
         "drupal/entity_print": "^2.15",
         "drupal/entityform_block": "^1.0@alpha",
         "drupal/environment_indicator": "^4",
@@ -273,9 +273,6 @@
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
             },
-            "drupal/calendar_link": {
-                "3497937 - PHP 8.3+ deprecation fix": "https://www.drupal.org/files/issues/2025-01-07/3497937-2-html2text_null_string.patch"
-            },
             "drupal/ctools": {
                 "3230847 - allow LB to use ajax block conditions": "https://www.drupal.org/files/issues/2022-09-11/ctools-condition-form-ajax-3230847-7.diff"
             },
@@ -290,6 +287,7 @@
                 "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
             },
             "drupal/entity_field_condition": {
+                "3364284 - Deprecated function: preg_match(): passing null.": "https://git.drupalcode.org/project/entity_field_condition/-/commit/c0cc0ed93723c7c85559ac327134c794d8c89ab7.patch",
                 "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2023-11-11/3091898-43.patch"
             },
             "drupal/entity_reference_revisions": {
