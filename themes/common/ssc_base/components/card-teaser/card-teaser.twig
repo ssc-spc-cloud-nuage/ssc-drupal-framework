@@ -1,7 +1,7 @@
 {% set classes = ['card', 'card-teaser'] %}
 
 <div class="card-container">
-  <article class="{{ classes|join(' ') }}" data-card-id="{{ id }}" id="{{ card_id }}" data-card-variant="{{ variant ? variant : 'regular' }}">
+  <article class="{{ classes|join(' ') }}" data-parent-id="{{ id }}" id="{{ card_id }}" data-card-variant="{{ variant ? variant : 'regular' }}">
     {% if is_external %}
       <div class="card__external" aria-hidden="true">
         <svg viewbox="0 0 35 35">
