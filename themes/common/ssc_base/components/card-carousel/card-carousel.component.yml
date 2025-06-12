@@ -9,8 +9,8 @@ props:
   type: object
   additionalProperties: false
   properties:
-    id:
-      description: Card ID
+    parent_id:
+      description: Card parent ID
       type: ["string", "null"]
     title:
       description: Card title

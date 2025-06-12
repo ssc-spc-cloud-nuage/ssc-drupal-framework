@@ -9,35 +9,35 @@ props:
   type: object
   additionalProperties: false
   properties:
-    id:
-      description: Teaser ID
-      type: ['string', 'null']
+    parent_id:
+      description: Card parent ID
+      type: ["string", "null"]
     title:
-      description: Teaser title
-      type: ['string', 'null']
+      description: Card title
+      type: ["string", "null"]
     link:
-      description: Teaser link
-      type: ['string', 'null']
+      description: Card link
+      type: ["string", "null"]
     date:
-      description: Teaser date
-      type: ['string', 'null']
+      description: Card date
+      type: ["string", "null"]
     date_postfix:
-      description: Teaser date postfix
-      type: ['string', 'null']
+      description: Card date postfix
+      type: ["string", "null"]
     type:
-      description: Teaser type
-      type: ['string', 'null']
+      description: Card type
+      type: ["string", "null"]
     authors:
-      descript: Teaser authors
-      type: ['string', 'null']
+      descript: Card authors
+      type: ["string", "null"]
     pills:
-      description: Teaser pills
-      type: ['string', 'null']
+      description: Card pills
+      type: ["string", "null"]
     image:
-      description: Teaser image
-      type: ['string', 'null']
+      description: Card image
+      type: ["string", "null"]
     theme:
-      description: Teaser color theme
+      description: Card color theme
       type: string
       enum:
         - light
@@ -45,5 +45,5 @@ props:
       default: light
     show_readmore:
       description: Show readmore flag
-      type: ['number', 'null']
+      type: ["number", "null"]
       default: 0

@@ -9,32 +9,34 @@ props:
   type: object
   additionalProperties: false
   properties:
-    id:
-      description: Teaser ID
+    card_id:
+      description: Card ID
+    parent_id:
+      description: Card parent ID
       type: ["string", "null"]
     title:
-      description: Teaser title
+      description: Card title
       type: ["string", "null"]
     title_postfix:
-      description: Teaser title postfix
+      description: Card title postfix
       type: ["string", "null"]
     link:
-      description: Teaser link
+      description: Card link
       type: ["string", "null"]
     date:
-      description: Teaser date
+      description: Card date
       type: ["string", "null"]
     type:
-      description: Teaser type
+      description: Card type
       type: ["string", "null"]
     pills:
-      description: Teaser pills
+      description: Card pills
       type: ["string", "null"]
     image:
-      description: Teaser image
+      description: Card image
       type: ["string", "null"]
     variant:
-      description: Teaser variant
+      description: Card variant
       type: string
       enum:
         - regular
@@ -52,7 +54,7 @@ props:
 slots:
   summary:
     title: Summary
-    description: Teaser summary
+    description: Card summary
   footer:
     title: Footer
-    description: Teaser footer
+    description: Card footer
