@@ -2,7 +2,7 @@ name: SSC CKeditor Paste Filter
 type: module
 description: Extra plugins for ckeditor. Filter text pasted into editor.
 package: SSC
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 dependencies:
-  - drupal:ckeditor
+  - drupal:ckeditor5
 
