@@ -65,6 +65,7 @@
         "drupal/field_tools": "^1",
         "drupal/flag": "4.0.0-beta7",
         "drupal/focal_point": "^2.1",
+        "drupal/footnotes": "4.0.0-beta5",
         "drupal/form_mode_manager": "^3.1",
         "drupal/fpa": "^4",
         "drupal/fvm": "^2.0",
