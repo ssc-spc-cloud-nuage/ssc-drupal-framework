@@ -1,7 +1,22 @@
-{% set classes = ['card', 'card-teaser'] %}
+{% set card_classes = [
+  'card',
+  'card-teaser'
+] %}
+{% set card_attributes = create_attribute()
+  .addClass(card_classes)
+  .setAttribute('data-card-variant', variant ? variant : 'regular')
+%}
+
+{% if parent_id is not empty %}
+  {% set card_attributes = card_attributes.setAttribute('data-parent-id', parent_id) %}
+{% endif %}
+
+{% if card_id is not empty %}
+  {% set card_attributes = card_attributes.setAttribute('id', card_id) %}
+{% endif %}
 
 <div class="card-container">
-  <article id="{{ card_id }}" class="{{ classes|join(' ') }}" data-parent-id="{{ parent_id }}" data-card-variant="{{ variant ? variant : 'regular' }}">
+  <article {{card_attributes}}>
     {% if is_external %}
       <div class="card__external" aria-hidden="true">
         <svg viewbox="0 0 35 35">
