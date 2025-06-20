@@ -92,7 +92,8 @@
   max-width: 60rem;
   margin-top: 0.625rem;
 
-  & > :last-child {
+  & > :last-child,
+  & .field--item > :last-child {
     margin-bottom: 0;
   }
 }
