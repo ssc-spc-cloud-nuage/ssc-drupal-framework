@@ -7,9 +7,6 @@
  * you to conveniently change a node's moderation state.
  */
 
-.entity-moderation {
-  margin-top: 2rem;
-}
 .entity-moderation .control-label {
   width: initial !important;
 }

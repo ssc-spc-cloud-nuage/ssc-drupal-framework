@@ -39,6 +39,7 @@ global:
       css/theme/forms.css: {}
       css/theme/layout-builder.css: {}
       css/theme/print.css: {}
+      css/theme/regions.css: {}
       css/theme/temp.css: {}
       css/theme/theme.css: {}
       css/theme/views.css: {}
@@ -76,7 +77,7 @@ footer:
 header:
   css:
     component:
-      css/components/header.css: {}
+      css/components/navbar.css: {}
       css/components/header-link.css: {}
       css/components/mobile-dock.css: {}
   js:

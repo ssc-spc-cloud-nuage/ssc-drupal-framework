@@ -6,7 +6,7 @@
 .field--name-field-sidebar-blocks {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: var(--size-spacing-md);
 }
 .sidebar-block {
   font-size: 1.125rem;

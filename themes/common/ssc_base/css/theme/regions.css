@@ -1,0 +1,58 @@
+/**
+ * @file
+ * Styles for the specific page regions.
+ */
+
+/* Site header */
+.header-region {
+  margin-bottom: var(--size-header-margin);
+}
+
+/* Site breadcrumb */
+.region-breadcrumb {
+  position: absolute;
+  top: 0;
+  left: 142px;
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 16px;
+
+  @media screen and (max-width: 767px) {
+    position: static;
+  }
+}
+
+/* Site main content */
+.main-container {
+  isolation: isolate;
+}
+
+/* Site footer */
+.region-footer {
+  margin-top: var(--size-footer-margin);
+}
+.site-footer {
+  isolation: isolate;
+}
+
+/**
+ * Conditionally remove the the default header/footer margin
+ */
+/* Event pages */
+.page-node-type-event {
+  --size-footer-margin: 0;
+}
+/* Landing pages */
+.page-node-type-landing-page {
+  --size-header-margin: 0;
+  --size-footer-margin: 0;
+}
+/* Pages with a TOC block under the header */
+body:has(.block-toc-block) {
+  --size-header-margin: 0;
+}
+/* 404 page */
+body:has(.page-not-found) {
+  --size-footer-margin: 0;
+}

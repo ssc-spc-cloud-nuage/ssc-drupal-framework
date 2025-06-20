@@ -58,8 +58,7 @@
 
 /* Sections */
 .bg--section {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding-block: var(--size-spacing-lg);
 }
 .bg--section-home-aoi {
   padding-top: 0;

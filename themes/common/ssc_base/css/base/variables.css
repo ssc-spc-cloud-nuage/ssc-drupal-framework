@@ -152,6 +152,11 @@
   --size-border-radius-medium: 8px;
   --size-border-radius-large: 12px;
   --size-border-radius-extra-large: 24px;
+  --size-spacing-xs: 8px;
+  --size-spacing-sm: 16px;
+  --size-spacing-md: 32px;
+  --size-spacing-lg: 48px;
+  --size-spacing-xl: 72px;
 
   /* Box shadows */
   --shadow-color: var(--clr-section-bg, 0deg 0% 72%);
@@ -207,4 +212,6 @@
   @media screen and (max-width: 767px) {
     --size-navbar-height: 60px;
   }
+  --size-header-margin: var(--size-spacing-lg);
+  --size-footer-margin: var(--size-spacing-lg);
 }
