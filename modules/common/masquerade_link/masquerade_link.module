@@ -1,0 +1,10 @@
+<?php
+
+function masquerade_link_preprocess_page(&$variables) {
+  // Check if the current user has the desired permission
+  if (\Drupal::currentUser()->hasPermission('insert masquerade link icon')) {
+    // Attach the library
+    $variables['#attached']['library'][] = 'masquerade_link/masquerade_link';
+  }
+}
+

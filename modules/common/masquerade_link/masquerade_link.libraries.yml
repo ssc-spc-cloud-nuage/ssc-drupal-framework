@@ -1,0 +1,10 @@
+# Custom module library for general purposes.
+masquerade_link:
+  js:
+    js/masquerade-link.js: {}
+  css:
+    component:
+      css/masquerade-link.css: {}
+  dependencies:
+    - core/drupalSettings
+

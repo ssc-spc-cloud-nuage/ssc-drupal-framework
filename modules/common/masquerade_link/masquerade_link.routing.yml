@@ -1,0 +1,8 @@
+masquerade_link.masquerade_token:
+  path: '/masquerade-token/{user_id}'
+  defaults:
+    _controller: '\Drupal\masquerade_link\Controller\MasqueradeLinkController::generateMasqueradeToken'
+    _title: 'Generate Masquerade Token'
+  requirements:
+    _permission: 'insert masquerade link icon'
+

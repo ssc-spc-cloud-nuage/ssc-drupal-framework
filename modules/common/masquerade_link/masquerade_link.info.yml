@@ -1,0 +1,7 @@
+name: Masquerade Link
+type: module
+description: Adds an icon linked to masquerade to user/uid links.
+package: Other
+core_version_requirement: ^9 || ^10
+dependencies:
+  - masquerade

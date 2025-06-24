@@ -1,0 +1,4 @@
+insert masquerade link icon:
+  title: 'Insert masquerade link icon'
+  description: 'Inserts icon linked to masquerade link.'
+  restrict access: true
