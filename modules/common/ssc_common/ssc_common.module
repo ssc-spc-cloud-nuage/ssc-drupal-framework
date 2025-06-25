@@ -795,6 +795,21 @@ function ssc_common_views_data_alter(array &$data): void {
       'exposed' => TRUE, // Explicitly mark it as an exposed filter.
     ],
   ];
+
+  // Breadcrumb field.
+  $data['node_field_data']['breadcrumbs_field'] = [
+    'title' => t('Breadcrumbs'),
+    'group' => t('Content'),
+    'help' => t('Displays breadcrumbs for the node.'),
+    'field' => [
+      'title' => t('Breadcrumb'),
+      'help' => t('Individual breadcrumb crumbs.'),
+      'id' => 'breadcrumbs_field',
+    ],
+    'real field' => 'nid',
+    'additional fields' => ['nid'],
+  ];
+
 }
 
 /**
