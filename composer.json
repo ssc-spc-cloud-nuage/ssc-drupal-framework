@@ -270,8 +270,14 @@
                 "local - Show IDs in Views rearrange fields modal": "./patches/core-show_ids_views_rearrange.patch",
                 "local - core HACK to handle daterange nontranslated bug": "./patches/core-HACK-handle_nontranslated_daterange_fields.patch"
             },
+            "drupal/better_exposed_filters": {
+                "3495331 - fix sort logic": "https://www.drupal.org/files/issues/2024-12-20/bef-sort_logic-3495331-2.patch"
+            },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
+            },
+            "drupal/config_ignore": {
+                "3466656 - don't fail on missing config": "https://www.drupal.org/files/issues/2024-08-19/dont_fail_if_missing-3466656-4.patch"
             },
             "drupal/ctools": {
                 "3230847 - allow LB to use ajax block conditions": "https://www.drupal.org/files/issues/2022-09-11/ctools-condition-form-ajax-3230847-7.diff"
@@ -279,6 +285,9 @@
             "drupal/custom_breadcrumbs": {
                 "3252347 - path matching": "https://www.drupal.org/files/issues/2024-11-28/translated_path_matching-3252347-6.patch",
                 "3271500 - allow array tokens": "https://www.drupal.org/files/issues/2022-03-24/array_tokens-3271500-3.patch"
+            },
+            "dompdf/dompdf": {
+                "local - use local file streams to avoid certificate issues": "./patches/dompdf-change_local_http_uri_to_a_file.patch"
             },
             "drupal/diff": {
                 "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
@@ -367,17 +376,11 @@
                 "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch",
                 "3438993 - mandatory parameters missing for route entity.page.devel_load": "https://www.drupal.org/files/issues/2024-08-14/page-manager-3438993-MR34-24.patch"
             },
-            "drupal/config_ignore": {
-                "3466656 - don't fail on missing config": "https://www.drupal.org/files/issues/2024-08-19/dont_fail_if_missing-3466656-4.patch"
-            },
-            "dompdf/dompdf": {
-                "local - use local file streams to avoid certificate issues": "./patches/dompdf-change_local_http_uri_to_a_file.patch"
-            },
-            "drupal/better_exposed_filters": {
-                "3495331 - fix sort logic": "https://www.drupal.org/files/issues/2024-12-20/bef-sort_logic-3495331-2.patch"
-            },
             "drupal/rabbit_hole": {
                 "3463826 - fix js $action.next() error": "https://www.drupal.org/files/issues/2024-07-30/3463826-rh-node-js-textContent-issue-3.patch"
+            },
+            "drupal/sitewide_alert": {
+                "3532869 - Translation workflow, style slash alert type should take source language version when adding a new translation": "https://www.drupal.org/files/issues/2025-06-27/3532869-03.patch"
             },
             "drupal/metatag": {
                 "3027873 - Add views field formatter": "https://www.drupal.org/files/issues/2023-07-23/metatag-field_formatter_for_views-3027873-27.patch"
