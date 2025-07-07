@@ -379,9 +379,6 @@
             "drupal/rabbit_hole": {
                 "3463826 - fix js $action.next() error": "https://www.drupal.org/files/issues/2024-07-30/3463826-rh-node-js-textContent-issue-3.patch"
             },
-            "drupal/sitewide_alert": {
-                "3532869 - Translation workflow, style slash alert type should take source language version when adding a new translation": "https://www.drupal.org/files/issues/2025-06-27/3532869-05.patch"
-            },
             "drupal/metatag": {
                 "3027873 - Add views field formatter": "https://www.drupal.org/files/issues/2023-07-23/metatag-field_formatter_for_views-3027873-27.patch"
             },
