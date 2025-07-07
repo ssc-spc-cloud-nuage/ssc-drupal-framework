@@ -102,6 +102,9 @@ function  ssc_common_tokens($type, $tokens, array $data, array $options, Bubblea
 
           case 'tree_breadcrumb_paths':
             if (!$node->hasField('field_parent_page')) return '';
+            // For our content report which loads multiple paths; let's reset our tree each path.
+            $tree = &drupal_static('ssc_parent_tree');
+            $tree = [];
             $replacements[$original] = _get_breadcrumb_paths($node);
             break;
 
