@@ -28,9 +28,12 @@ summary {
   margin-inline: -1.75rem;
   color: var(--clr-ssc-blue-regular) !important;
   list-style-type: none !important;
+  text-decoration: var(--underline-hidden);
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: color var(--time-regular-transition);
+    transition:
+      color var(--time-regular-transition),
+      text-decoration var(--time-regular-transition);
   }
   details[open] > & {
     margin-bottom: 0.5em;
@@ -38,15 +41,17 @@ summary {
   }
   &:hover {
     color: var(--clr-ssc-pink-regular) !important;
+    text-decoration: var(--underline-active);
   }
   &:focus {
     outline: none !important;
+    text-decoration: var(--underline-active) !important;
   }
   &:focus-visible {
     outline: var(--focus-outline) !important;
     outline-offset: var(--focus-outline-offset);
     box-shadow: var(--focus-outline-inner);
-    text-decoration: none;
+    text-decoration: var(--underline-active);
   }
   &::before {
     position: absolute;

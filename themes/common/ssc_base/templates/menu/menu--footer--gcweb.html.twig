@@ -33,10 +33,11 @@
       <ul role="menu"{{ attributes.addClass('list-unstyled') }}>
     {% endif %}
     {% for item in items %}
+      {% set item_id = item.title|replace({' ': '-'})|lower %}
       {# default menu handling #}
       {% if menu_level == 0 and item.is_expanded %}
-        <section>
-        <h3>{{ link(item.title, item.url) }}</h3>
+        <section aria-labelledby="{{ item_id }}">
+        <h3 id="{{ item_id }}">{{ link(item.title, item.url) }}</h3>
       {% else %}
         <li role="presentation"{{ item.attributes }}>
         {{ link(item.title, item.url, {'role':['menuitem']}) }}

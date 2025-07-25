@@ -1,8 +1,30 @@
 {{ attach_library('ssc_base/footer') }}
 
 <footer id="wb-info" class="site-footer">
-  <div class="{{ container }}">
-    {{ page.footer }}
+  <div class="site-pre-footer">
+    <div class="{{ container }}">
+      {{ page.pre_footer }}
+    </div>
+  </div>
+  <div class="site-footer__main">
+    <div class="site-footer__logo" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46.55 100">
+        <path d="M16.1,84.71l5.41-5.41c-6.21-5.19-13.86-7.8-21.52-7.81v7.85c5.65,0,11.3,1.79,16.1,5.38Z"/>
+        <path d="M38.02,62.92l8.53-8.53-6.5-3.92,4.74-16.24.14-.27-14.48,3.38-2.57-8.25-13.8,15.29,4.19-30.18-9.07,4.33L0,0v48.38c13.59.01,27.18,4.84,38.02,14.54Z"/>
+        <path d="M27.06,73.75l5.41-5.41c-9.25-8.24-20.86-12.33-32.48-12.33v7.59c9.65.02,19.3,3.4,27.06,10.15Z"/>
+        <path d="M6.63,93.37c0-3.65-2.98-6.63-6.63-6.63v13.26c3.65,0,6.63-2.98,6.63-6.63Z"/>
+      </svg>
+    </div>
+
+    <div class="{{ container }}">
+      <div class="site-footer__main__container">
+        {{ page.footer_first }}
+
+        {% if page.footer_second %}
+          {{ page.footer_second }}
+        {% endif %}
+      </div>
+    </div>
   </div>
   <div class="subfooter">
     <div class="{{ container }}">

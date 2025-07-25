@@ -72,11 +72,11 @@
 }
 .text-white a,
 .text-white a:visited {
-  color: var(--clr-ssc-cyan-2);
+  color: var(--clr-ssc-violet-300);
 }
 .text-white a:hover,
 .text-white a:focus {
-  color: var(--clr-ssc-pink-2);
+  color: var(--clr-ssc-pink-300);
 }
 .text-pink-1,
 .text--pink-1 {
