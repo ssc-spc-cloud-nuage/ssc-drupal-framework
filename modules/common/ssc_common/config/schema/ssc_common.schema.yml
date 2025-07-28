@@ -8,6 +8,9 @@ ssc_common.settings:
     login_page_info:
       type: text
       label: 'Login page info'
+    footer_aside:
+      type: text_format
+      label: 'Footer aside content'
     comment_login_info:
       type: text_format
       label: 'Comment login info'

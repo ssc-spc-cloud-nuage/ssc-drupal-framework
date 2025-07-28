@@ -83,7 +83,6 @@ class SSCGeneralConfiguration extends ConfigFormBase {
     $this->config('ssc_common.settings')
       ->set('login_page_h1', $form_state->getValue('login_page_h1'))
       ->set('login_page_info', $form_state->getValue('login_page_info'))
-      ->set('footer_social', $form_state->getValue('footer_social'))
       ->set('footer_aside', $form_state->getValue('footer_aside'))
       ->set('comment_login_info', $form_state->getValue('comment_login_info'))
       ->save();
