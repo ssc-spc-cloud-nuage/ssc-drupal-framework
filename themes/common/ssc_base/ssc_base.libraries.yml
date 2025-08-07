@@ -30,7 +30,6 @@ global:
       css/components/related-topics.css: {}
       css/components/ssc-loader.css: {}
       css/components/sidebar-blocks.css: {}
-      css/components/site-improvement.css: {}
       css/components/slick-slider.css: {}
       css/components/topics.css: {}
       css/components/ui-dialog.css: {}
@@ -40,6 +39,7 @@ global:
       css/theme/layout-builder.css: {}
       css/theme/print.css: {}
       css/theme/regions.css: {}
+      css/theme/site-improvement.css: {}
       css/theme/temp.css: {}
       css/theme/theme.css: {}
       css/theme/views.css: {}

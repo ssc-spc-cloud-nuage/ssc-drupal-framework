@@ -20,7 +20,7 @@
   --size-footer-gap: 60px;
   --size-grid-gap: 30px;
 
-    isolation: isolate;
+  isolation: isolate;
   margin-top: var(--size-footer-margin);
   color: var(--clr-footer-text);
 }
@@ -194,12 +194,13 @@
 /* Masonry */
 .footer-masonry-container {
   container-type: inline-size;
+  container-name: footer-masonry-container;
 }
 .footer-masonry {
   gap: var(--size-grid-gap);
   columns: 2;
 
-  @container (width < 500px) {
+  @container footer-masonry-container (width < 500px) {
     columns: 1;
   }
 }

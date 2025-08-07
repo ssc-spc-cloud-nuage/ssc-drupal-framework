@@ -22,8 +22,7 @@
     border-bottom: none;
     page-break-inside: avoid;
   }
-  .theme-gcweb [class^='btn'],
-  .theme-gcweb.home .btn-arrow {
+  .theme-gcweb [class^='btn'] {
     background-color: var(--clr-ssc-black) !important;
     color: var(--clr-ssc-white) !important;
   }
