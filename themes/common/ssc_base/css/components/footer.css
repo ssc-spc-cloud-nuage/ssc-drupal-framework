@@ -4,16 +4,16 @@
  */
 .site-footer {
   --clr-footer-text: var(--clr-ssc-white);
-  --clr-footer-link: var(--clr-ssc-violet-light);
+  --clr-footer-link: var(--clr-ssc-violet-200);
   --clr-footer-heading: var(--clr-ssc-white);
   --clr-footer-bg: var(--clr-ssc-violet-dark);
-  --clr-footer-accent: var(--clr-ssc-pink-light);
+  --clr-footer-accent: var(--clr-ssc-pink-300);
   --clr-footer-separator: var(--clr-ssc-violet-400);
   --clr-footer-logo: color-mix(in srgb, var(--clr-footer-bg), black 25%);
 
   --clr-subfooter-text: var(--clr-ssc-white);
-  --clr-subfooter-link: var(--clr-ssc-violet-light);
-  --clr-subfooter-accent: var(--clr-ssc-pink-light);
+  --clr-subfooter-link: var(--clr-ssc-violet-200);
+  --clr-subfooter-accent: var(--clr-ssc-pink-300);
   --clr-subfooter-bg: var(--clr-ssc-black);
 
   --size-footer-padding: 60px;
