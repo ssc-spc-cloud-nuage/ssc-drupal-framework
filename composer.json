@@ -354,7 +354,7 @@
             "drupal/readmore": {
                 "2185649 - reduce effect": "https://www.drupal.org/files/issues/2021-12-02/remove_slide_effect-2185649-5.patch",
                 "3183680 - use processed text": "https://git.drupalcode.org/project/readmore/-/merge_requests/3.patch",
-                "local - allow changing Read More/Less text": "https://www.drupal.org/files/issues/2022-02-08/readmore-less-text-as-config-3055200-14.patch"
+                "local - allow changing Read More/Less text": "./patches/readmore_text_format_and_custom_text.patch"
             },
             "drupal/redis": {
                 "3004561 - Enable ssl scheme": "https://www.drupal.org/files/issues/2021-11-19/redis-support_tls_on_predis-3004561-37.patch"
