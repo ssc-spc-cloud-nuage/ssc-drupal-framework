@@ -1,0 +1,155 @@
+diff --git a/config/schema/readmore.schema.yml b/config/schema/readmore.schema.yml
+index 028630a..6ec80b6 100644
+--- a/config/schema/readmore.schema.yml
++++ b/config/schema/readmore.schema.yml
+@@ -1,6 +1,6 @@
+ field.formatter.settings.readmore:
+   type: mapping
+-  label: 'readmore field formatter settings'
++  label: 'Readmore field formatter settings'
+   mapping:
+     trim_length:
+       type: integer
+@@ -14,9 +14,21 @@ field.formatter.settings.readmore:
+     show_readless:
+       type: boolean
+       label: 'Show read less'
++    show_summary:
++      type: boolean
++      label: 'Show summary'
+     ellipsis:
+       type: boolean
+       label: 'Add ellipsis'
+     wordsafe:
+       type: boolean
+       label: 'Truncate on a word boundary'
++    readmore_text:
++      type: label
++      label: 'Read more link text'
++      translation context: 'Readmore'
++    readless_text:
++      type: label
++      label: 'Read less link text'
++      translation context: 'Readmore'
++      
+diff --git a/src/Plugin/Field/FieldFormatter/ReadmoreFormatter.php b/src/Plugin/Field/FieldFormatter/ReadmoreFormatter.php
+index d9366be..e3914f1 100644
+--- a/src/Plugin/Field/FieldFormatter/ReadmoreFormatter.php
++++ b/src/Plugin/Field/FieldFormatter/ReadmoreFormatter.php
+@@ -41,7 +41,10 @@ class ReadmoreFormatter extends FormatterBase implements ContainerFactoryPluginI
+       'trim_length'   => '500',
+       'trim_on_break' => TRUE,
+       'show_readmore' => TRUE,
++      'readmore_text' => 'Read more',
+       'show_readless' => FALSE,
++      'readless_text' => 'Read less',
++      'show_summary'  => TRUE,
+       'ellipsis'      => TRUE,
+       'wordsafe'      => FALSE,
+     ) + parent::defaultSettings();
+@@ -79,12 +82,34 @@ class ReadmoreFormatter extends FormatterBase implements ContainerFactoryPluginI
+       '#default_value' => $this->getSetting('show_readmore'),
+     ];
+ 
++    $elements['readmore_text'] = [
++      '#title'         => $this->t('Read more link text'),
++      '#type'          => 'textfield',
++      '#size'          => 20,
++      '#default_value' => $this->getSetting('readmore_text'),
++      '#description'   => $this->t('If displaying read more link, enter the text for the link.'),
++    ];
++
+     $elements['show_readless'] = [
+       '#type'          => 'checkbox',
+       '#title'         => $this->t('Show read less'),
+       '#default_value' => $this->getSetting('show_readless'),
+     ];
+ 
++    $elements['readless_text'] = [
++      '#title'         => $this->t('Read less link text'),
++      '#type'          => 'textfield',
++      '#size'          => 20,
++      '#default_value' => $this->getSetting('readless_text'),
++      '#description'   => $this->t('If displaying read less link, enter the text for the link.'),
++    ];
++
++    $elements['show_summary'] = [
++      '#title'         => $this->t('Show summary'),
++      '#type'          => 'checkbox',
++      '#default_value' => $this->getSetting('show_summary'),
++    ];
++
+     $elements['ellipsis'] = [
+       '#type'          => 'checkbox',
+       '#title'         => $this->t('Add ellipsis'),
+@@ -121,6 +146,12 @@ class ReadmoreFormatter extends FormatterBase implements ContainerFactoryPluginI
+ 
+     if (!empty($settings['show_readmore'])) {
+       $summary[] = $this->t('With read more link');
++      
++      if (!empty($settings['readmore_text'])) {
++        $summary[] = $this->t('Read more text: @text', [
++          '@text' => $settings['readmore_text'],
++        ]);
++      }
+     }
+     else {
+       $summary[] = $this->t('Without read more link');
+@@ -128,11 +159,24 @@ class ReadmoreFormatter extends FormatterBase implements ContainerFactoryPluginI
+ 
+     if (!empty($settings['show_readless'])) {
+       $summary[] = $this->t('With read less link');
++
++      if (!empty($settings['readless_text'])) {
++        $summary[] = $this->t('Read less text: @text', [
++          '@text' => $settings['readless_text'],
++        ]);
++      }
+     }
+     else {
+       $summary[] = $this->t('Without read less link');
+     }
+ 
++    if (!empty($settings['show_summary'])) {
++      $summary[] = $this->t('With summary');
++    }
++    else {
++      $summary[] = $this->t('Without summary');
++    }
++
+     if (!empty($settings['ellipsis'])) {
+       $summary[] = $this->t('With ellipsis');
+     }
+@@ -192,7 +236,13 @@ class ReadmoreFormatter extends FormatterBase implements ContainerFactoryPluginI
+    *   The prepared markup.
+    */
+   protected function prepareReadmoreSummary(string $markup): MarkupInterface {
+-    $markup = $this->truncateHtml($markup);
++
++    if ($this->getSetting('show_summary')) {
++      $markup = $this->truncateHtml($markup);
++    }
++    else {
++      $markup = '';
++    }
+ 
+     if (!$this->getSetting('show_readmore')) {
+       return Markup::create($markup);
+@@ -200,7 +250,7 @@ class ReadmoreFormatter extends FormatterBase implements ContainerFactoryPluginI
+ 
+     // Render the read more link.
+     $link = (string) Link::fromTextAndUrl(
+-      $this->t('Read more'),
++      $this->t($this->getSetting('readmore_text')),
+       Url::fromUserInput('#_', [
+         'attributes' => [
+           'class' => ['readmore-link'],
+@@ -230,7 +280,7 @@ class ReadmoreFormatter extends FormatterBase implements ContainerFactoryPluginI
+ 
+     // Render the read less link.
+     $link = (string) Link::fromTextAndUrl(
+-      $this->t('Read less'),
++      $this->t($this->getSetting('readless_text')),
+       Url::fromUserInput('#_', [
+         'attributes' => [
+           'class' => ['readless-link'],
