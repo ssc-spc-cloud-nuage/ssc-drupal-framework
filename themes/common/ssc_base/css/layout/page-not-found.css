@@ -40,6 +40,12 @@
     color: var(--clr-ssc-black) !important;
     font-size: 1.5rem;
 
+    @media (prefers-reduced-motion: no-preference) {
+      transition: border-color var(--time-fast-transition) ease;
+    }
+    &:focus-visible {
+      border-color: var(--clr-ssc-black);
+    }
     &::placeholder {
       opacity: 0.5;
     }
@@ -55,8 +61,14 @@
   & .form-submit {
     width: 100%;
     height: 100%;
+    padding: 0 !important;
     border-radius: 100vw !important;
     background-color: var(--clr-ssc-violet-regular) !important;
+
+    &:focus-visible,
+    &:hover {
+      background-color: var(--clr-ssc-black) !important;
+    }
   }
   & .icon {
     margin: 0 !important;

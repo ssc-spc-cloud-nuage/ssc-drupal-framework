@@ -3,173 +3,173 @@
  * Styles for the Drupal UI dialog component.
  */
 
- .mfp-bg,
- .ui-widget-overlay {
-   background-color: color-mix(in hsl, var(--clr-ssc-black), transparent 5%);
-   backdrop-filter: blur(10px);
- 
-   @media (prefers-reduced-motion: no-preference) {
-     opacity: 1;
-     transition:
-       backdrop-filter 50ms var(--ease-out-cubic),
-       opacity 50ms var(--ease-out-cubic);
- 
-     @starting-style {
-       backdrop-filter: blur(0);
-       opacity: 0;
-     }
-   }
- }
- .ui-widget {
-   font-family: inherit !important;
- }
- .ui-widget-content {
-   background-color: transparent;
- }
- .ui-dialog {
-   --size-ui-dialog-padding: 20px;
-   max-width: calc(100% - 20px);
-   padding: 0;
-   border: none !important;
-   border-radius: var(--size-border-radius-large);
-   overflow: hidden;
- }
- 
- /* Header */
- .ui-dialog {
-   @media (prefers-reduced-motion: no-preference) {
-     scale: 1;
-     opacity: 1;
-     transition:
-       scale var(--time-slow-transition) var(--ease-out-cubic),
-       opacity var(--time-slow-transition) var(--ease-out-cubic);
- 
-     @starting-style {
-       scale: 0.95;
-       opacity: 0;
-     }
-   }
-   & .ui-widget-header {
-     background: var(--clr-ssc-violet-regular);
-     border: unset;
-     color: var(--clr-ssc-white);
-     font-weight: bold;
-     font-size: 1.125rem;
-     border-radius: 0;
-   }
-   & .ui-dialog-title {
-     font-size: 1.25em;
-     line-height: 1;
-   }
-   & .ui-dialog-titlebar {
-     padding: var(--size-ui-dialog-padding);
-   }
-   & .ui-dialog-titlebar-close {
-     position: absolute;
-     top: 50%;
-     transform: translateY(-50%);
-     right: 12px;
-     display: block;
-     width: 42px;
-     height: 42px;
-     background-color: transparent;
-     border-radius: 100vw;
- 
-     @media (prefers-reduced-motion: no-preference) {
-       transition: background var(--time-regular-transition);
-     }
-     &:is(:hover, :focus-visible) {
-       background-color: var(--clr-ssc-violet-dark);
-     }
-     &::before {
-       position: absolute;
-       inset: 0;
-       display: grid;
-       place-items: center;
-       color: var(--clr-ssc-white);
-       content: "\f00d";
-       font-family: var(--ff-font-awesome);
-       font-size: 1.75rem;
-       font-weight: 700;
-       text-indent: initial;
-     }
-     & .ui-icon {
-       display: none;
-     }
-   }
- }
- 
- /* Content */
- .ui-dialog {
-   & .ui-dialog-content {
-     padding: var(--size-ui-dialog-padding);
-     background-color: var(--clr-ssc-white);
- 
-     /* Hide form buttons in the dialog's body (shown in the footer) */
-     & .form-actions {
-       display: none;
-     }
-   }
- }
- 
- /* Buttons */
- .ui-dialog {
-   & .ui-dialog-buttonpane {
-     margin: 0 !important;
-     padding: 15px var(--size-ui-dialog-padding) !important;
-     background-color: var(--clr-ssc-gray-light);
-     border: none;
-   }
-   & .ui-dialog-buttonset {
-     display: flex;
-     flex-wrap: wrap;
-     gap: 8px;
-     margin: 0;
-     float: unset !important;
-   }
-   & .ui-button {
-     border: unset;
-     margin: 0 !important;
- 
-     &:is(:hover, :focus) {
-       border: unset;
-       font-weight: 700;
-     }
-   }
- }
- 
- /* Modal dialog */
- .ui-dialog {
-   & .modal-dialog--figure {
-     position: relative;
-     display: flex;
-     flex-direction: column;
-     justify-content: center;
-     gap: 0.5rem;
-     width: fit-content;
-     min-height: 100vh;
-     margin: 0 auto;
-     padding: 1rem;
-     color: var(--clr-ssc-white);
- 
-     & img {
-       box-shadow: 2px 2px 6px rgb(0 0 0 / 20%);
-     }
-     & figcaption {
-       max-width: fit-content;
-       margin-top: 0.75rem;
-       font-size: 1.25rem;
-       font-weight: 300;
-     }
-     & .mfp-close {
-       position: static;
-       align-self: flex-end;
-       order: -1;
-       font-size: 3rem;
-       font-weight: 400;
-       color: inherit;
-       transform: translateX(0.5rem);
-     }
-   }
- }
- 
+.mfp-bg,
+.ui-widget-overlay {
+  background-color: color-mix(in hsl, var(--clr-ssc-black), transparent 5%);
+  backdrop-filter: blur(10px);
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 1;
+    transition:
+      backdrop-filter 50ms var(--ease-out-cubic),
+      opacity 50ms var(--ease-out-cubic);
+
+    @starting-style {
+      backdrop-filter: blur(0);
+      opacity: 0;
+    }
+  }
+}
+.ui-widget {
+  font-family: inherit !important;
+  font-size: 1.125rem;
+}
+.ui-widget-content {
+  background-color: transparent;
+}
+.ui-dialog {
+  --size-ui-dialog-padding: 20px;
+  max-width: calc(100% - 20px);
+  padding: 0;
+  border: none !important;
+  border-radius: var(--size-border-radius-large);
+  overflow: hidden;
+}
+
+/* Header */
+.ui-dialog {
+  @media (prefers-reduced-motion: no-preference) {
+    scale: 1;
+    opacity: 1;
+    transition:
+      scale var(--time-slow-transition) var(--ease-out-cubic),
+      opacity var(--time-slow-transition) var(--ease-out-cubic);
+
+    @starting-style {
+      scale: 0.95;
+      opacity: 0;
+    }
+  }
+  & .ui-widget-header {
+    background: var(--clr-ssc-violet-regular);
+    border: unset;
+    color: var(--clr-ssc-white);
+    font-weight: bold;
+    font-size: 1.125rem;
+    border-radius: 0;
+  }
+  & .ui-dialog-title {
+    font-size: 1.25em;
+    line-height: 1;
+  }
+  & .ui-dialog-titlebar {
+    padding: var(--size-ui-dialog-padding);
+  }
+  & .ui-dialog-titlebar-close {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 12px;
+    display: block;
+    width: 42px;
+    height: 42px;
+    background-color: transparent;
+    border-radius: 100vw;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: background var(--time-regular-transition);
+    }
+    &:is(:hover, :focus-visible) {
+      background-color: var(--clr-ssc-violet-dark);
+    }
+    &::before {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--clr-ssc-white);
+      content: "\f00d";
+      font-family: var(--ff-font-awesome);
+      font-size: 1.75rem;
+      font-weight: 700;
+      text-indent: initial;
+    }
+    & .ui-icon {
+      display: none;
+    }
+  }
+}
+
+/* Content */
+.ui-dialog {
+  & .ui-dialog-content {
+    padding: var(--size-ui-dialog-padding);
+    background-color: var(--clr-ssc-white);
+
+    /* Hide form buttons in the dialog's body (shown in the footer) */
+    & .form-actions {
+      display: none;
+    }
+  }
+}
+
+/* Buttons */
+.ui-dialog {
+  & .ui-dialog-buttonpane {
+    margin: 0 !important;
+    padding: 15px var(--size-ui-dialog-padding) !important;
+    background-color: var(--clr-ssc-gray-light);
+    border: none;
+  }
+  & .ui-dialog-buttonset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    float: unset !important;
+  }
+  & .ui-button {
+    border: unset;
+    margin: 0 !important;
+
+    &:is(:hover, :focus) {
+      border: unset;
+      font-weight: 700;
+    }
+  }
+}
+
+/* Modal dialog */
+.ui-dialog {
+  & .modal-dialog--figure {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    width: fit-content;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 1rem;
+    color: var(--clr-ssc-white);
+
+    & img {
+      box-shadow: 2px 2px 6px rgb(0 0 0 / 20%);
+    }
+    & figcaption {
+      max-width: fit-content;
+      margin-top: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 300;
+    }
+    & .mfp-close {
+      position: static;
+      align-self: flex-end;
+      order: -1;
+      font-size: 3rem;
+      font-weight: 400;
+      color: inherit;
+      transform: translateX(0.5rem);
+    }
+  }
+}

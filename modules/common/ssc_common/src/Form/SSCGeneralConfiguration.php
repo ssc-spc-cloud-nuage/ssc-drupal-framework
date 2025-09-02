@@ -55,6 +55,14 @@ class SSCGeneralConfiguration extends ConfigFormBase {
       '#default_value' => $config->get('login_page_info'),
     ];
 
+    $form['footer_aside'] = [
+      '#type' => 'text_format',
+      '#title' => $this->t('Footer aside content'),
+      '#description' => $this->t('Content added to the aside section of the footer.'),
+      '#default_value' => $config->get('footer_aside.value'),
+      '#format' => $config->get('footer_aside.format'),
+    ];
+
     $form['comment_login_info'] = [
       '#type' => 'text_format',
       '#title' => $this->t('Comment login info'),
@@ -75,9 +83,9 @@ class SSCGeneralConfiguration extends ConfigFormBase {
     $this->config('ssc_common.settings')
       ->set('login_page_h1', $form_state->getValue('login_page_h1'))
       ->set('login_page_info', $form_state->getValue('login_page_info'))
+      ->set('footer_aside', $form_state->getValue('footer_aside'))
       ->set('comment_login_info', $form_state->getValue('comment_login_info'))
       ->save();
   }
 
 }
-

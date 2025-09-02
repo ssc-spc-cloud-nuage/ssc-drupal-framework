@@ -1,0 +1,60 @@
+{% extends "input.html.twig" %}
+{#
+/**
+ * @file
+ * Theme suggestion for "button" input form element.
+ *
+ * Available variables:
+ * - attributes: A list of HTML attributes for the input element.
+ * - children: Optional additional rendered elements.
+ * - icon: An icon.
+ * - icon_only: Flag to display only the icon and not the label.
+ * - icon_position: Where an icon should be displayed.
+ * - label: button label.
+ * - prefix: Markup to display before the input element.
+ * - suffix: Markup to display after the input element.
+ * - type: The type of input.
+ *
+ * @ingroup templates
+ *
+ * @see \Drupal\bootstrap\Plugin\Preprocess\InputButton
+ * @see \Drupal\bootstrap\Plugin\Preprocess\Input
+ * @see template_preprocess_input()
+ */
+#}
+  {% block input %}{% apply spaceless %}
+  {%
+    set classes = [
+      'btn',
+      'btn-primary',
+      type == 'submit' ? 'js-form-submit',
+      icon and icon_position and not icon_only ? 'icon-' ~ icon_position,
+    ]
+  %}
+  {%
+    set removed_classes = [
+      'btn-info'
+    ]
+  %}
+    {% if search_submit == 'true' %}
+      {% if wxt_theme == 'gcweb' %}
+        <button{{ attributes.addClass(classes).removeClass(removed_classes) }}>{{ icon }}<span class="wb-inv">{{ 'Search'|t }}</span></button>{{ children }}
+      {% elseif wxt_theme == 'gc_intranet' %}
+        <button{{ attributes.addClass(classes).removeClass(removed_classes) }}>{{ icon }}<span class="wb-inv">{{ 'Search'|t }}</span></button>{{ children }}
+      {% else %}
+        <button{{ attributes.addClass(classes).removeClass(removed_classes) }}>{{ icon }}{{ 'Search'|t }}</button>{{ children }}
+      {% endif %}
+    {% elseif icon and icon_only %}
+      <button{{ attributes.addClass(classes, 'icon-only').removeClass(removed_classes) }}>
+        <span class="sr-only">{{ label }}</span>
+        {{ icon }}
+      </button>
+    {% else %}
+      {% if icon_position == 'after' %}
+        <button{{ attributes.addClass(classes).removeClass(removed_classes) }}><span>{{ label }}</span>{{ icon }}</button>{{ children }}
+      {% else %}
+        <button{{ attributes.addClass(classes).removeClass(removed_classes) }}>{{ icon }}<span>{{ label }}</span></button>{{ children }}
+      {% endif %}
+    {% endif %}
+    {{ children }}
+{% endapply %}{% endblock %}

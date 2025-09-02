@@ -4,7 +4,7 @@
  */
 
 .site-improve-cta {
-  padding: 1em 0;
+  padding: 12px 0;
   font-size: 1.125rem;
   text-align: center;
 
@@ -20,16 +20,16 @@
   & .btn {
     margin-left: 1em;
     padding: 0.8em 1.2em;
-    background-color: var(--clr-ssc-black);
+    background-color: var(--clr-ssc-black) !important;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
     font-size: inherit;
     font-weight: 500;
-    color: var(--clr-ssc-white);
+    color: var(--clr-ssc-white) !important;
 
     &:is(:hover, :focus) {
       opacity: 1;
-      background-color: var(--clr-ssc-white);
-      color: var(--clr-ssc-gray-dark);
+      background-color: var(--clr-ssc-white) !important;
+      color: var(--clr-ssc-black) !important;
       text-decoration: none !important;
     }
   }

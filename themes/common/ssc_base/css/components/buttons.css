@@ -3,70 +3,105 @@
  * Styles for the button component.
  */
 
-.btn,
-.more-link a,
-.btn-primary a {
-  border: 0;
-  border-radius: var(--size-border-radius-small);
-  font-family: inherit;
-  font-weight: 700;
-  font-size: 1rem;
-  line-height: 1.25rem;
+/* The `html` selector was added to match the specificity of WET4 */
+html {
+  .btn,
+  .btn a,
+  .more-link a,
+  /* Overrides default submit button styles from WET4 */
+  form .btn:not(.btn-call-to-action) {
+    --clr-bg-btn-default: var(--clr-ssc-gray-regular);
+    --clr-bg-btn-primary: var(--clr-ssc-violet-regular);
+    --clr-bg-btn-secondary: var(--clr-ssc-violet-regular);
+    --clr-bg-btn-success: #1b6c1c;
+    --clr-bg-btn-info: var(--clr-ssc-blue-regular);
+    --clr-bg-btn-warning: #f2d40d;
+    --clr-bg-btn-danger: #bc3331;
+    --clr-bg-btn-link: transparent;
 
-  @media (prefers-reduced-motion: no-preference) {
-    transition:
-      background-color var(--time-regular-transition),
-      color var(--time-regular-transition);
-  }
-}
-[class*="btn-"]:not([class*="mfp"]):is(:hover, :active, :focus, :focus-visible) {
-  /* Applies to every btn modifier classes (e.g. btn-primary) */
-  background-color: var(--clr-ssc-black);
-  color: var(--clr-ssc-white);
-  text-decoration: none;
-}
-[class*="btn"]:focus-visible {
-  outline: var(--focus-outline) !important;
-  outline-offset: var(--focus-outline-offset) !important;
-  box-shadow: var(--focus-outline-inner) !important;
-}
-.btn a {
-  display: block;
-  color: var(--clr-ssc-white);
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1.25rem;
-
-  &:hover {
+    padding: 0.625em 1.125em;
+    background: var(--clr-btn-bg);
+    border: none;
+    border-radius: var(--size-border-radius-small);
+    color: var(--clr-btn-text);
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 1.125rem;
+    line-height: 1.25;
     text-decoration: none;
+
+    @media (prefers-reduced-motion: no-preference) {
+      will-change: scale;
+      transition:
+        background-color var(--time-regular-transition),
+        color var(--time-regular-transition);
+    }
+    &:is(:hover, :active, :hover:active, :focus, :focus-visible) {
+      background-color: var(--clr-ssc-black);
+      color: var(--clr-ssc-white);
+      text-decoration: none;
+      outline: none;
+    }
+    &:visited {
+      background-color: var(--clr-btn-bg);
+      color: var(--clr-btn-text);
+    }
+  }
+  & [class*="btn"]:focus-visible {
+    outline: var(--focus-outline) !important;
+    outline-offset: var(--focus-outline-offset) !important;
+    box-shadow: var(--focus-outline-inner) !important;
+  }
+
+  /* Button sizes */
+  & .btn-lg {
+    padding: 0.875em 1.5em;
+  }
+  & .btn-sm {
+    padding: 0.375em 0.625em;
+  }
+  & .btn-xs {
+    padding: 0.125em 0.375em;
+  }
+  & .btn-group {
+    background: none !important;
   }
 }
 
 /* Button variants */
-.btn-default,
-.btn-default:visited {
-  background-color: var(--clr-ssc-gray-regular);
-  color: var(--clr-ssc-white);
+.btn-default {
+  --clr-btn-bg: var(--clr-bg-btn-default);
+  --clr-btn-text: var(--clr-ssc-white);
+}
+.btn-primary {
+  --clr-btn-bg: var(--clr-bg-btn-primary);
+  --clr-btn-text: var(--clr-ssc-white);
+}
+.btn-secondary {
+  --clr-btn-bg: var(--clr-ssc-gray-light);
+  --clr-btn-text: var(--clr-ssc-gray-dark);
+}
+.btn-success {
+  --clr-btn-bg: var(--clr-bg-btn-success);
+  --clr-btn-text: var(--clr-ssc-white);
 }
 .btn-info {
-  background-color: var(--clr-ssc-blue-regular);
+  --clr-btn-bg: var(--clr-bg-btn-info);
+  --clr-btn-text: var(--clr-ssc-white);
 }
-body .btn-primary,
-.button--primary {
-  /* The `body` selector was added to override the WET style */
-  background-color: var(--clr-ssc-violet-regular);
-  color: var(--clr-ssc-white);
+.btn-warning {
+  --clr-btn-bg: var(--clr-bg-btn-warning);
+  --clr-btn-text: var(--clr-ssc-black);
 }
-.btn-secondary,
-.btn-secondary:visited {
-  background-color: var(--clr-ssc-gray-light);
-  color: var(--clr-ssc-gray-dark);
+.btn-danger {
+  --clr-btn-bg: var(--clr-bg-btn-danger);
+  --clr-btn-text: var(--clr-ssc-white);
 }
-.more-link a,
-.btn-arrow,
-.more-link a:visited,
-.btn-arrow:visited {
+.btn-link {
+  --clr-btn-bg: var(--clr-bg-btn-link);
+  --clr-btn-text: var(--clr-ssc-black);
+}
+/* .more-link a {
   display: block;
   padding: 0.938rem 1.25rem;
   background-color: var(--clr-ssc-violet-regular);
@@ -81,33 +116,8 @@ body .btn-primary,
     transition: background-color var(--time-regular-transition);
   }
 }
-.btn-arrow:is(:hover, :focus-visible) {
-  background-color: var(--clr-ssc-gray-dark) !important;
-}
 .more-link {
   margin: 0;
   padding-top: 2.5rem;
   padding-bottom: 1.25rem;
-}
-
-/* Button sizes */
-.btn {
-  padding: 0.625em 0.875em;
-}
-.btn-lg {
-  padding: 0.875em 1.25em;
-}
-.btn-sm {
-  padding: 0.3125em 0.625em;
-}
-.btn-xs {
-  padding: 0.0625em 0.3125em;
-}
-
-/* Overrides */
-.btn:active:focus {
-  outline: none !important;
-}
-.btn-group {
-  background: none !important;
-}
+} */

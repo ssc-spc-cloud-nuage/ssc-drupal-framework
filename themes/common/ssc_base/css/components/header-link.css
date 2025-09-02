@@ -27,6 +27,10 @@
     text-decoration: none;
     color: var(--clr-ssc-white);
   }
+  &:focus {
+    outline: none;
+    text-decoration: none;
+  }
   &:focus-visible {
     outline: var(--focus-outline);
     outline-offset: var(--focus-outline-offset);

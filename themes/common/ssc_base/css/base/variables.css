@@ -147,6 +147,11 @@
   --ff-font-awesome: "Font Awesome 5 Free";
   --ff-glyphicons: "Glyphicons Halflings";
 
+  /* Text underline (e.g. links) */
+  --underline-default: underline 0.075em color-mix(in srgb, currentColor 50%, transparent);
+  --underline-active: underline 0.075em currentColor;
+  --underline-hidden: underline 0.075em transparent;
+
   /* Sizes */
   --size-border-radius-small: 4px;
   --size-border-radius-medium: 8px;
@@ -172,6 +177,7 @@
     0px 6.4px 9.6px hsl(var(--shadow-color) / 0.27);
 
   /* Transitions */
+  --time-very-fast-transition: 75ms;
   --time-fast-transition: 125ms;
   --time-regular-transition: 150ms;
   --time-slow-transition: 250ms;

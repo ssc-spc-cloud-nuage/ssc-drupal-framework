@@ -28,12 +28,16 @@
   isolation: isolate;
 }
 
-/* Site footer */
-.region-footer {
-  margin-top: var(--size-footer-margin);
-}
-.site-footer {
-  isolation: isolate;
+/* Branding */
+.region-branding {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Add padding to the Masquerade text input */
+  & input {
+    padding-block: 10px;
+  }
 }
 
 /**

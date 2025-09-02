@@ -3,6 +3,7 @@
  * Styles for custom forms and form elements.
  */
 
+/* Form controls */
 .form-control {
   /* Reset the WET4 default transition */
   transition: none;
@@ -14,6 +15,9 @@
       box-shadow var(--time-regular-transition),
       color var(--time-regular-transition);
   }
+}
+.form-submit {
+  --clr-btn-bg: var(--clr-accent-page, red);
 }
 
 /* Default WxT/Bootstrap overrides */

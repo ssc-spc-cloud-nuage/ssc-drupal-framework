@@ -16,6 +16,7 @@ body {
   font-family: var(--ff-sans-serif);
   line-height: 1.5;
   text-wrap: pretty;
+  text-underline-offset: 0.15em;
 
   @media screen and (max-width: 767px) {
     padding-top: var(--size-navbar-height);
@@ -66,18 +67,19 @@ p {
 /* Links */
 a {
   color: var(--clr-ssc-blue-regular);
+  text-decoration: var(--underline-default);
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: color var(--time-regular-transition);
+    transition:
+      color var(--time-regular-transition),
+      text-decoration-color var(--time-regular-transition);
   }
   &:visited {
     color: var(--clr-ssc-blue-regular);
   }
   &:hover {
     color: var(--clr-ssc-pink-regular);
-  }
-  &:focus {
-    outline: none;
+    text-decoration: var(--underline-active);
   }
 }
 /* Form elements */

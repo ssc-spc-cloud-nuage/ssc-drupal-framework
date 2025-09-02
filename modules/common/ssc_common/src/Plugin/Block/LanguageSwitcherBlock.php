@@ -127,7 +127,7 @@ class LanguageSwitcherBlock extends LanguageBlock {
         '#title' => substr($title, 0, 2),
         '#attributes' => [
           'lang' => $switch,
-          'class' => ['btn', 'header-link', 'header-link--icon'],
+          'class' => ['header-link', 'header-link--icon'],
         ],
       ],
     ];
@@ -139,7 +139,7 @@ class LanguageSwitcherBlock extends LanguageBlock {
       '#attributes' => [
         'lang' => $switch,
         'hreflang' => $switch,
-        'class' => ['btn', 'header-link', 'header-link--text'],
+        'class' => ['header-link', 'header-link--text'],
       ],
     ];
 
