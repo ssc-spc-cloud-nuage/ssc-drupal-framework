@@ -1,0 +1,27 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a link field.
+ *
+ * Available variables:
+ * - items: List of field items. Each item contains:
+ *   - url: The URL object for the link.
+ *   - title: The text title of the link.
+ *   - attributes: HTML attributes for the anchor tag, such as classes or target.
+ * - label: The label of the field, if available.
+ * - label_hidden: A boolean indicating whether the label should be hidden.
+ * - classes: An array of CSS classes applied to the field wrapper.
+ *
+ * @ingroup themeable
+ */
+#}
+<div>
+  {% if not label_hidden %}
+    <h3 class="field-label">{{ label }}</h3>
+  {% endif %}
+  {% for item in items %}
+    <a href="{{ item.content['#url'] }}" {{ item.attributes }} {{ attributes.addClass(classes) }}>
+      {{ item.content['#title'] }}
+    </a>
+  {% endfor %}
+</div>
