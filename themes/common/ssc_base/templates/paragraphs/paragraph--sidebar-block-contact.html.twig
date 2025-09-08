@@ -26,7 +26,7 @@
       {% if email or link %}
         <div class="field field--name-field-cta-email field--type-email field--label-hidden field--item">
           {% if email %}
-            <a href="mailto://{{ content.field_cta_email.0 }}" class="btn btn-primary">
+            <a href="mailto:{{ content.field_cta_email.0 }}" class="btn btn-primary">
               {% if content.field_email_text|render|striptags|trim %}
                 {{ content.field_email_text }}
               {% else %}
