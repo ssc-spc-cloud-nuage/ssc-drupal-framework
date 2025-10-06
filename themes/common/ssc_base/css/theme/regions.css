@@ -47,6 +47,11 @@
 .page-node-type-event {
   --size-footer-margin: 0;
 }
+/* Campaign pages */
+.page-node-type-campaign {
+  --size-header-margin: 0;
+  --size-footer-margin: 0;
+}
 /* Landing pages */
 .page-node-type-landing-page {
   --size-header-margin: 0;
