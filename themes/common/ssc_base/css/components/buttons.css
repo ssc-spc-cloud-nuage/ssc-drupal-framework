@@ -20,7 +20,7 @@ html {
     --clr-bg-btn-link: transparent;
 
     padding: 0.625em 1.125em;
-    background: var(--clr-btn-bg);
+    background-color: var(--clr-btn-bg);
     border: none;
     border-radius: var(--size-border-radius-small);
     color: var(--clr-btn-text);
@@ -45,6 +45,21 @@ html {
     &:visited {
       background-color: var(--clr-btn-bg);
       color: var(--clr-btn-text);
+    }
+    &.btn-outline {
+      background-color: transparent;
+      border: solid 2px var(--clr-btn-bg);
+      color: var(--clr-ssc-black);
+      text-shadow: none;
+
+      &.btn-outline--inverted {
+        color: var(--clr-ssc-white);
+      }
+      &:hover {
+        background-color: var(--clr-ssc-black);
+        border-color: var(--clr-ssc-black);
+        color: var(--clr-ssc-white);
+      }
     }
   }
   & [class*="btn"]:focus-visible {
