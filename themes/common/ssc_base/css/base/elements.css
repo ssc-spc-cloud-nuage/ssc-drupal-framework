@@ -86,3 +86,7 @@ a {
 input {
   line-height: 1.25 !important;
 }
+
+hr {
+  border-color: var(--clr-ssc-gray-300);
+}

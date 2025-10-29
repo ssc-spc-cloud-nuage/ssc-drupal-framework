@@ -15,7 +15,7 @@
 
 /* Width limiter (limits line length) */
 .width-limiter :is(h2, h3, h4, h5, h6, p, ol, ul, dl, blockquote, details, .alert, .well, .panel) {
-  max-width: 900px;
+  max-width: var(--size-width-limiter);
 }
 .width-limiter .no-limiter {
   max-width: initial;
@@ -26,8 +26,8 @@
   position: relative;
   left: 50%;
   right: 50%;
-  width: 100vw;
+  width: calc(100vw - var(--size-scrollbar));
   max-width: unset;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  margin-left: calc(-50vw + (var(--size-scrollbar) / 2));
+  margin-right: calc(-50vw + (var(--size-scrollbar) / 2));
 }

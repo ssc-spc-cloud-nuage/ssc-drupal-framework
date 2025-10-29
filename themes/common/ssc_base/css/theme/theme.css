@@ -101,3 +101,9 @@ will always appear on top */
     width: fit-content;
   }
 }
+
+/* Background image */
+.bg-image {
+  background-size: cover;
+  background-position: center;
+}

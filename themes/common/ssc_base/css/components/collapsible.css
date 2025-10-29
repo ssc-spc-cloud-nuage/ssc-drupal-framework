@@ -12,7 +12,7 @@ details {
 
   &[open] {
     border-inline: none !important;
-    border-block: solid 1px var(--clr-ssc-slate-light) !important;
+    border-block: solid 1px var(--clr-ssc-gray-300) !important;
     border-radius: 0;
   }
 }
@@ -21,7 +21,7 @@ details {
 summary {
   position: relative;
   border-inline: none !important;
-  border-block: solid 1px var(--clr-ssc-slate-light) !important;
+  border-block: solid 1px var(--clr-ssc-gray-300) !important;
   border-radius: 0 !important;
   margin-inline: calc(var(--size-padding-inline) * -1) !important;
   padding: 10px var(--size-padding-inline) 8px !important;

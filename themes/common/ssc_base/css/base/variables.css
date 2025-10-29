@@ -162,6 +162,7 @@
   --size-spacing-md: 32px;
   --size-spacing-lg: 48px;
   --size-spacing-xl: 72px;
+  --size-scrollbar: 0px;
 
   /* Box shadows */
   --shadow-color: var(--clr-section-bg, 0deg 0% 72%);
@@ -220,4 +221,5 @@
   }
   --size-header-margin: var(--size-spacing-lg);
   --size-footer-margin: var(--size-spacing-lg);
+  --size-width-limiter: 900px;
 }
