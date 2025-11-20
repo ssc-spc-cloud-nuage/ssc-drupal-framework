@@ -30,6 +30,13 @@ props:
     type:
       description: Card type
       type: ["string", "null"]
+    type_position:
+      description: Type position
+      type: ["string", "null"]
+      enum:
+        - "top"
+        - "bottom"
+      default: "bottom"
     pills:
       description: Card pills
       type: ["string", "null"]
@@ -43,6 +50,9 @@ props:
         - regular
         - large
       default: regular
+    accent_color:
+      description: Accent color
+      type: ["string", "null"]
     is_external:
       description: External card flag
       type: ["number", "null"]

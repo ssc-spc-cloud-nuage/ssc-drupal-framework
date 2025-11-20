@@ -68,6 +68,11 @@
     color: var(--clr-card-accent);
   }
   & .card__footer {
+    [data-card-type-position="top"] & {
+      order: -1;
+      margin: 0;
+      padding: 0;
+    }
     [data-card-variant="regular"] & {
       @container cardContainer (max-width: 600px) {
         flex-direction: column;

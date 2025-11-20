@@ -5,6 +5,8 @@
 {% set card_attributes = create_attribute()
   .addClass(card_classes)
   .setAttribute('data-card-variant', variant ? variant : 'regular')
+
+  .setAttribute('data-card-type-position', type_position ? type_position : 'bottom')
 %}
 
 {% if parent_id is not empty %}
@@ -13,6 +15,10 @@
 
 {% if card_id is not empty %}
   {% set card_attributes = card_attributes.setAttribute('id', card_id) %}
+{% endif %}
+
+{% if accent_color is not empty %}
+  {% set card_attributes = card_attributes.setAttribute('data-accent-color', accent_color) %}
 {% endif %}
 
 <div class="card-container">
