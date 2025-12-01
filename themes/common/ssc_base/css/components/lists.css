@@ -1,0 +1,36 @@
+/**
+ * @file
+ * Styles for the various list components.
+ */
+
+.dl-horizontal {
+  --size-padding-inline: 20px;
+  --size-padding-block: 10px;
+  --clr-border: var(--clr-ssc-gray-light);
+
+  display: grid;
+
+  @media screen and (width > 767px) {
+    grid-template-columns: 20ch 1fr;
+  }
+  & dt {
+    width: unset;
+    margin: 0;
+    padding-inline: 0 var(--size-padding-inline);
+    padding-block: var(--size-padding-block);
+    border-color: var(--clr-border);
+
+    & > :last-child {
+      margin-bottom: 0;
+    }
+  }
+  & dt + dd {
+    margin: 0;
+    padding: var(--size-padding-block) 0;
+    border-color: var(--clr-border);
+
+    & > :last-child {
+      margin-bottom: 0;
+    }
+  }
+}

@@ -25,6 +25,7 @@ global:
       css/components/guide-pager.css: {}
       css/components/images.css: {}
       css/components/inputs.css: {}
+      css/components/lists.css: {}
       css/components/pager.css: {}
       css/components/panels.css: {}
       css/components/readmore.css: {}
