@@ -359,7 +359,7 @@
                 "local - custom read more / read less text": "./patches/readmore_text_format_and_custom_text.patch"
             },
             "drupal/redis": {
-                "3004561 - Enable ssl scheme": "https://www.drupal.org/files/issues/2021-11-19/redis-support_tls_on_predis-3004561-37.patch"
+                "3004561 - Enable ssl scheme": "https://www.drupal.org/files/issues/2025-08-13/redis-support_tls_on_predis-3004561-49.patch"
             },
             "drupal/views_bulk_operations": {
                 "local - remove tmpstore items on cancel": "./patches/empty_on_cancel-local.patch"
