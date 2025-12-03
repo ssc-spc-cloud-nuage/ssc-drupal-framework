@@ -20,7 +20,7 @@
         "drupal/auto_entitylabel": "^3.4",
         "drupal/azure_key_vault": "^1.0",
         "drupal/backup_migrate": "^5.1",
-        "drupal/better_exposed_filters": "7.1.x-dev#ced7cbc04",
+        "drupal/better_exposed_filters": "^7.1",
         "drupal/better_formats": "^1.0@beta",
         "drupal/bg_image_formatter": "1.18.0",
         "drupal/block_field": "1.0.0-rc5",
@@ -270,9 +270,6 @@
                 "3025039 - remove error on non-translable field on translation": "https://www.drupal.org/files/issues/2024-05-01/3025039-94.patch",
                 "local - Show IDs in Views rearrange fields modal": "./patches/core-show_ids_views_rearrange.patch",
                 "local - core HACK to handle daterange nontranslated bug": "./patches/core-HACK-handle_nontranslated_daterange_fields.patch"
-            },
-            "drupal/better_exposed_filters": {
-                "3495331 - fix sort logic": "https://www.drupal.org/files/issues/2024-12-20/bef-sort_logic-3495331-2.patch"
             },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
