@@ -148,7 +148,7 @@
         "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^2.1",
         "drupal/webform": "^6.3@beta",
-        "drupalwxt/wxt": "5.4.4",
+        "drupalwxt/wxt": "5.4.2",
         "enshrined/svg-sanitize": "^0.22.0",
         "npm-asset/dompurify": "^3.0"
     },
