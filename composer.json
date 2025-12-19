@@ -101,7 +101,7 @@
         "drupal/message_notify": "1.5",
         "drupal/message_subscribe": "^2.0",
         "drupal/metatag": "^1.28",
-        "drupal/mimemail": "^2.0",
+        "drupal/mimemail": "2.0.x-dev@dev",
         "drupal/module_filter": "^5.0",
         "drupal/multiple_fields_remove_button": "^2",
         "drupal/o365": "5.0.22",
@@ -334,6 +334,9 @@
             "drupal/metatag": {
                 "3027873 - Add views field formatter": "https://www.drupal.org/files/issues/2023-07-23/metatag-field_formatter_for_views-3027873-27.patch",
                 "3315049 - Search API support": "https://www.drupal.org/files/issues/2024-09-09/metatag--2024-09-09--3315049--mr-140.patch"
+            },
+            "drupal/mimemail": {
+                "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
             },
             "drupal/openid_connect": {
                 "local - add login redirect hook": "./patches/openid_connect-login_redirect_alter.patch",
