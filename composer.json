@@ -287,6 +287,9 @@
                 "3252347 - path matching": "https://www.drupal.org/files/issues/2024-11-28/translated_path_matching-3252347-6.patch",
                 "3271500 - allow array tokens": "https://www.drupal.org/files/issues/2022-03-24/array_tokens-3271500-3.patch"
             },
+            "dompdf/dompdf": {
+                "local - use local file streams to avoid certificate issues": "./patches/dompdf-change_local_http_uri_to_a_file.patch"
+            },
             "drupal/diff": {
                 "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
             },
