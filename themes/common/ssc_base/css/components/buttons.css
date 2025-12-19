@@ -33,8 +33,9 @@ html {
     @media (prefers-reduced-motion: no-preference) {
       will-change: scale;
       transition:
-        background-color var(--time-regular-transition),
-        color var(--time-regular-transition);
+        background-color var(--time-regular-transition) ease,
+        outline var(--time-regular-transition) ease,
+        color var(--time-regular-transition) ease;
     }
     &:is(:hover, :active, :hover:active, :focus, :focus-visible) {
       background-color: var(--clr-ssc-black);
@@ -47,8 +48,11 @@ html {
       color: var(--clr-btn-text);
     }
     &.btn-outline {
+      --size-outline-width: 2px;
+
       background-color: transparent;
-      border: solid 2px var(--clr-btn-bg);
+      outline: solid var(--size-outline-width) var(--clr-btn-bg);
+      outline-offset: calc(var(--size-outline-width) * -1);
       color: var(--clr-ssc-black);
       text-shadow: none;
 
@@ -57,7 +61,7 @@ html {
       }
       &:hover {
         background-color: var(--clr-ssc-black);
-        border-color: var(--clr-ssc-black);
+        outline: solid var(--size-outline-width) var(--clr-ssc-black);
         color: var(--clr-ssc-white);
       }
     }
@@ -116,23 +120,10 @@ html {
   --clr-btn-bg: var(--clr-bg-btn-link);
   --clr-btn-text: var(--clr-ssc-black);
 }
-/* .more-link a {
-  display: block;
-  padding: 0.938rem 1.25rem;
-  background-color: var(--clr-ssc-violet-regular);
-  border-radius: var(--size-border-radius-small);
-  color: var(--clr-ssc-white);
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1.25rem;
 
-  @media (prefers-reduced-motion: no-preference) {
-    transition: background-color var(--time-regular-transition);
-  }
+/* Buttons row */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
 }
-.more-link {
-  margin: 0;
-  padding-top: 2.5rem;
-  padding-bottom: 1.25rem;
-} */
