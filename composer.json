@@ -89,7 +89,7 @@
         "drupal/layout_builder_modal": "^2.0",
         "drupal/layout_builder_tabs": "^1.0",
         "drupal/lb_tabs": "^3.0",
-        "drupal/linkchecker": "^2.1@beta",
+        "drupal/linkchecker": "^2.1@beta1",
         "drupal/linkchecker_summary_mail": "^2.0@beta",
         "drupal/log_stdout": "^3.0",
         "drupal/mail_redirect": "4.2.4",
