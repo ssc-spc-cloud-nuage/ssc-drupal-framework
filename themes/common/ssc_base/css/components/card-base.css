@@ -130,10 +130,6 @@
   }
 }
 .card__footer {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 1rem;
   margin-block: auto 0;
   padding-top: 1.125rem;
   color: var(--clr-card-text-secondary);

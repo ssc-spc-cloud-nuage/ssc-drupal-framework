@@ -68,6 +68,11 @@
     color: var(--clr-card-accent);
   }
   & .card__footer {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 1rem;
+
     [data-card-type-position="top"] & {
       order: -1;
       margin: 0;
