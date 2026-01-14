@@ -38,6 +38,14 @@
   }
   &[class*="alert-"] {
     border-image: none;
+
+    a {
+      color: color-mix(in srgb, var(--clr-alert-accent), var(--clr-ssc-black));
+
+      &:hover {
+        color: var(--clr-ssc-black);
+      }
+    }
   }
   & > * {
     margin-left: 0;
