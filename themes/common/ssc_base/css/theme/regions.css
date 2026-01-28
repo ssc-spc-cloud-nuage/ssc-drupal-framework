@@ -8,21 +8,6 @@
   margin-bottom: var(--size-header-margin);
 }
 
-/* Site breadcrumb */
-.region-breadcrumb {
-  position: absolute;
-  top: 0;
-  left: 142px;
-  display: flex;
-  align-items: center;
-  height: 52px;
-  padding: 16px;
-
-  @media screen and (max-width: 767px) {
-    position: static;
-  }
-}
-
 /* Site main content */
 .main-container {
   isolation: isolate;

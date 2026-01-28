@@ -34,6 +34,7 @@ global:
       css/components/sidebar-blocks.css: {}
       css/components/slick-slider.css: {}
       css/components/topics.css: {}
+      css/components/tour.css: {}
       css/components/ui-dialog.css: {}
       css/components/wells.css: {}
     theme:

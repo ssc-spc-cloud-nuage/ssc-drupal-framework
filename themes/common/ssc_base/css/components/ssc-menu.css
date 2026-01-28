@@ -14,6 +14,7 @@
   --clr-content-text: var(--clr-ssc-violet-light);
   --menu-gap: 14px;
   --menu-shadow: 0 4px 20px rgb(0 0 0 / 30%);
+
   position: relative;
   margin-top: 0;
   color: var(--clr-ssc-white);
@@ -40,20 +41,19 @@
     }
   }
 }
-.site-navigation {}
-
-
-
-
 
 .site-navigation {
+  --clr-menu-primary: var(--clr-ssc-violet-regular);
+  --clr-menu-secondary: color-mix(in srgb, var(--clr-ssc-violet-regular), white 10%);
+  --size-menu-btn-width: 7.5rem;
+  --size-menu-btn-height: 3.25rem;
+
   position: relative;
   background-color: var(--clr-ssc-slate-900);
   background-image: url("/themes/common/ssc_base/assets/pattern-bright-bg.png");
   background-position: top;
   background-size: cover;
   background-blend-mode: multiply;
-  isolation: isolate;
   overflow: clip;
 
   @media (prefers-reduced-motion: no-preference) {
@@ -70,7 +70,7 @@
     height: auto;
   }
   &:where(:has(.main-menu-button[aria-expanded=false])) {
-    height: 52px;
+    height: var(--size-menu-btn-height);
   }
   .wb-disable & {
     height: auto;
@@ -78,7 +78,7 @@
   &::before {
     position: absolute;
     inset-inline: 0;
-    height: 52px;
+    height: var(--size-menu-btn-height);
     background-color: var(--clr-ssc-black);
     content: '';
 
@@ -108,6 +108,25 @@
       padding: 0;
     }
   }
+  & .region-breadcrumb {
+    --size-breadcrumb-padding: 15px;
+
+    position: absolute;
+    top: 0;
+    left: calc(var(--size-menu-btn-width) + 15px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    width: calc(100% - var(--size-menu-btn-width) - 15px);
+    height: var(--size-menu-btn-height);
+    margin: 0;
+    padding: var(--size-breadcrumb-padding);
+
+    @media screen and (max-width: 767px) {
+      position: static;
+    }
+  }
 }
 
 /* Menu button */
@@ -115,10 +134,12 @@
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  width: var(--size-menu-btn-width);
+  height: var(--size-menu-btn-height);
   margin: 0;
-  padding: 18px 24px;
-  background-color: var(--clr-ssc-violet-regular);
+  background-color: var(--clr-menu-primary);
   border: 0;
   font-size: 1.25rem;
   font-weight: 700;
@@ -130,7 +151,7 @@
     transition: background-color var(--time-regular-transition);
   }
   &:is(:hover, [aria-expanded="true"]) {
-    background-color: var(--clr-ssc-pink-800);
+    background-color: var(--clr-menu-secondary);
   }
   &:focus-visible {
     outline: var(--focus-outline);
