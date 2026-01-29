@@ -20,7 +20,7 @@
         "drupal/auto_entitylabel": "^3.4",
         "drupal/azure_key_vault": "^1.0",
         "drupal/backup_migrate": "^5.1",
-        "drupal/better_exposed_filters": "7.1.x-dev#ced7cbc04",
+        "drupal/better_exposed_filters": "^7.1",
         "drupal/better_formats": "^1.0@beta",
         "drupal/bg_image_formatter": "1.18.0",
         "drupal/block_field": "1.0.0-rc5",
@@ -89,7 +89,7 @@
         "drupal/layout_builder_modal": "^2.0",
         "drupal/layout_builder_tabs": "^1.0",
         "drupal/lb_tabs": "^3.0",
-        "drupal/linkchecker": "^2.1@alpha",
+        "drupal/linkchecker": "^2.1@beta",
         "drupal/linkchecker_summary_mail": "^2.0@beta",
         "drupal/log_stdout": "^3.0",
         "drupal/mail_redirect": "4.2.4",
@@ -101,7 +101,7 @@
         "drupal/message_notify": "1.5",
         "drupal/message_subscribe": "^2.0",
         "drupal/metatag": "^1.28",
-        "drupal/mimemail": "2.0.x-dev@dev",
+        "drupal/mimemail": "^2.0",
         "drupal/module_filter": "^5.0",
         "drupal/multiple_fields_remove_button": "^2",
         "drupal/o365": "5.0.22",
@@ -123,6 +123,7 @@
         "drupal/stringoverrides": "1.x-dev@dev",
         "drupal/subpathauto": "^1.4",
         "drupal/svg_image": "^3.2",
+        "drupal/svg_sanitizer": "^2.0",
         "drupal/taxonomy_manager": "^2.0",
         "drupal/telephone_formatter": "^1.3",
         "drupal/telephone_validation": "2.x-dev@dev",
@@ -149,8 +150,8 @@
         "drupal/viewscss": "^1.0@RC",
         "drupal/w3c_validator": "^2.1",
         "drupal/webform": "^6.3@beta",
-        "drupalwxt/wxt": "5.4.2",
-        "enshrined/svg-sanitize": "^0.16.0",
+        "drupalwxt/wxt": "5.6.1",
+        "enshrined/svg-sanitize": "^0.22.0",
         "npm-asset/dompurify": "^3.0"
     },
     "require-dev": {
@@ -272,9 +273,6 @@
                 "local - Show IDs in Views rearrange fields modal": "./patches/core-show_ids_views_rearrange.patch",
                 "local - core HACK to handle daterange nontranslated bug": "./patches/core-HACK-handle_nontranslated_daterange_fields.patch"
             },
-            "drupal/better_exposed_filters": {
-                "3495331 - fix sort logic": "https://www.drupal.org/files/issues/2024-12-20/bef-sort_logic-3495331-2.patch"
-            },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
             },
@@ -287,9 +285,6 @@
             "drupal/custom_breadcrumbs": {
                 "3252347 - path matching": "https://www.drupal.org/files/issues/2024-11-28/translated_path_matching-3252347-6.patch",
                 "3271500 - allow array tokens": "https://www.drupal.org/files/issues/2022-03-24/array_tokens-3271500-3.patch"
-            },
-            "dompdf/dompdf": {
-                "local - use local file streams to avoid certificate issues": "./patches/dompdf-change_local_http_uri_to_a_file.patch"
             },
             "drupal/diff": {
                 "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
@@ -339,9 +334,6 @@
                 "3027873 - Add views field formatter": "https://www.drupal.org/files/issues/2023-07-23/metatag-field_formatter_for_views-3027873-27.patch",
                 "3315049 - Search API support": "https://www.drupal.org/files/issues/2024-09-09/metatag--2024-09-09--3315049--mr-140.patch"
             },
-            "drupal/mimemail": {
-                "3302223 - fix realpath() issue in php8": "https://www.drupal.org/files/issues/2023-03-24/3302223-check-in-public-path.patch"
-            },
             "drupal/openid_connect": {
                 "local - add login redirect hook": "./patches/openid_connect-login_redirect_alter.patch",
                 "local - add autologin and showcore functionality (combine issue: 3011413 & 3441149)": "./patches/openid_connect-autologin-showcore.patch",
@@ -362,9 +354,6 @@
                 "3183680 - use processed text": "https://git.drupalcode.org/project/readmore/-/merge_requests/3.patch",
                 "local - custom read more / read less text": "./patches/readmore_text_format_and_custom_text.patch"
             },
-            "drupal/redis": {
-                "3004561 - Enable ssl scheme": "https://www.drupal.org/files/issues/2021-11-19/redis-support_tls_on_predis-3004561-37.patch"
-            },
             "drupal/views_bulk_operations": {
                 "local - remove tmpstore items on cancel": "./patches/empty_on_cancel-local.patch"
             },
@@ -378,7 +367,7 @@
                 "2424739 - Select form mode": "https://www.drupal.org/files/issues/2022-06-01/fixed_EntityContextDefinition.patch"
             },
             "drupal/linkchecker": {
-                "3366753 - Filter out para rev results from report": "https://git.drupalcode.org/project/linkchecker/-/merge_requests/46.patch"
+                "3366753 - Filter out para rev results from report": "https://www.drupal.org/files/issues/2025-03-07/3366753-minimal.patch"
             },
             "drupal/page_manager": {
                 "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch",
