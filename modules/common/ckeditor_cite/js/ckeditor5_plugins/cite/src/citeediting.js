@@ -1,6 +1,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import CiteCommand from './citecommand';
-import RemoveCiteCommand from './removecitecommand';
+import RemoveCiteCommand from './removeabbreviationcommand';
 
 export default class CiteEditing extends Plugin {
 	init() {

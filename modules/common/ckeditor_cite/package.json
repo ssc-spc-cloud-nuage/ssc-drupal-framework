@@ -9,8 +9,7 @@
     "build": "webpack"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^30.5.0",
-    "ckeditor5": "~34.1.0",
+    "ckeditor5": "~47.3.0",
     "css-loader": "^6.7.3",
     "raw-loader": "^4.0.2",
     "style-loader": "^3.3.1",
@@ -19,14 +18,15 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^36.0.1",
-    "@ckeditor/ckeditor5-core": "^36.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "^36.0.1",
-    "@ckeditor/ckeditor5-essentials": "^36.0.1",
-    "@ckeditor/ckeditor5-heading": "^36.0.1",
-    "@ckeditor/ckeditor5-list": "^36.0.1",
-    "@ckeditor/ckeditor5-paragraph": "^36.0.1",
-    "@ckeditor/ckeditor5-theme-lark": "^36.0.1",
-    "@ckeditor/ckeditor5-ui": "^36.0.1"
-  }
+    "@ckeditor/ckeditor5-basic-styles": "~47.3.0",
+    "@ckeditor/ckeditor5-core": "~47.3.0",
+    "@ckeditor/ckeditor5-editor-classic": "~47.3.0",
+    "@ckeditor/ckeditor5-essentials": "~47.3.0",
+    "@ckeditor/ckeditor5-heading": "~47.3.0",
+    "@ckeditor/ckeditor5-list": "~47.3.0",
+    "@ckeditor/ckeditor5-paragraph": "~47.3.0",
+    "@ckeditor/ckeditor5-theme-lark": "~47.3.0",
+    "@ckeditor/ckeditor5-ui": "~47.3.0"
+  },
+  "packageManager": "pnpm@10.23.0+sha512.21c4e5698002ade97e4efe8b8b4a89a8de3c85a37919f957e7a0f30f38fbc5bbdd05980ffe29179b2fb6e6e691242e098d945d1601772cad0fef5fb6411e2a4b"
 }

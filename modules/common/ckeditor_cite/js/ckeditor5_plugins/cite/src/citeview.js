@@ -6,8 +6,15 @@ import {
 	submitHandler,
 	FocusCycler
 } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
+import {
+	FocusTracker,
+	KeystrokeHandler
+} from 'ckeditor5/src/utils';
+import {
+	IconCancel,
+	IconCheck,
+	IconEraser
+} from 'ckeditor5/src/icons';
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -19,19 +26,19 @@ export default class FormView extends View {
 		this.citeInputView = this._createInput( Drupal.t( 'Add cite' ));
 		this.titleInputView = this._createInput( Drupal.t( 'Add title' ));
 
-		this.saveButtonView = this._createButton( Drupal.t('Save'), icons.check, 'ck-button-save' );
+		this.saveButtonView = this._createButton( Drupal.t('Save'), IconCheck, 'ck-button-save' );
 
 		// Submit type of the button will trigger the submit event on entire form when clicked
 		//(see submitHandler() in render() below).
 		this.saveButtonView.type = 'submit';
 
-		this.cancelButtonView = this._createButton( Drupal.t('Cancel'), icons.cancel, 'ck-button-cancel' );
+		this.cancelButtonView = this._createButton( Drupal.t('Cancel'), IconCancel, 'ck-button-cancel' );
 
 		// Delegate ButtonView#execute to FormView#cancel.
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
 
     // Create a remove button to remove the cite tag.
-    this.removeButtonView = this._createButton( 'Remove', icons.eraser, 'ck-button-remove' );
+    this.removeButtonView = this._createButton( 'Remove', IconEraser, 'ck-button-remove' );
     this.removeButtonView.delegate( 'execute' ).to( this, 'remove' );
 
 		this.childViews = this.createCollection( [
