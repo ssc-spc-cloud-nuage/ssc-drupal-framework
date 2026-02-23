@@ -111,7 +111,6 @@
         "drupal/phpmailer_smtp": "^2",
         "drupal/rabbit_hole": "^1.0",
         "drupal/readmore": "^2",
-        "drupal/redis": "^1.11",
         "drupal/realname": "^2.0",
         "drupal/restui": "^1.22",
         "drupal/s3fs": "^3.7",
