@@ -3,6 +3,13 @@
  * Styles for custom forms and form elements.
  */
 
+/* Form */
+.form-required:after {
+  /* Ensure that asterisks are never cropped out in Flex containers */
+  min-height: 7px;
+  min-width: 7px;
+}
+
 /* Form controls */
 .form-control {
   /* Reset the WET4 default transition */
@@ -199,48 +206,76 @@
   margin-top: 2rem;
 }
 
+/* @TODO remove unnecessary !important keywords */
 /* Webform multi-value input table */
-.webform-submission-form .webform-multiple-table th {
-  padding: 0;
+.form-type-webform-custom-composite {
+  max-width: var(--size-width-limiter);
 }
-.webform-submission-form .webform-multiple-table--operations {
-  display: flex;
+.webform-multiple-table {
+  & th {
+    padding: 0;
+    border: none !important;
+  }
+  & td {
+    border: none !important;
+  }
+  .icon,
+  .webform-multiple-table--handle,
+  .tabledrag-handle {
+    margin: 0;
+    padding: 0;
+  }
+  .webform-multiple-table--handle {
+    padding-inline: 6px;
+  }
+}
+.webform-multiple-table--operations {
+  display: table-cell !important;
+  padding-inline: 0 8px;
+  width: unset !important;
+
+  & > button {
+    aspect-ratio: 1;
+    padding: 0 !important;
+    border-radius: 100vw !important;
+    background: none !important;
+    color: var(--clr-ssc-gray-400) !important;
+
+    &:hover {
+      color: var(--clr-ssc-black) !important;
+    }
+  }
+}
+.webform-multiple-add {
+  display: flex !important;
   gap: 8px;
+  margin-top: 12px !important;
+
+  & > .btn {
+    padding: 0 0.75em !important;
+  }
 }
+
+/* Webform draggable */
 .webform-submission-form .draggable {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px;
   border-radius: 8px;
-}
-.webform-submission-form .draggable:not(:last-of-type) {
-  margin-bottom: 4px;
-}
-.webform-submission-form .btn {
-  margin: 0;
-}
-.webform-submission-form .draggable > td {
-  width: auto;
-  border: none;
-}
-.webform-submission-form .draggable > td:nth-of-type(2) {
-  /* Input field for each draggable item */
-  flex: 1;
-  padding: 0;
-}
-.webform-submission-form .webform-multiple-table .icon,
-.webform-submission-form .webform-multiple-table .webform-multiple-table--handle,
-.webform-submission-form .webform-multiple-table .tabledrag-handle {
-  margin: 0;
-  padding: 0;
-}
-.webform-submission-form .webform-multiple-table .webform-multiple-table--handle {
-  padding-inline: 6px;
-}
-.webform-submission-form .webform-multiple-add {
-  /* Hide default multiple add block */
-  display: none;
+
+  &:not(:last-of-type) {
+    margin-bottom: 4px;
+  }
+  & > td {
+    width: auto;
+    border: none;
+  }
+  & > td:nth-of-type(2) {
+    /* Input field for each draggable item */
+    flex: 1;
+    padding: 0;
+  }
 }
 
 /* Webform multi-page progress marker */
