@@ -53,7 +53,7 @@ global:
       css/utilities/spacing.css: {}
       css/utilities/temp.css: {}
       css/utilities/typography.css: {}
-      css/utilities/visibility: {}
+      css/utilities/visibility.css: {}
   js:
     js/global.js: {}
     js/ssc-loader.js: {}
