@@ -1,0 +1,11 @@
+/**
+ * @file
+ * Utility classes for elements visibility.
+ */
+
+body.user-logged-in .hidden-authenticated {
+  display: none;
+}
+body:not(.user-logged-in) .hidden-anonymous {
+  display: none;
+}
