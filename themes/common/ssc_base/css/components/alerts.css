@@ -39,7 +39,7 @@
   &[class*="alert-"] {
     border-image: none;
 
-    a {
+    a:not(.btn) {
       color: color-mix(in srgb, var(--clr-alert-accent), var(--clr-ssc-black));
 
       &:hover {
