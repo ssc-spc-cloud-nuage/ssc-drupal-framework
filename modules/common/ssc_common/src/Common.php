@@ -28,7 +28,7 @@ class Common {
    */
   static function sendMail($template, $options = []) {
     // If no To then nothing to do.
-    if (empty(trim($options['to']))) {
+    if (empty($options['to'])) {
       \Drupal::messenger()->addWarning(t('Attempted to send email with no To address.'));
       \Drupal::logger('sendMail')
         ->warning('Attempted to send email with no To address.');
