@@ -52,43 +52,32 @@ class Common {
       'bcc' => 'Bcc',
     ];
     $headers = [];
-    $to_plain_emails = [];
-    $to_display_emails = [];
-
+    $to_emails_string = '';
     foreach ($fields as $key => $field) {
       if (empty($options[$key])) continue;
-
-      $addresses = is_array($options[$key]) ? $options[$key] : [$options[$key]];
-
-      $display_emails = [];
-      $plain_emails = [];
-
+      if (!is_array($options[$key])) $addresses = [$options[$key]];
+      else $addresses = $options[$key];
+      $emails = [];
       foreach ($addresses as $address) {
+        // User object
         if (is_object($address)) {
-          $display = '"' . addcslashes($address->getDisplayName(), '"\\') . '" <' . $address->getEmail() . '>';
+          $emails[] = $address->getDisplayName() . ' <' . $address->getEmail() . '>';
         }
-        elseif ($address == 'site') {
-          $display = '"' . addcslashes($site_name, '"\\') . '" <' . $site_mail . '>';
+        // Site
+        else if ($address == 'site') {
+          $emails[] = $site_name . ' <' . $site_mail . '>';
         }
         else {
-          $display = static::normalizeEmailAddress($address);
+          $emails[] = $address;
         }
-
-        $display_emails[] = $display;
-        $plain_emails[] = static::extractEmailOnly($display);
       }
-
+      $emails_string = implode(', ', $emails);
       if ($key == 'to') {
-        $to_plain_emails = $plain_emails;
-        $to_display_emails = $display_emails;
+        $to_emails_string = $emails_string;
       }
       else {
-        $headers[$field] = implode(', ', $display_emails);
-
-        // Optional but safer if backend uses these somehow.
-        $headers['X-Plain-' . $field] = implode(', ', $plain_emails);
+        $headers[$field] = $emails_string;
       }
-
     }
 
     $notifier = \Drupal::service('message_notify.sender');
@@ -134,11 +123,9 @@ class Common {
     }
 
     $options = [
-      'mail' => implode(', ', $to_plain_emails),
+      'mail' => $to_emails_string,
       'params' => [
-        'headers' => $headers + [
-            'To' => implode(', ', $to_display_emails),
-          ],
+        'headers' => $headers,
         'attachments' => $attachments,
       ],
     ];
@@ -176,44 +163,6 @@ class Common {
     }
 
     return FALSE;
-  }
-
-  protected static function normalizeEmailAddress(string $address): string {
-    $address = trim($address);
-
-    // Match: optional display name + <email@example.com>
-    if (preg_match('/^\s*(.*?)\s*<\s*([^<>]+@[^<>]+)\s*>\s*$/', $address, $matches)) {
-      $name = trim($matches[1]);
-      $email = trim($matches[2]);
-
-      // Remove surrounding quotes if editor entered them.
-      if (str_starts_with($name, '"') && str_ends_with($name, '"')) {
-        $name = substr($name, 1, -1);
-      }
-
-      // Decode escaped quotes/backslashes if already double-escaped.
-      $name = stripcslashes($name);
-      $name = trim($name, '"');
-
-      if ($name !== '') {
-        return '"' . addcslashes($name, '"\\') . '" <' . $email . '>';
-      }
-
-      return $email;
-    }
-
-    // Plain email address.
-    return $address;
-  }
-
-  protected static function extractEmailOnly(string $address): string {
-    $address = trim($address);
-
-    if (preg_match('/<\s*([^<>]+@[^<>]+)\s*>/', $address, $matches)) {
-      return trim($matches[1]);
-    }
-
-    return $address;
   }
 
 /**
