@@ -1,0 +1,15 @@
+diff --git a/src/Utility/MimeMailFormatHelper.php b/src/Utility/MimeMailFormatHelper.php
+index ea6b31f..5fb9d35 100644
+--- a/src/Utility/MimeMailFormatHelper.php
++++ b/src/Utility/MimeMailFormatHelper.php
+@@ -92,6 +92,10 @@ class MimeMailFormatHelper {
+     // The logic is a little different here because we didn't receive the
+     // string already separated into parts like we had in the above cases.
+     if (is_string($address)) {
++      // Hack to allow string of multiple addresses.
++      if (stristr($address, ',')) {
++        return $address;
++      }
+       $pattern = '/(.*?)<(.*?)>/';
+       preg_match_all($pattern, $address, $matches);
+       // $name is the entire string before the first '<'.

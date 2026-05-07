@@ -377,6 +377,9 @@
             },
             "drupal/search_api": {
                 "3352150 - Fix exception from certain Views handlers": "https://www.drupal.org/files/issues/2025-03-26/3352150-15--add_field_instance_dependencies.patch"
+            },
+            "drupal/mimemail": {
+                "local - allow string of multiple emails": "\"./patches/mimemail-allow_string_of_multiple.patch\""
             }
         },
         "patches-ignore": {
