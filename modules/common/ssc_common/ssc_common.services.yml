@@ -4,3 +4,9 @@ services:
     arguments: ['@date.formatter']
     tags:
       - { name: twig.extension }
+
+  ssc_common.language_negotiator:
+    class: Drupal\ssc_common\Language\CustomLanguageNegotiator
+    arguments: [ '@language_manager', '@plugin.manager.language_negotiation_method', '@config.factory', '@settings', '@request_stack' ]
+    calls:
+      - [ initLanguageManager ]

@@ -28,10 +28,8 @@ class Common {
    */
   static function sendMail($template, $options = []) {
     // If no To then nothing to do.
-    if (empty($options['to'])) {
-      \Drupal::messenger()->addWarning(t('Attempted to send email with no To address.'));
-      \Drupal::logger('sendMail')
-        ->warning('Attempted to send email with no To address.');
+    if (!isset($options['to'])) {
+      \Drupal::messenger()->addWarning(t('No To address provided for email.'));
       return FALSE;
     }
 
@@ -244,6 +242,35 @@ class Common {
     }
 
     return NULL;
+  }
+
+  /**
+   * Set system language.
+   *
+   * @param $langcode
+   *
+   * @return string
+   */
+  static function sscSwitchLanguage($langcode) {
+    // See: https://drupal.stackexchange.com/questions/156094/switch-a-language-programatically/216051#216051
+    $language_manager = \Drupal::languageManager();
+    $custom_language_negotiator = \Drupal::service('ssc_common.language_negotiator');
+    $language_manager->setNegotiator($custom_language_negotiator);
+
+    // Get original "current language" so we can set it back later.
+    $original_language_id = $language_manager->getCurrentLanguage()->getId();
+
+    // Set new language by its langcode.
+    try {
+      $language_manager->reset();
+      $language_manager->getNegotiator()->setLanguageCode($langcode);
+    }
+    finally {
+      $language_manager->reset();
+      $language_manager->getNegotiator()->setLanguageCode($original_language_id);
+    }
+
+    return $original_language_id;
   }
 
 }
