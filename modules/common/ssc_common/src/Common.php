@@ -106,6 +106,11 @@ class Common {
         }
       }
     }
+
+    // Set Message as EN for Notify to use proper template.
+    // https://www.drupal.org/project/message_notify/issues/2965975
+    $message->setLanguage('en');
+
     $message->save();
 
     // Let's set Sender as From or else some clients show From as "Sender on behalf of From".
