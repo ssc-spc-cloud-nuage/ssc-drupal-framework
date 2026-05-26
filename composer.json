@@ -381,6 +381,9 @@
             },
             "drupal/mimemail": {
                 "local - allow string of multiple emails": "./patches/mimemail-allow_string_of_multiple.patch"
+            },
+            "drupal/search_api_exactmatch_boost": {
+                "local - fix exact match boost results": "./patches/exact_match_boost_results_fix.patch"
             }
         },
         "patches-ignore": {
