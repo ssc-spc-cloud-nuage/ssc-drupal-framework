@@ -292,9 +292,6 @@
             "drupal/eva": {
                 "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
             },
-            "drupal/entity_field_condition": {
-                "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2026-06-01/3091898-58.patch"
-            },
             "drupal/entity_reference_revisions": {
                 "2799479 - paragraph relationship to host": "https://www.drupal.org/files/issues/2024-08-24/entity_reference_revisions-2799479-231--no-tests.patch",
                 "local - moderation support": "./patches/err_moderation-translation-rc2.patch"
