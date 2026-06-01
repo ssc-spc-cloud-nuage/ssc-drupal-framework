@@ -373,8 +373,7 @@
             },
             "drupal/page_manager": {
                 "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch",
-                "3438993 - mandatory parameters missing for route entity.page.devel_load": "https://www.drupal.org/files/issues/2024-08-14/page-manager-3438993-MR34-24.patch",
-                "2752227 - page titles in browser toolbar": "https://www.drupal.org/files/issues/2025-01-15/2752227-56.patch"
+                "3438993 - mandatory parameters missing for route entity.page.devel_load": "https://www.drupal.org/files/issues/2024-08-14/page-manager-3438993-MR34-24.patch"
             },
             "drupal/search_api": {
                 "3352150 - Fix exception from certain Views handlers": "https://www.drupal.org/files/issues/2025-03-26/3352150-15--add_field_instance_dependencies.patch"
