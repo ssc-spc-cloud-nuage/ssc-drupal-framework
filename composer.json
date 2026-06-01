@@ -50,7 +50,7 @@
         "drupal/draggableviews": "2.1.4",
         "drupal/encrypt": "^3.2",
         "drupal/entity_clone": "^2.1@beta",
-        "drupal/entity_field_condition": "^1.5",
+        "drupal/entity_field_condition": "1.4",
         "drupal/entity_print": "^2.15",
         "drupal/entityform_block": "^1.0@alpha",
         "drupal/environment_indicator": "^4",
@@ -380,6 +380,9 @@
             },
             "drupal/search_api_exactmatch_boost": {
                 "local - fix exact match boost results": "./patches/exact_match_boost_results_fix.patch"
+            },
+            "drupal/entity_field_condition": {
+                "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2023-11-11/3091898-43.patch"
             }
         },
         "patches-ignore": {
