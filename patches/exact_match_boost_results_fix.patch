@@ -1,0 +1,66 @@
+diff --git a/src/Plugin/search_api/processor/ExactMatchBoost.php b/src/Plugin/search_api/processor/ExactMatchBoost.php
+index 4108d28..4fc4ec1 100644
+--- a/src/Plugin/search_api/processor/ExactMatchBoost.php
++++ b/src/Plugin/search_api/processor/ExactMatchBoost.php
+@@ -189,31 +189,42 @@ class ExactMatchBoost extends FieldsProcessorPluginBase implements PluginFormInt
+         }
+       }
+       if (!empty($exact_matches)) {
+-        $changeresult = TRUE;
++        //Check if each exact match is in the oldresults array. If not, unset it.
+         $oldresults = $results->getResultItems();
+-        if (empty($view) || $view->usePager() === FALSE || $view->getCurrentPage() === 0) {
+-          $newresults = array_merge($exact_matches, $oldresults);
++        foreach ($exact_matches as $key => $item) {
++          if (!isset($oldresults[$key])) {
++            unset($exact_matches[$key]);
++          }
++        }
+ 
+-          // Seems that mini paged results includes the first result item of next page as last item of the results array
+-          // If this is an exact match, the real last result item (second last) might get lost, therefore
+-          // adding the last result item in this case again.
+-          if (!empty($view) && $view->usePager() && $view->getPager()->getPluginId() === 'mini') {
+-            $last = end($oldresults);
+-            $last_new = end($newresults);
+-            if ($last_new !== $last) {
+-              $newresults[] = $last;
++        //If the are still exact matches, proceed
++        if (!empty($exact_matches)) {
++          $changeresult = TRUE;
++          
++          if (empty($view) || $view->usePager() === FALSE || $view->getCurrentPage() === 0) {
++            $newresults = array_merge($exact_matches, $oldresults);
++
++            // Seems that mini paged results includes the first result item of next page as last item of the results array
++            // If this is an exact match, the real last result item (second last) might get lost, therefore
++            // adding the last result item in this case again.
++            if (!empty($view) && $view->usePager() && $view->getPager()->getPluginId() === 'mini') {
++              $last = end($oldresults);
++              $last_new = end($newresults);
++              if ($last_new !== $last) {
++                $newresults[] = $last;
++              }
+             }
+           }
+-        }
+-        else {
+-          // Remove exact match from pages other than first page.
+-          // Caution: only works reliable on string fields.
+-          if ($this->configuration['remove_exacts'] === TRUE) {
+-            foreach ($exact_matches as $key => $item) {
+-              unset($oldresults[$key]);
++          else {
++            // Remove exact match from pages other than first page.
++            // Caution: only works reliable on string fields.
++            if ($this->configuration['remove_exacts'] === TRUE) {
++              foreach ($exact_matches as $key => $item) {
++                unset($oldresults[$key]);
++              }
+             }
++            $newresults = $oldresults;
+           }
+-          $newresults = $oldresults;
+         }
+       }
+     }
