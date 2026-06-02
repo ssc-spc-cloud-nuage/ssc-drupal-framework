@@ -311,7 +311,7 @@
             },
             "drupal/layout_library": {
                 "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
-                "local - fixes issues saving layouts disabling LL": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/ignore_layout_selection_field_saving_layout.patch"
+                "local   - fixes issues saving layouts disabling LL": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/ignore_layout_selection_field_saving_layout.patch"
             },
             "drupal/lb_tabs": {
                 "local - hide when empty": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb_tabs-hide_empty.patch",
