@@ -1,0 +1,1858 @@
+From f2577de55173f365b16bd64800a5a9c54300da66 Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Fri, 18 Apr 2025 07:59:24 -0400
+Subject: [PATCH 01/12] Added configuration option for role mappings
+
+---
+ config/install/openid_connect.settings.yml |   1 +
+ config/schema/openid_connect.schema.yml    |   3 +
+ src/Form/OpenIDConnectSettingsForm.php     |   9 +-
+ src/OpenIDConnect.php                      |  47 ++++++--
+ tests/src/Unit/OpenIDConnectTest.php       | 120 +++++++++++++++++++--
+ 5 files changed, 162 insertions(+), 18 deletions(-)
+
+diff --git a/config/install/openid_connect.settings.yml b/config/install/openid_connect.settings.yml
+index 7c57493..d6d7a2a 100644
+--- a/config/install/openid_connect.settings.yml
++++ b/config/install/openid_connect.settings.yml
+@@ -8,4 +8,5 @@ redirect_logout: ''
+ userinfo_mappings:
+   timezone: zoneinfo
+ role_mappings: {}
++reset_role_mappings: false
+ autostart_login: false
+diff --git a/config/schema/openid_connect.schema.yml b/config/schema/openid_connect.schema.yml
+index 6075494..319e21d 100644
+--- a/config/schema/openid_connect.schema.yml
++++ b/config/schema/openid_connect.schema.yml
+@@ -35,6 +35,9 @@ openid_connect.settings:
+         type: sequence
+         sequence:
+           type: string
++    reset_role_mappings:
++      type: boolean
++      label: 'Reset role mappings if no groups are passed.'
+     autostart_login:
+       type: boolean
+       label: 'Autostart login process'
+diff --git a/src/Form/OpenIDConnectSettingsForm.php b/src/Form/OpenIDConnectSettingsForm.php
+index 2c2ed4c..5fc7aae 100644
+--- a/src/Form/OpenIDConnectSettingsForm.php
++++ b/src/Form/OpenIDConnectSettingsForm.php
+@@ -228,6 +228,13 @@ class OpenIDConnectSettingsForm extends ConfigFormBase {
+       ];
+     }
+ 
++    $form['reset_role_mappings'] = [
++      '#title' => $this->t('Reset role mappings'),
++      '#type' => 'checkbox',
++      '#default_value' => $settings->get('reset_role_mappings') ?? FALSE,
++      '#description' => $this->t('Enable this if you would like roles to be reset on every login. When this is enabled, upon login, if the groups returned by the provider are empty and any role mappings are defined, then all Drupal roles will be cleared. This was the default behavior up until to 3.x-beta6.'),
++    ];
++
+     $form['advanced'] = [
+       '#title' => $this->t('Advanced'),
+       '#type' => 'details',
+@@ -248,7 +255,6 @@ class OpenIDConnectSettingsForm extends ConfigFormBase {
+    */
+   public function submitForm(array &$form, FormStateInterface $form_state) {
+     parent::submitForm($form, $form_state);
+-
+     $role_mappings = [];
+     foreach ($form_state->getValue('role_mappings') as $role => $mapping) {
+       $values = array_values(array_filter(str_getcsv($mapping, ' ', '"', "\\")));
+@@ -268,6 +274,7 @@ class OpenIDConnectSettingsForm extends ConfigFormBase {
+       ->set('redirect_logout', $form_state->getValue('redirect_logout'))
+       ->set('userinfo_mappings', array_filter($form_state->getValue('userinfo_mappings')))
+       ->set('role_mappings', $role_mappings)
++      ->set('reset_role_mappings', $form_state->getValue('reset_role_mappings'))
+       ->save();
+   }
+ 
+diff --git a/src/OpenIDConnect.php b/src/OpenIDConnect.php
+index f80c4a9..81b8acf 100644
+--- a/src/OpenIDConnect.php
++++ b/src/OpenIDConnect.php
+@@ -711,17 +711,17 @@ class OpenIDConnect {
+     }
+ 
+     // Map groups to Drupal roles.
+-    $role_mappings = $this->configFactory->get('openid_connect.settings')->get('role_mappings') ?? [];
++    $settings = $this->configFactory->get('openid_connect.settings');
++    $role_mappings = $settings->get('role_mappings') ?? [];
+     $user_groups = $userinfo['groups'] ?? [];
+-    foreach ($role_mappings as $role => $mappings) {
+-      if (empty(array_intersect($mappings, $user_groups))) {
+-        // User doesn't have a mapped role. Remove it from their account.
+-        $account->removeRole($role);
+-      }
+-      else {
+-        // User has a mapped role. Add it to their account.
+-        $account->addRole($role);
+-      }
++    // Get the reset role mapping configuration. Default to false.
++    $resetRoleMapping = $settings->get('reset_role_mappings') ?? FALSE;
++    if ($resetRoleMapping) {
++      $this->setAccountRoles($account, $role_mappings, $user_groups);
++    }
++    // Ensure that both role mappings and user groups are set before proceeding.
++    elseif (!empty($role_mappings) && !empty($user_groups)) {
++      $this->setAccountRoles($account, $role_mappings, $user_groups);
+     }
+ 
+     // Save the display name additionally in the user account 'data', for
+@@ -744,6 +744,33 @@ class OpenIDConnect {
+     }
+   }
+ 
++  /**
++   * Set and revoke roles for a user account.
++   *
++   * @param \Drupal\user\UserInterface $account
++   *   The account to act upon.
++   * @param array $roleMappings
++   *   The role mappings defined in openid_connect.settings.
++   * @param array $userGroups
++   *   The groups array returned from the service provider.
++   */
++  private function setAccountRoles(
++    UserInterface $account,
++    array $roleMappings,
++    array $userGroups,
++  ): void {
++    foreach ($roleMappings as $role => $mappings) {
++      if (empty(array_intersect($mappings, $userGroups))) {
++        // User doesn't have a mapped role. Remove it from their account.
++        $account->removeRole($role);
++      }
++      else {
++        // User has a mapped role. Add it to their account.
++        $account->addRole($role);
++      }
++    }
++  }
++
+   /**
+    * Parse JWT token.
+    *
+diff --git a/tests/src/Unit/OpenIDConnectTest.php b/tests/src/Unit/OpenIDConnectTest.php
+index bc6bc7b..5974b23 100644
+--- a/tests/src/Unit/OpenIDConnectTest.php
++++ b/tests/src/Unit/OpenIDConnectTest.php
+@@ -1291,10 +1291,18 @@ class OpenIDConnectTest extends UnitTestCase {
+    *   The roles expected to be added.
+    * @param array $remove
+    *   The roles expected to be removed.
++   * @param bool|null $resetRoleMapping
++   *   The value for the reset_role_mappings config setting.
+    *
+    * @dataProvider dataProviderForTestRoleMappings
+    */
+-  public function testRoleMappings(array $userinfo, array $mappings, array $add, array $remove): void {
++  public function testRoleMappings(
++    array $userinfo,
++    array $mappings,
++    array $add,
++    array $remove,
++    ?bool $resetRoleMapping,
++  ): void {
+     $account = $this->createMock(UserInterface::class);
+     $this->entityFieldManager->expects($this->once())
+       ->method('getFieldDefinitions')
+@@ -1304,8 +1312,10 @@ class OpenIDConnectTest extends UnitTestCase {
+     $config = $this->createMock(ImmutableConfig::class);
+     $config->expects($this->any())
+       ->method('get')
+-      ->with('role_mappings')
+-      ->willReturn($mappings);
++      ->will($this->returnValueMap([
++        ['role_mappings', $mappings],
++        ['reset_role_mappings', $resetRoleMapping],
++      ]));
+ 
+     $this->configFactory->expects($this->any())
+       ->method('get')
+@@ -1356,7 +1366,7 @@ class OpenIDConnectTest extends UnitTestCase {
+    */
+   public static function dataProviderForTestRoleMappings(): array {
+     return [
+-      'add groupX, remove groupY' => [
++      'add groupX, remove groupY when role reset enabled' => [
+         'userinfo' => [
+           'groups' => ['groupX'],
+         ],
+@@ -1366,8 +1376,9 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => ['role1'],
+         'remove' => ['role2'],
++        'resetRoleMapping' => TRUE,
+       ],
+-      'add groupX, groupY' => [
++      'add groupX, groupY when role reset enabled' => [
+         'userinfo' => [
+           'groups' => ['groupX', 'groupY'],
+         ],
+@@ -1377,8 +1388,9 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => ['role1', 'role2'],
+         'remove' => [],
++        'resetRoleMapping' => TRUE,
+       ],
+-      'remove groupX, groupY' => [
++      'remove groupX, groupY when role reset enabled' => [
+         'userinfo' => [
+           'groups' => [],
+         ],
+@@ -1388,8 +1400,9 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => [],
+         'remove' => ['role1', 'role2'],
++        'resetRoleMapping' => TRUE,
+       ],
+-      'remove all groups when no groups in userinfo' => [
++      'remove all groups when no groups in userinfo and role reset enabled' => [
+         'userinfo' => [],
+         'mappings' => [
+           'role1' => ['groupX'],
+@@ -1397,6 +1410,99 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => [],
+         'remove' => ['role1', 'role2'],
++        'resetRoleMapping' => TRUE,
++      ],
++      'add groupX, remove groupY when role reset disabled' => [
++        'userinfo' => [
++          'groups' => ['groupX'],
++        ],
++        'mappings' => [
++          'role1' => ['groupX'],
++          'role2' => ['groupY'],
++        ],
++        'add' => ['role1'],
++        'remove' => ['role2'],
++        'resetRoleMapping' => FALSE,
++      ],
++      'add groupX, groupY when role reset disabled' => [
++        'userinfo' => [
++          'groups' => ['groupX', 'groupY'],
++        ],
++        'mappings' => [
++          'role1' => ['groupX'],
++          'role2' => ['groupY'],
++        ],
++        'add' => ['role1', 'role2'],
++        'remove' => [],
++        'resetRoleMapping' => FALSE,
++      ],
++      'Do not remove groupX, groupY when role reset disabled' => [
++        'userinfo' => [
++          'groups' => [],
++        ],
++        'mappings' => [
++          'role1' => ['groupX'],
++          'role2' => ['groupY'],
++        ],
++        'add' => [],
++        'remove' => [],
++        'resetRoleMapping' => FALSE,
++      ],
++      'No groups removed when no groups in userinfo and role reset disabled' => [
++        'userinfo' => [],
++        'mappings' => [
++          'role1' => ['groupX'],
++          'role2' => ['groupY'],
++        ],
++        'add' => [],
++        'remove' => [],
++        'resetRoleMapping' => FALSE,
++      ],
++      'add groupX, remove groupY when role reset not set' => [
++        'userinfo' => [
++          'groups' => ['groupX'],
++        ],
++        'mappings' => [
++          'role1' => ['groupX'],
++          'role2' => ['groupY'],
++        ],
++        'add' => ['role1'],
++        'remove' => ['role2'],
++        'resetRoleMapping' => NULL,
++      ],
++      'add groupX, groupY when role reset not set ' => [
++        'userinfo' => [
++          'groups' => ['groupX', 'groupY'],
++        ],
++        'mappings' => [
++          'role1' => ['groupX'],
++          'role2' => ['groupY'],
++        ],
++        'add' => ['role1', 'role2'],
++        'remove' => [],
++        'resetRoleMapping' => NULL,
++      ],
++      'Do not remove groupX, groupY when role not set' => [
++        'userinfo' => [
++          'groups' => [],
++        ],
++        'mappings' => [
++          'role1' => ['groupX'],
++          'role2' => ['groupY'],
++        ],
++        'add' => [],
++        'remove' => [],
++        'resetRoleMapping' => NULL,
++      ],
++      'No groups removed when no groups in userinfo and role reset not set' => [
++        'userinfo' => [],
++        'mappings' => [
++          'role1' => ['groupX'],
++          'role2' => ['groupY'],
++        ],
++        'add' => [],
++        'remove' => [],
++        'resetRoleMapping' => NULL,
+       ],
+     ];
+   }
+-- 
+GitLab
+
+
+From 890b449cbcab599260859e729829b92981f0abc9 Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Fri, 18 Apr 2025 08:10:00 -0400
+Subject: [PATCH 02/12] Fixed phpstan warnings
+
+---
+ tests/src/Unit/OpenIDConnectTest.php | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/src/Unit/OpenIDConnectTest.php b/tests/src/Unit/OpenIDConnectTest.php
+index 5974b23..0d540f7 100644
+--- a/tests/src/Unit/OpenIDConnectTest.php
++++ b/tests/src/Unit/OpenIDConnectTest.php
+@@ -1312,10 +1312,10 @@ class OpenIDConnectTest extends UnitTestCase {
+     $config = $this->createMock(ImmutableConfig::class);
+     $config->expects($this->any())
+       ->method('get')
+-      ->will($this->returnValueMap([
++      ->willReturnMap([
+         ['role_mappings', $mappings],
+         ['reset_role_mappings', $resetRoleMapping],
+-      ]));
++      ]);
+ 
+     $this->configFactory->expects($this->any())
+       ->method('get')
+-- 
+GitLab
+
+
+From 869af5e96aefe7b14018f715275a3accf102099e Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Tue, 22 Apr 2025 08:44:53 -0400
+Subject: [PATCH 03/12] Renamed variable and addressed MR feedback
+
+---
+ config/install/openid_connect.settings.yml |  2 +-
+ config/schema/openid_connect.schema.yml    |  2 +-
+ src/Form/OpenIDConnectSettingsForm.php     |  8 ++++----
+ src/OpenIDConnect.php                      | 13 +++++++------
+ tests/src/Unit/OpenIDConnectTest.php       |  8 ++++----
+ 5 files changed, 17 insertions(+), 16 deletions(-)
+
+diff --git a/config/install/openid_connect.settings.yml b/config/install/openid_connect.settings.yml
+index d6d7a2a..ba9b425 100644
+--- a/config/install/openid_connect.settings.yml
++++ b/config/install/openid_connect.settings.yml
+@@ -8,5 +8,5 @@ redirect_logout: ''
+ userinfo_mappings:
+   timezone: zoneinfo
+ role_mappings: {}
+-reset_role_mappings: false
++force_reset_role_mappings: false
+ autostart_login: false
+diff --git a/config/schema/openid_connect.schema.yml b/config/schema/openid_connect.schema.yml
+index 319e21d..ff105b0 100644
+--- a/config/schema/openid_connect.schema.yml
++++ b/config/schema/openid_connect.schema.yml
+@@ -35,7 +35,7 @@ openid_connect.settings:
+         type: sequence
+         sequence:
+           type: string
+-    reset_role_mappings:
++    force_reset_role_mappings:
+       type: boolean
+       label: 'Reset role mappings if no groups are passed.'
+     autostart_login:
+diff --git a/src/Form/OpenIDConnectSettingsForm.php b/src/Form/OpenIDConnectSettingsForm.php
+index 5fc7aae..e5ef220 100644
+--- a/src/Form/OpenIDConnectSettingsForm.php
++++ b/src/Form/OpenIDConnectSettingsForm.php
+@@ -228,10 +228,10 @@ class OpenIDConnectSettingsForm extends ConfigFormBase {
+       ];
+     }
+ 
+-    $form['reset_role_mappings'] = [
+-      '#title' => $this->t('Reset role mappings'),
++    $form['force_reset_role_mappings'] = [
++      '#title' => $this->t('Force reset role mappings'),
+       '#type' => 'checkbox',
+-      '#default_value' => $settings->get('reset_role_mappings') ?? FALSE,
++      '#default_value' => $settings->get('force_reset_role_mappings') ?? FALSE,
+       '#description' => $this->t('Enable this if you would like roles to be reset on every login. When this is enabled, upon login, if the groups returned by the provider are empty and any role mappings are defined, then all Drupal roles will be cleared. This was the default behavior up until to 3.x-beta6.'),
+     ];
+ 
+@@ -274,7 +274,7 @@ class OpenIDConnectSettingsForm extends ConfigFormBase {
+       ->set('redirect_logout', $form_state->getValue('redirect_logout'))
+       ->set('userinfo_mappings', array_filter($form_state->getValue('userinfo_mappings')))
+       ->set('role_mappings', $role_mappings)
+-      ->set('reset_role_mappings', $form_state->getValue('reset_role_mappings'))
++      ->set('force_reset_role_mappings', $form_state->getValue('force_reset_role_mappings'))
+       ->save();
+   }
+ 
+diff --git a/src/OpenIDConnect.php b/src/OpenIDConnect.php
+index 81b8acf..5c0a5e7 100644
+--- a/src/OpenIDConnect.php
++++ b/src/OpenIDConnect.php
+@@ -714,13 +714,14 @@ class OpenIDConnect {
+     $settings = $this->configFactory->get('openid_connect.settings');
+     $role_mappings = $settings->get('role_mappings') ?? [];
+     $user_groups = $userinfo['groups'] ?? [];
++
++    // Ensure that both role mappings and user groups are available
++    // before altering user roles.
++    // @see https://www.drupal.org/project/openid_connect/issues/3497559
++    $mapping_data_available = !empty($role_mappings) && !empty($user_groups);
+     // Get the reset role mapping configuration. Default to false.
+-    $resetRoleMapping = $settings->get('reset_role_mappings') ?? FALSE;
+-    if ($resetRoleMapping) {
+-      $this->setAccountRoles($account, $role_mappings, $user_groups);
+-    }
+-    // Ensure that both role mappings and user groups are set before proceeding.
+-    elseif (!empty($role_mappings) && !empty($user_groups)) {
++    $force_reset_role_mapping = $settings->get('force_reset_role_mappings') ?? FALSE;
++    if ($force_reset_role_mapping || $mapping_data_available) {
+       $this->setAccountRoles($account, $role_mappings, $user_groups);
+     }
+ 
+diff --git a/tests/src/Unit/OpenIDConnectTest.php b/tests/src/Unit/OpenIDConnectTest.php
+index 0d540f7..bb6c850 100644
+--- a/tests/src/Unit/OpenIDConnectTest.php
++++ b/tests/src/Unit/OpenIDConnectTest.php
+@@ -1291,8 +1291,8 @@ class OpenIDConnectTest extends UnitTestCase {
+    *   The roles expected to be added.
+    * @param array $remove
+    *   The roles expected to be removed.
+-   * @param bool|null $resetRoleMapping
+-   *   The value for the reset_role_mappings config setting.
++   * @param bool|null $forceResetRoleMapping
++   *   The value for the force_reset_role_mappings config setting.
+    *
+    * @dataProvider dataProviderForTestRoleMappings
+    */
+@@ -1301,7 +1301,7 @@ class OpenIDConnectTest extends UnitTestCase {
+     array $mappings,
+     array $add,
+     array $remove,
+-    ?bool $resetRoleMapping,
++    ?bool $forceResetRoleMapping,
+   ): void {
+     $account = $this->createMock(UserInterface::class);
+     $this->entityFieldManager->expects($this->once())
+@@ -1314,7 +1314,7 @@ class OpenIDConnectTest extends UnitTestCase {
+       ->method('get')
+       ->willReturnMap([
+         ['role_mappings', $mappings],
+-        ['reset_role_mappings', $resetRoleMapping],
++        ['force_reset_role_mappings', $forceResetRoleMapping],
+       ]);
+ 
+     $this->configFactory->expects($this->any())
+-- 
+GitLab
+
+
+From 3aa136c1535ec1957c79ac2c844db269e0290804 Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Wed, 6 Aug 2025 15:11:07 -0400
+Subject: [PATCH 04/12] Forced default mode to be true
+
+---
+ config/install/openid_connect.settings.yml |  2 +-
+ src/Form/OpenIDConnectSettingsForm.php     |  4 ++--
+ tests/src/Unit/OpenIDConnectTest.php       | 24 +++++++++++-----------
+ 3 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/config/install/openid_connect.settings.yml b/config/install/openid_connect.settings.yml
+index ba9b425..316be4f 100644
+--- a/config/install/openid_connect.settings.yml
++++ b/config/install/openid_connect.settings.yml
+@@ -8,5 +8,5 @@ redirect_logout: ''
+ userinfo_mappings:
+   timezone: zoneinfo
+ role_mappings: {}
+-force_reset_role_mappings: false
++force_reset_role_mappings: true
+ autostart_login: false
+diff --git a/src/Form/OpenIDConnectSettingsForm.php b/src/Form/OpenIDConnectSettingsForm.php
+index e5ef220..79a1de4 100644
+--- a/src/Form/OpenIDConnectSettingsForm.php
++++ b/src/Form/OpenIDConnectSettingsForm.php
+@@ -231,8 +231,8 @@ class OpenIDConnectSettingsForm extends ConfigFormBase {
+     $form['force_reset_role_mappings'] = [
+       '#title' => $this->t('Force reset role mappings'),
+       '#type' => 'checkbox',
+-      '#default_value' => $settings->get('force_reset_role_mappings') ?? FALSE,
+-      '#description' => $this->t('Enable this if you would like roles to be reset on every login. When this is enabled, upon login, if the groups returned by the provider are empty and any role mappings are defined, then all Drupal roles will be cleared. This was the default behavior up until to 3.x-beta6.'),
++      '#default_value' => $settings->get('force_reset_role_mappings') ?? TRUE,
++      '#description' => $this->t('Enable this if you would like roles to be reset on every login. When this is enabled, upon login, if the groups returned by the provider are empty and any role mappings are defined, then all Drupal roles will be cleared. This setting has a default of enabled to maintain backward compatibility.'),
+     ];
+ 
+     $form['advanced'] = [
+diff --git a/tests/src/Unit/OpenIDConnectTest.php b/tests/src/Unit/OpenIDConnectTest.php
+index bb6c850..42fa688 100644
+--- a/tests/src/Unit/OpenIDConnectTest.php
++++ b/tests/src/Unit/OpenIDConnectTest.php
+@@ -1376,7 +1376,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => ['role1'],
+         'remove' => ['role2'],
+-        'resetRoleMapping' => TRUE,
++        'forceResetRoleMapping' => TRUE,
+       ],
+       'add groupX, groupY when role reset enabled' => [
+         'userinfo' => [
+@@ -1388,7 +1388,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => ['role1', 'role2'],
+         'remove' => [],
+-        'resetRoleMapping' => TRUE,
++        'forceResetRoleMapping' => TRUE,
+       ],
+       'remove groupX, groupY when role reset enabled' => [
+         'userinfo' => [
+@@ -1400,7 +1400,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => [],
+         'remove' => ['role1', 'role2'],
+-        'resetRoleMapping' => TRUE,
++        'forceResetRoleMapping' => TRUE,
+       ],
+       'remove all groups when no groups in userinfo and role reset enabled' => [
+         'userinfo' => [],
+@@ -1410,7 +1410,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => [],
+         'remove' => ['role1', 'role2'],
+-        'resetRoleMapping' => TRUE,
++        'forceResetRoleMapping' => TRUE,
+       ],
+       'add groupX, remove groupY when role reset disabled' => [
+         'userinfo' => [
+@@ -1422,7 +1422,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => ['role1'],
+         'remove' => ['role2'],
+-        'resetRoleMapping' => FALSE,
++        'forceResetRoleMapping' => FALSE,
+       ],
+       'add groupX, groupY when role reset disabled' => [
+         'userinfo' => [
+@@ -1434,7 +1434,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => ['role1', 'role2'],
+         'remove' => [],
+-        'resetRoleMapping' => FALSE,
++        'forceResetRoleMapping' => FALSE,
+       ],
+       'Do not remove groupX, groupY when role reset disabled' => [
+         'userinfo' => [
+@@ -1446,7 +1446,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => [],
+         'remove' => [],
+-        'resetRoleMapping' => FALSE,
++        'forceResetRoleMapping' => FALSE,
+       ],
+       'No groups removed when no groups in userinfo and role reset disabled' => [
+         'userinfo' => [],
+@@ -1456,7 +1456,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => [],
+         'remove' => [],
+-        'resetRoleMapping' => FALSE,
++        'forceResetRoleMapping' => FALSE,
+       ],
+       'add groupX, remove groupY when role reset not set' => [
+         'userinfo' => [
+@@ -1468,7 +1468,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => ['role1'],
+         'remove' => ['role2'],
+-        'resetRoleMapping' => NULL,
++        'forceResetRoleMapping' => NULL,
+       ],
+       'add groupX, groupY when role reset not set ' => [
+         'userinfo' => [
+@@ -1480,7 +1480,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => ['role1', 'role2'],
+         'remove' => [],
+-        'resetRoleMapping' => NULL,
++        'forceResetRoleMapping' => NULL,
+       ],
+       'Do not remove groupX, groupY when role not set' => [
+         'userinfo' => [
+@@ -1492,7 +1492,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => [],
+         'remove' => [],
+-        'resetRoleMapping' => NULL,
++        'forceResetRoleMapping' => NULL,
+       ],
+       'No groups removed when no groups in userinfo and role reset not set' => [
+         'userinfo' => [],
+@@ -1502,7 +1502,7 @@ class OpenIDConnectTest extends UnitTestCase {
+         ],
+         'add' => [],
+         'remove' => [],
+-        'resetRoleMapping' => NULL,
++        'forceResetRoleMapping' => NULL,
+       ],
+     ];
+   }
+-- 
+GitLab
+
+
+From c838201270ce62756b643fd077d2018d820c7bb4 Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Thu, 7 Aug 2025 12:57:17 -0400
+Subject: [PATCH 05/12] Fixed group assignment and added tests
+
+---
+ src/OpenIDConnect.php                         |  12 +-
+ .../OpenIDConnectRoleAssignmentTest.php       | 332 ++++++++++++++++
+ .../OpenIDConnectRoleRetentionTest.php        | 371 ++++++++++++++++++
+ .../src/Functional/OpenIdClientTestTrait.php  |  26 ++
+ 4 files changed, 738 insertions(+), 3 deletions(-)
+ create mode 100644 tests/src/Functional/OpenIDConnectRoleAssignmentTest.php
+ create mode 100644 tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+
+diff --git a/src/OpenIDConnect.php b/src/OpenIDConnect.php
+index 5c0a5e7..a8e8ad8 100644
+--- a/src/OpenIDConnect.php
++++ b/src/OpenIDConnect.php
+@@ -713,15 +713,21 @@ class OpenIDConnect {
+     // Map groups to Drupal roles.
+     $settings = $this->configFactory->get('openid_connect.settings');
+     $role_mappings = $settings->get('role_mappings') ?? [];
++    // Checking for the defined value was the previous method of checking for
++    // role mappings. This needs to be kept for BC.
++    $user_groups_defined = isset($userinfo['groups']);
+     $user_groups = $userinfo['groups'] ?? [];
+ 
+     // Ensure that both role mappings and user groups are available
+     // before altering user roles.
+     // @see https://www.drupal.org/project/openid_connect/issues/3497559
+     $mapping_data_available = !empty($role_mappings) && !empty($user_groups);
+-    // Get the reset role mapping configuration. Default to false.
+-    $force_reset_role_mapping = $settings->get('force_reset_role_mappings') ?? FALSE;
+-    if ($force_reset_role_mapping || $mapping_data_available) {
++    // Get the reset role mapping configuration. Default to TRUE for BC.
++    $force_reset_role_mapping = $settings->get('force_reset_role_mappings') ?? TRUE;
++    if ($force_reset_role_mapping && $user_groups_defined) {
++      $this->setAccountRoles($account, $role_mappings, $user_groups);
++    }
++    elseif ($mapping_data_available) {
+       $this->setAccountRoles($account, $role_mappings, $user_groups);
+     }
+ 
+diff --git a/tests/src/Functional/OpenIDConnectRoleAssignmentTest.php b/tests/src/Functional/OpenIDConnectRoleAssignmentTest.php
+new file mode 100644
+index 0000000..73af77e
+--- /dev/null
++++ b/tests/src/Functional/OpenIDConnectRoleAssignmentTest.php
+@@ -0,0 +1,332 @@
++<?php
++
++declare(strict_types=1);
++
++namespace Drupal\Tests\openid_connect\Functional;
++
++use Drupal\Tests\BrowserTestBase;
++
++/**
++ * Tests role assignment for new users created via OpenID Connect.
++ *
++ * @group openid_connect
++ */
++class OpenIDConnectRoleAssignmentTest extends BrowserTestBase {
++
++  use OpenIdClientTestTrait;
++
++  const ASSIGNABLE_ROLE_ID = 'content_editor';
++  const ADMIN_ROLE_ID = 'admin_role';
++  const VIEWER_ROLE_ID = 'content_viewer';
++  const EDITOR_GROUP_ID = 'editors';
++  const ADMIN_GROUP_ID = 'administrators';
++  const VIEWER_GROUP_ID = 'viewers';
++
++  /**
++   * {@inheritdoc}
++   */
++  protected $defaultTheme = 'stark';
++
++  /**
++   * {@inheritdoc}
++   */
++  protected static $modules = [
++    'openid_connect',
++  ];
++
++  /**
++   * The OpenID Connect client.
++   *
++   * @var \Drupal\openid_connect\OpenIDConnectClientEntityInterface
++   */
++  protected $client;
++
++  /**
++   * The openid_connect.openid_connect service.
++   *
++   * @var \Drupal\openid_connect\OpenIDConnect
++   */
++  protected $openIdConnect;
++
++  /**
++   * {@inheritdoc}
++   */
++  protected function setUp(): void {
++    parent::setUp();
++
++    // Create test roles.
++    $this->createRole(['access content'], self::ASSIGNABLE_ROLE_ID, 'Content Editor');
++    $this->createRole(['administer users'], self::ADMIN_ROLE_ID, 'Admin Role');
++    $this->createRole(['access content'], self::VIEWER_ROLE_ID, 'Content Viewer');
++
++    // Configure a generic OpenID Connect client.
++    $this->client = $this->createTestClient('generic', 'Generic');
++
++    $this->openIdConnect = $this->container->get('openid_connect.openid_connect');
++  }
++
++  /**
++   * Test role assignment for new users with force reset enabled.
++   *
++   * @dataProvider dataProviderForTestNewUserRoleAssignmentForceEnabled
++   */
++  public function testNewUserRoleAssignmentForceEnabled(
++    array $groups,
++    array $expectedRoles,
++    string $description,
++  ): void {
++    // Enable force reset role mappings.
++    $this->toggleForceResetRoleMappings(TRUE);
++
++    // Set up role mappings.
++    $this->setRoleMappings([
++      self::ASSIGNABLE_ROLE_ID => [self::EDITOR_GROUP_ID],
++      self::ADMIN_ROLE_ID => [self::ADMIN_GROUP_ID],
++      self::VIEWER_ROLE_ID => [self::VIEWER_GROUP_ID],
++    ]);
++
++    $this->performNewUserRoleAssignmentTest($groups, $expectedRoles, $description);
++  }
++
++  /**
++   * Data provider for testNewUserRoleAssignmentForceEnabled.
++   *
++   * @return array[]
++   *   Test parameters.
++   */
++  public static function dataProviderForTestNewUserRoleAssignmentForceEnabled(): array {
++    return [
++      'New user with single matching group gets assigned role' => [
++        [
++          self::EDITOR_GROUP_ID,
++        ],
++        [
++          self::ASSIGNABLE_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => FALSE,
++        ],
++        'User in editors group should get content_editor role',
++      ],
++      'New user with multiple matching groups gets multiple roles' => [
++        [
++          self::EDITOR_GROUP_ID,
++          self::VIEWER_GROUP_ID,
++        ],
++        [
++          self::ASSIGNABLE_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => TRUE,
++        ],
++        'User in multiple groups should get multiple roles',
++      ],
++      'New user with admin group gets admin role' => [
++        [
++          self::ADMIN_GROUP_ID,
++        ],
++        [
++          self::ASSIGNABLE_ROLE_ID => FALSE,
++          self::ADMIN_ROLE_ID => TRUE,
++          self::VIEWER_ROLE_ID => FALSE,
++        ],
++        'User in admin group should get admin role',
++      ],
++      'New user with no matching groups gets no additional roles' => [
++        ['unknown_group'],
++        [
++          self::ASSIGNABLE_ROLE_ID => FALSE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => FALSE,
++        ],
++        'User with unmapped groups should get no additional roles',
++      ],
++      'New user with empty groups array gets no additional roles' => [
++        [],
++        [
++          self::ASSIGNABLE_ROLE_ID => FALSE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => FALSE,
++        ],
++        'User with empty groups should get no additional roles',
++      ],
++    ];
++  }
++
++  /**
++   * Test role assignment for new users with force reset disabled.
++   *
++   * @dataProvider dataProviderForTestNewUserRoleAssignmentForceDisabled
++   */
++  public function testNewUserRoleAssignmentForceDisabled(
++    array $groups,
++    array $expectedRoles,
++    string $description,
++  ): void {
++    // Disable force reset role mappings.
++    $this->toggleForceResetRoleMappings(FALSE);
++
++    // Set up role mappings.
++    $this->setRoleMappings([
++      self::ASSIGNABLE_ROLE_ID => [self::EDITOR_GROUP_ID],
++      self::ADMIN_ROLE_ID => [self::ADMIN_GROUP_ID],
++      self::VIEWER_ROLE_ID => [self::VIEWER_GROUP_ID],
++    ]);
++
++    $this->performNewUserRoleAssignmentTest($groups, $expectedRoles, $description);
++  }
++
++  /**
++   * Data provider for testNewUserRoleAssignmentForceDisabled.
++   *
++   * @return array[]
++   *   Test parameters.
++   */
++  public static function dataProviderForTestNewUserRoleAssignmentForceDisabled(): array {
++    return [
++      'New user with matching group gets assigned role when groups provided' => [
++        [
++          self::EDITOR_GROUP_ID,
++        ],
++        [
++          self::ASSIGNABLE_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => FALSE,
++        ],
++        'User in editors group should get content_editor role',
++      ],
++      'New user with multiple matching groups gets multiple roles when groups provided' => [
++        [
++          self::EDITOR_GROUP_ID,
++          self::VIEWER_GROUP_ID,
++        ],
++        [
++          self::ASSIGNABLE_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => TRUE,
++        ],
++        'User in multiple groups should get multiple roles',
++      ],
++      'New user with empty groups gets no additional roles' => [
++        [],
++        [
++          self::ASSIGNABLE_ROLE_ID => FALSE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => FALSE,
++        ],
++        'User with empty groups should get no additional roles',
++      ],
++    ];
++  }
++
++  /**
++   * Test role assignment without role mappings configured.
++   *
++   * @dataProvider dataProviderForTestNewUserNoRoleMappings
++   */
++  public function testNewUserNoRoleMappings(
++    array $groups,
++    array $expectedRoles,
++    string $description,
++  ): void {
++    // Enable force reset role mappings.
++    $this->toggleForceResetRoleMappings(TRUE);
++
++    // Set no role mappings.
++    $this->setRoleMappings([]);
++
++    $this->performNewUserRoleAssignmentTest($groups, $expectedRoles, $description);
++  }
++
++  /**
++   * Data provider for testNewUserNoRoleMappings.
++   *
++   * @return array[]
++   *   Test parameters.
++   */
++  public static function dataProviderForTestNewUserNoRoleMappings(): array {
++    return [
++      'New user with groups but no role mappings gets no additional roles' => [
++        [
++          self::EDITOR_GROUP_ID,
++          self::ADMIN_GROUP_ID,
++        ],
++        [
++          self::ASSIGNABLE_ROLE_ID => FALSE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => FALSE,
++        ],
++        'User should get no additional roles when no mappings are configured',
++      ],
++      'New user with no groups and no role mappings gets no additional roles' => [
++        [],
++        [
++          self::ASSIGNABLE_ROLE_ID => FALSE,
++          self::ADMIN_ROLE_ID => FALSE,
++          self::VIEWER_ROLE_ID => FALSE,
++        ],
++        'User should get no additional roles when no groups or mappings',
++      ],
++    ];
++  }
++
++  /**
++   * Perform role assignment test for new users.
++   *
++   * @param array $groups
++   *   The groups to assign to the user.
++   * @param array $expectedRoles
++   *   Expected role assignments.
++   * @param string $description
++   *   Test description.
++   */
++  protected function performNewUserRoleAssignmentTest(
++    array $groups,
++    array $expectedRoles,
++    string $description,
++  ): void {
++    // Create a unique email for this test to ensure a new user.
++    $email = $this->randomMachineName() . '@example.com';
++    $sub = 'user_' . $this->randomMachineName();
++
++    // Create userinfo data.
++    $userinfo = [
++      'sub' => $sub,
++      'name' => 'Test User',
++      'email' => $email,
++      'groups' => $groups,
++    ];
++
++    // Create a new user using the OpenID Connect service.
++    $new_user = $this->openIdConnect->createUser($sub, $userinfo, $this->client->id());
++
++    // Create context for saveUserinfo.
++    $context = [
++      'userinfo' => $userinfo,
++      'tokens' => [
++        'id_token' => 'mock_id_token',
++        'access_token' => 'mock_access_token',
++      ],
++      'plugin_id' => 'generic',
++      'sub' => $sub,
++      'is_new' => TRUE,
++    ];
++
++    // Save user info to trigger role assignment.
++    $result = $this->openIdConnect->saveUserinfo($new_user, $context);
++    $this->assertTrue($result, 'User info was saved successfully');
++
++    // Reload the user to get fresh data.
++    $new_user = $this->container->get('entity_type.manager')
++      ->getStorage('user')
++      ->load($new_user->id());
++
++    // Verify role assignments.
++    foreach ($expectedRoles as $role => $expected) {
++      $has_role = $new_user->hasRole($role);
++      $this->assertEquals($expected, $has_role, "$description - Role: $role");
++    }
++
++    // Verify the user always has the authenticated role.
++    $this->assertTrue($new_user->hasRole('authenticated'), 'New user has authenticated role');
++  }
++
++}
+diff --git a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+new file mode 100644
+index 0000000..af7d30a
+--- /dev/null
++++ b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+@@ -0,0 +1,371 @@
++<?php
++
++namespace Drupal\Tests\openid_connect\Functional;
++
++use Drupal\Tests\BrowserTestBase;
++
++/**
++ * Tests that users retain their Drupal roles after OpenID Connect login.
++ *
++ * @group openid_connect
++ * @group philip
++ */
++class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
++
++  use OpenIdClientTestTrait;
++
++  const EXISTING_ROLE_ID = 'test_role';
++  const ADMIN_ROLE_ID = 'admin_role';
++  const EXISTING_GROUP_ID = 'test_group';
++
++  /**
++   * {@inheritdoc}
++   */
++  protected $defaultTheme = 'stark';
++
++  /**
++   * {@inheritdoc}
++   */
++  protected static $modules = [
++    'openid_connect',
++    'openid_connect_mock_server',
++  ];
++
++  /**
++   * A test user with custom roles.
++   *
++   * @var \Drupal\user\UserInterface
++   */
++  protected $testUser;
++
++  /**
++   * The HTTP client.
++   *
++   * @var \GuzzleHttp\ClientInterface
++   */
++  protected $httpClient;
++
++  /**
++   * The OpenID Connect client.
++   *
++   * @var \Drupal\openid_connect\OpenIDConnectClientEntityInterface
++   */
++  protected $client;
++
++  /**
++   * The openid_connect.openid_connect service.
++   *
++   * @var \Drupal\openid_connect\OpenIDConnect
++   */
++  protected $openIdConnect;
++
++  /**
++   * {@inheritdoc}
++   */
++  protected function setUp(): void {
++    parent::setUp();
++
++    // Create a test role.
++    $this->createRole(['access content'], self::EXISTING_ROLE_ID, 'Test Role');
++    $this->createRole(['access content'], self::ADMIN_ROLE_ID, 'Admin Role');
++
++    // Create a test user with the custom role.
++    $this->testUser = $this->drupalCreateUser(['access content', 'manage own openid connect accounts']);
++    $this->testUser->addRole(self::EXISTING_ROLE_ID);
++    $this->testUser->save();
++
++    // Configure a generic OpenID Connect client.
++    $this->client = $this->createTestClient('generic', 'Generic');
++
++    // Get the HTTP client.
++    $this->httpClient = $this->container->get('http_client');
++
++    $this->openIdConnect = $this->container->get('openid_connect.openid_connect');
++  }
++
++  /**
++   * Test the default role assignment behavior.
++   *
++   * @dataProvider dataProviderForTestForceResetRolesEnabledNoRoleMapping
++   */
++  public function testForceResetRolesEnabledNoRoleMapping(
++    array $customData,
++    array $assertions,
++  ): void {
++    // The default setting for force_reset_role_mappings is TRUE,
++    // but let's enable it for readability of this test.
++    $this->toggleForceResetRoleMappings(TRUE);
++    $this->setRoleMappings();
++    $this->roleAssignmentTests($customData, $assertions);
++  }
++
++  /**
++   * Data provider for testForceResetRolesEnabledNoRoleMapping.
++   *
++   * This is the default behavior when role assignments are not configured.
++   *
++   * @return array[]
++   *   Parameters for testForceResetRolesEnabledNoRoleMapping.
++   */
++  public static function dataProviderForTestForceResetRolesEnabledNoRoleMapping(): array {
++    return [
++      'User has a role and no `groups` array key is passed' => [
++        [],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++      'User has a role and the `groups` array key is passed and empty' => [
++        [
++          // Explicitly set empty groups array.
++          'groups' => [],
++        ],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++      'User has a role and the `groups` array key is provided' => [
++        [
++          // Explicitly set groups array.
++          'groups' => [self::EXISTING_GROUP_ID],
++        ],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++    ];
++  }
++
++  /**
++   * Test the a mapped role assignment with the `force` option enabled..
++   *
++   * @dataProvider dataProviderForTestForceResetRolesEnabledRoleMappingDefined
++   */
++  public function testForceResetRolesEnabledRoleMappingDefined(
++    array $customData,
++    array $assertions,
++  ): void {
++    // The default setting for force_reset_role_mappings is TRUE,
++    // but let's enable it for readability of this test.
++    $this->toggleForceResetRoleMappings(TRUE);
++
++    // Set a role mapping.
++    $this->setRoleMappings([
++      self::EXISTING_ROLE_ID => [self::EXISTING_GROUP_ID],
++    ]);
++
++    $this->roleAssignmentTests($customData, $assertions);
++  }
++
++  /**
++   * Data provider for testForceResetRolesEnabledRoleMappingDefined.
++   *
++   * This is the default behavior when role assignments are configured.
++   *
++   * @return array[]
++   *   Parameters for testForceResetRolesEnabledRoleMappingDefined.
++   */
++  public static function dataProviderForTestForceResetRolesEnabledRoleMappingDefined(): array {
++    return [
++      'User has a role and no `groups` array key is passed' => [
++        [],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++      'User has a role and the `groups` array key is passed and empty' => [
++        [
++          // Explicitly set empty groups array.
++          'groups' => [],
++        ],
++        [
++          self::EXISTING_ROLE_ID => FALSE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++      'User has a role and the `groups` array key is provided' => [
++        [
++          // Explicitly set groups array.
++          'groups' => [self::EXISTING_GROUP_ID],
++        ],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++    ];
++  }
++
++  /**
++   * Test no role assignment with the `force` option disabled.
++   *
++   * @dataProvider dataProviderForTestForceResetRolesDisabledNoRoleMapping
++   */
++  public function testForceResetRolesDisabledNoRoleMapping(
++    array $customData,
++    array $assertions,
++  ): void {
++    // Disable the force_reset_role_mappings setting.
++    $this->toggleForceResetRoleMappings(FALSE);
++    // Set a role mapping to none.
++    $this->setRoleMappings();
++    $this->roleAssignmentTests($customData, $assertions);
++  }
++
++  /**
++   * Data provider for testForceResetRolesEnabledRoleMappingDefined.
++   *
++   * This is the default behavior when role assignments are configured.
++   *
++   * @return array[]
++   *   Parameters for testForceResetRolesDisabledNoRoleMapping.
++   */
++  public static function dataProviderForTestForceResetRolesDisabledNoRoleMapping(): array {
++    return [
++      'User has a role and no `groups` array key is passed' => [
++        [],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++      'User has a role and the `groups` array key is passed and empty' => [
++        [
++          // Explicitly set empty groups array.
++          'groups' => [],
++        ],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++      'User has a role and the `groups` array key is provided' => [
++        [
++          // Explicitly set groups array.
++          'groups' => [self::EXISTING_GROUP_ID],
++        ],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++    ];
++  }
++
++  /**
++   * Test role assignment with the `force` option disabled.
++   *
++   * @dataProvider dataProviderForTestForceResetRolesDisabledWithRoleMapping
++   */
++  public function testForceResetRolesDisabledWithRoleMapping(
++    array $customData,
++    array $assertions,
++  ): void {
++    // Disable the force_reset_role_mappings setting.
++    $this->toggleForceResetRoleMappings(FALSE);
++    // Set a role mapping to none.
++    $this->setRoleMappings([
++      self::EXISTING_ROLE_ID => [self::EXISTING_GROUP_ID],
++    ]);
++
++    $this->roleAssignmentTests($customData, $assertions);
++  }
++
++  /**
++   * Data provider for testForceResetRolesDisabledWithRoleMapping.
++   *
++   * This is the default behavior when role assignments are configured.
++   *
++   * @return array[]
++   *   Parameters for testForceResetRolesDisabledWithRoleMapping.
++   */
++  public static function dataProviderForTestForceResetRolesDisabledWithRoleMapping(): array {
++    return [
++      'User has a role and no `groups` array key is passed' => [
++        [],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++      'User has a role and the `groups` array key is passed and empty' => [
++        [
++          // Explicitly set empty groups array.
++          'groups' => [],
++        ],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++      'User has a role and the `groups` array key is provided' => [
++        [
++          // Explicitly set groups array.
++          'groups' => [self::EXISTING_GROUP_ID],
++        ],
++        [
++          self::EXISTING_ROLE_ID => TRUE,
++          self::ADMIN_ROLE_ID => TRUE,
++        ],
++      ],
++    ];
++  }
++
++  /**
++   * Role assignment test setup.
++   *
++   * @param array $customData
++   *   Array of data to append to a mocked OpenID Connect userinfo.
++   * @param array $assertions
++   *   The role assignment expectations.
++   */
++  protected function roleAssignmentTests(
++    array $customData,
++    array $assertions,
++  ): void {
++    // Give the user an admin role.
++    $this->testUser->addRole(self::ADMIN_ROLE_ID);
++
++    // Define custom user data with no groups.
++    $custom_data = [
++      'sub' => 'user-' . $this->testUser->id(),
++      'name' => $this->testUser->getAccountName(),
++      'email' => $this->testUser->getEmail(),
++    ];
++
++    $userInfo = array_merge($custom_data, $customData);
++
++    // Verify the user has the test role before we start.
++    $this->assertTrue($this->testUser->hasRole(self::EXISTING_ROLE_ID), 'User has the test role before OpenID Connect processing.');
++    $this->assertTrue($this->testUser->hasRole(self::ADMIN_ROLE_ID), 'User has the admin role before OpenID Connect processing.');
++
++    $context = [
++      'userinfo' => $userInfo,
++      'tokens' => [
++        'id_token' => 'mock_id_token',
++        'access_token' => 'mock_access_token',
++      ],
++      'plugin_id' => 'generic',
++      'sub' => 'user-' . $this->testUser->id(),
++    ];
++
++    // Directly call the saveUserinfo method
++    // to simulate what happens during login.
++    $result = $this->openIdConnect->saveUserinfo($this->testUser, $context);
++    $this->assertTrue($result, 'User info was saved successfully.');
++
++    // Reload the user entity to get fresh data.
++    $this->testUser = $this->container->get('entity_type.manager')
++      ->getStorage('user')
++      ->load($this->testUser->id());
++
++    // Verify the user still has the test role after processing.
++    $this->assertEquals($assertions[self::EXISTING_ROLE_ID], $this->testUser->hasRole(self::EXISTING_ROLE_ID), 'Test role');
++    $this->assertEquals($assertions[self::ADMIN_ROLE_ID], $this->testUser->hasRole(self::ADMIN_ROLE_ID), 'Admin role');
++  }
++
++}
+diff --git a/tests/src/Functional/OpenIdClientTestTrait.php b/tests/src/Functional/OpenIdClientTestTrait.php
+index 18e00e2..c2a3e09 100644
+--- a/tests/src/Functional/OpenIdClientTestTrait.php
++++ b/tests/src/Functional/OpenIdClientTestTrait.php
+@@ -87,4 +87,30 @@ trait OpenIdClientTestTrait {
+     $settingsConfig->save();
+   }
+ 
++  /**
++   * Toggle the force_reset_role_mappings setting.
++   *
++   * @param bool $enabled
++   *   True for enabled, false for off.
++   */
++  public function toggleForceResetRoleMappings(bool $enabled): void {
++    // Enable the end session endpoint.
++    $settingsConfig = \Drupal::configFactory()->getEditable('openid_connect.settings');
++    $settingsConfig->set('force_reset_role_mappings', $enabled);
++    $settingsConfig->save();
++  }
++
++  /**
++   * Set the role mapping settings.
++   *
++   * @param array $roleMappings
++   *   Associative array of role mappings.
++   */
++  public function setRoleMappings(array $roleMappings = []): void {
++    // Enable the end session endpoint.
++    $settingsConfig = \Drupal::configFactory()->getEditable('openid_connect.settings');
++    $settingsConfig->set('role_mappings', $roleMappings);
++    $settingsConfig->save();
++  }
++
+ }
+-- 
+GitLab
+
+
+From 6653efec47c5257e587ef7a8d5896dc9bd1c31dd Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Thu, 7 Aug 2025 13:18:34 -0400
+Subject: [PATCH 06/12] Remove the role mapping unit test in favor of the new
+ functional tests
+
+---
+ tests/src/Unit/OpenIDConnectTest.php | 227 ---------------------------
+ 1 file changed, 227 deletions(-)
+
+diff --git a/tests/src/Unit/OpenIDConnectTest.php b/tests/src/Unit/OpenIDConnectTest.php
+index 42fa688..8148018 100644
+--- a/tests/src/Unit/OpenIDConnectTest.php
++++ b/tests/src/Unit/OpenIDConnectTest.php
+@@ -1280,231 +1280,4 @@ class OpenIDConnectTest extends UnitTestCase {
+     ];
+   }
+ 
+-  /**
+-   * Test the saveUserinfo method.
+-   *
+-   * @param array $userinfo
+-   *   The mocked userinfo array.
+-   * @param array $mappings
+-   *   The configured role mappings.
+-   * @param array $add
+-   *   The roles expected to be added.
+-   * @param array $remove
+-   *   The roles expected to be removed.
+-   * @param bool|null $forceResetRoleMapping
+-   *   The value for the force_reset_role_mappings config setting.
+-   *
+-   * @dataProvider dataProviderForTestRoleMappings
+-   */
+-  public function testRoleMappings(
+-    array $userinfo,
+-    array $mappings,
+-    array $add,
+-    array $remove,
+-    ?bool $forceResetRoleMapping,
+-  ): void {
+-    $account = $this->createMock(UserInterface::class);
+-    $this->entityFieldManager->expects($this->once())
+-      ->method('getFieldDefinitions')
+-      ->with('user', 'user')
+-      ->willReturn([]);
+-
+-    $config = $this->createMock(ImmutableConfig::class);
+-    $config->expects($this->any())
+-      ->method('get')
+-      ->willReturnMap([
+-        ['role_mappings', $mappings],
+-        ['force_reset_role_mappings', $forceResetRoleMapping],
+-      ]);
+-
+-    $this->configFactory->expects($this->any())
+-      ->method('get')
+-      ->with('openid_connect.settings')
+-      ->willReturn($config);
+-
+-    $add_matcher = $this->exactly(count($add));
+-    $account->expects($add_matcher)
+-      ->method('addRole')
+-      ->willReturnCallback(function (string $param) use ($add, $add_matcher) {
+-        $this->assertSame($param, $add[$this->getInvocationCountHelper($add_matcher) - 1]);
+-      });
+-
+-    $remove_matcher = $this->exactly(count($remove));
+-    $account->expects($remove_matcher)
+-      ->method('removeRole')
+-      ->willReturnCallback(function (string $param) use ($remove, $remove_matcher) {
+-        $this->assertSame($param, $remove[$this->getInvocationCountHelper($remove_matcher) - 1]);
+-      });
+-
+-    $this->openIdConnect->saveUserinfo($account, ['userinfo' => $userinfo]);
+-  }
+-
+-  /**
+-   * Helper to determine the number of invocations.
+-   *
+-   * @param \PHPUnit\Framework\MockObject\Rule\InvokedCount $count
+-   *   The invoked count object.
+-   *
+-   * @return int
+-   *   The number of invocations.
+-   */
+-  private function getInvocationCountHelper(InvokedCount $count): int {
+-    if (method_exists($count, 'getInvocationCount')) {
+-      // @todo Remove this once we drop support for Drupal ^10.
+-      trigger_deprecation('openid_connect', '3.x', 'The method InvocationMocker::getInvocationCount() is deprecated. Use numberOfInvocations() instead.');
+-      return $count->getInvocationCount();
+-    }
+-
+-    return $count->numberOfInvocations();
+-  }
+-
+-  /**
+-   * Data provider for the testRoleMappings method.
+-   *
+-   * @return array|array[]
+-   *   Array of parameters to pass to testRoleMappings().
+-   */
+-  public static function dataProviderForTestRoleMappings(): array {
+-    return [
+-      'add groupX, remove groupY when role reset enabled' => [
+-        'userinfo' => [
+-          'groups' => ['groupX'],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => ['role1'],
+-        'remove' => ['role2'],
+-        'forceResetRoleMapping' => TRUE,
+-      ],
+-      'add groupX, groupY when role reset enabled' => [
+-        'userinfo' => [
+-          'groups' => ['groupX', 'groupY'],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => ['role1', 'role2'],
+-        'remove' => [],
+-        'forceResetRoleMapping' => TRUE,
+-      ],
+-      'remove groupX, groupY when role reset enabled' => [
+-        'userinfo' => [
+-          'groups' => [],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => [],
+-        'remove' => ['role1', 'role2'],
+-        'forceResetRoleMapping' => TRUE,
+-      ],
+-      'remove all groups when no groups in userinfo and role reset enabled' => [
+-        'userinfo' => [],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => [],
+-        'remove' => ['role1', 'role2'],
+-        'forceResetRoleMapping' => TRUE,
+-      ],
+-      'add groupX, remove groupY when role reset disabled' => [
+-        'userinfo' => [
+-          'groups' => ['groupX'],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => ['role1'],
+-        'remove' => ['role2'],
+-        'forceResetRoleMapping' => FALSE,
+-      ],
+-      'add groupX, groupY when role reset disabled' => [
+-        'userinfo' => [
+-          'groups' => ['groupX', 'groupY'],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => ['role1', 'role2'],
+-        'remove' => [],
+-        'forceResetRoleMapping' => FALSE,
+-      ],
+-      'Do not remove groupX, groupY when role reset disabled' => [
+-        'userinfo' => [
+-          'groups' => [],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => [],
+-        'remove' => [],
+-        'forceResetRoleMapping' => FALSE,
+-      ],
+-      'No groups removed when no groups in userinfo and role reset disabled' => [
+-        'userinfo' => [],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => [],
+-        'remove' => [],
+-        'forceResetRoleMapping' => FALSE,
+-      ],
+-      'add groupX, remove groupY when role reset not set' => [
+-        'userinfo' => [
+-          'groups' => ['groupX'],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => ['role1'],
+-        'remove' => ['role2'],
+-        'forceResetRoleMapping' => NULL,
+-      ],
+-      'add groupX, groupY when role reset not set ' => [
+-        'userinfo' => [
+-          'groups' => ['groupX', 'groupY'],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => ['role1', 'role2'],
+-        'remove' => [],
+-        'forceResetRoleMapping' => NULL,
+-      ],
+-      'Do not remove groupX, groupY when role not set' => [
+-        'userinfo' => [
+-          'groups' => [],
+-        ],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => [],
+-        'remove' => [],
+-        'forceResetRoleMapping' => NULL,
+-      ],
+-      'No groups removed when no groups in userinfo and role reset not set' => [
+-        'userinfo' => [],
+-        'mappings' => [
+-          'role1' => ['groupX'],
+-          'role2' => ['groupY'],
+-        ],
+-        'add' => [],
+-        'remove' => [],
+-        'forceResetRoleMapping' => NULL,
+-      ],
+-    ];
+-  }
+-
+ }
+-- 
+GitLab
+
+
+From 8751f9e53821d80f928b3bc3e78481ac5b947d65 Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Thu, 7 Aug 2025 13:31:00 -0400
+Subject: [PATCH 07/12] Fixed broken test
+
+---
+ tests/src/Functional/OpenIDConnectRoleRetentionTest.php | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+index af7d30a..4223a82 100644
+--- a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
++++ b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+@@ -28,7 +28,6 @@ class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
+    */
+   protected static $modules = [
+     'openid_connect',
+-    'openid_connect_mock_server',
+   ];
+ 
+   /**
+-- 
+GitLab
+
+
+From 0029b13e0b562fa18511ab759b15f1f888e2de3d Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Thu, 7 Aug 2025 13:35:13 -0400
+Subject: [PATCH 08/12] Fix linting
+
+---
+ tests/src/Unit/OpenIDConnectTest.php | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tests/src/Unit/OpenIDConnectTest.php b/tests/src/Unit/OpenIDConnectTest.php
+index 8148018..1d83b9d 100644
+--- a/tests/src/Unit/OpenIDConnectTest.php
++++ b/tests/src/Unit/OpenIDConnectTest.php
+@@ -34,7 +34,6 @@ use Drupal\TestTools\Random;
+ use Drupal\user\Entity\User;
+ use Drupal\user\UserDataInterface;
+ use Drupal\user\UserInterface;
+-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
+ use Psr\Log\InvalidArgumentException;
+ 
+ /**
+-- 
+GitLab
+
+
+From 6eff31a485a500481d3e04a335860703daf6db90 Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Fri, 8 Aug 2025 14:04:28 -0400
+Subject: [PATCH 09/12] Fixed logic for mapped role removal
+
+---
+ src/OpenIDConnect.php                                   | 5 +----
+ tests/src/Functional/OpenIDConnectRoleRetentionTest.php | 2 +-
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/src/OpenIDConnect.php b/src/OpenIDConnect.php
+index a8e8ad8..1efad6f 100644
+--- a/src/OpenIDConnect.php
++++ b/src/OpenIDConnect.php
+@@ -713,9 +713,6 @@ class OpenIDConnect {
+     // Map groups to Drupal roles.
+     $settings = $this->configFactory->get('openid_connect.settings');
+     $role_mappings = $settings->get('role_mappings') ?? [];
+-    // Checking for the defined value was the previous method of checking for
+-    // role mappings. This needs to be kept for BC.
+-    $user_groups_defined = isset($userinfo['groups']);
+     $user_groups = $userinfo['groups'] ?? [];
+ 
+     // Ensure that both role mappings and user groups are available
+@@ -724,7 +721,7 @@ class OpenIDConnect {
+     $mapping_data_available = !empty($role_mappings) && !empty($user_groups);
+     // Get the reset role mapping configuration. Default to TRUE for BC.
+     $force_reset_role_mapping = $settings->get('force_reset_role_mappings') ?? TRUE;
+-    if ($force_reset_role_mapping && $user_groups_defined) {
++    if ($force_reset_role_mapping) {
+       $this->setAccountRoles($account, $role_mappings, $user_groups);
+     }
+     elseif ($mapping_data_available) {
+diff --git a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+index 4223a82..d6ad64d 100644
+--- a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
++++ b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+@@ -172,7 +172,7 @@ class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
+       'User has a role and no `groups` array key is passed' => [
+         [],
+         [
+-          self::EXISTING_ROLE_ID => TRUE,
++          self::EXISTING_ROLE_ID => FALSE,
+           self::ADMIN_ROLE_ID => TRUE,
+         ],
+       ],
+-- 
+GitLab
+
+
+From 969afab6aa2c4d0435756d4ea1615c97ff391aeb Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Wed, 11 Mar 2026 15:04:47 -0400
+Subject: [PATCH 10/12] Added additional role mapping assertion
+
+---
+ tests/src/Functional/OpenIDConnectRoleRetentionTest.php | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+index d6ad64d..638de13 100644
+--- a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
++++ b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+@@ -16,6 +16,7 @@ class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
+ 
+   const EXISTING_ROLE_ID = 'test_role';
+   const ADMIN_ROLE_ID = 'admin_role';
++  const ADMIN_ROLE_UNASSIGNED_ID = 'admin_role_unassigned';
+   const EXISTING_GROUP_ID = 'test_group';
+ 
+   /**
+@@ -67,6 +68,7 @@ class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
+     // Create a test role.
+     $this->createRole(['access content'], self::EXISTING_ROLE_ID, 'Test Role');
+     $this->createRole(['access content'], self::ADMIN_ROLE_ID, 'Admin Role');
++    $this->createRole(['access content'], self::ADMIN_ROLE_UNASSIGNED_ID, 'Unassigned Admin Role');
+ 
+     // Create a test user with the custom role.
+     $this->testUser = $this->drupalCreateUser(['access content', 'manage own openid connect accounts']);
+@@ -341,6 +343,7 @@ class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
+     // Verify the user has the test role before we start.
+     $this->assertTrue($this->testUser->hasRole(self::EXISTING_ROLE_ID), 'User has the test role before OpenID Connect processing.');
+     $this->assertTrue($this->testUser->hasRole(self::ADMIN_ROLE_ID), 'User has the admin role before OpenID Connect processing.');
++    $this->assertFalse($this->testUser->hasRole(self::ADMIN_ROLE_UNASSIGNED_ID), 'User does not have the unassigned admin role before OpenID Connect processing.');
+ 
+     $context = [
+       'userinfo' => $userInfo,
+@@ -365,6 +368,7 @@ class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
+     // Verify the user still has the test role after processing.
+     $this->assertEquals($assertions[self::EXISTING_ROLE_ID], $this->testUser->hasRole(self::EXISTING_ROLE_ID), 'Test role');
+     $this->assertEquals($assertions[self::ADMIN_ROLE_ID], $this->testUser->hasRole(self::ADMIN_ROLE_ID), 'Admin role');
++    $this->assertFalse($this->testUser->hasRole(self::ADMIN_ROLE_UNASSIGNED_ID), 'User does not have the unassigned admin role after OpenID Connect processing.');
+   }
+ 
+ }
+-- 
+GitLab
+
+
+From 213c0a7e28ca130dcae3003f72094f33275b3dbe Mon Sep 17 00:00:00 2001
+From: Phil Frilling <pfrilling@oomphinc.com>
+Date: Wed, 11 Mar 2026 15:26:55 -0400
+Subject: [PATCH 11/12] Updated comments
+
+---
+ tests/src/Functional/OpenIDConnectRoleRetentionTest.php | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+index 638de13..4f525b3 100644
+--- a/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
++++ b/tests/src/Functional/OpenIDConnectRoleRetentionTest.php
+@@ -8,7 +8,6 @@ use Drupal\Tests\BrowserTestBase;
+  * Tests that users retain their Drupal roles after OpenID Connect login.
+  *
+  * @group openid_connect
+- * @group philip
+  */
+ class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
+ 
+@@ -141,7 +140,7 @@ class OpenIDConnectRoleRetentionTest extends BrowserTestBase {
+   }
+ 
+   /**
+-   * Test the a mapped role assignment with the `force` option enabled..
++   * Test the mapped role assignment with the `force` option enabled.
+    *
+    * @dataProvider dataProviderForTestForceResetRolesEnabledRoleMappingDefined
+    */
+-- 
+GitLab
+
