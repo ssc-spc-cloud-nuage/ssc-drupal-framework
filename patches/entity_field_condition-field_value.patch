@@ -1,0 +1,30 @@
+diff -ruN a/src/Plugin/Condition/FieldValue.php b/src/Plugin/Condition/FieldValue.php
+--- html/modules/contrib/entity_field_condition/src/Plugin/Condition/FieldValue.php	2026-06-02 19:22:19.476008200 -0400
++++ ./entity_field_condition/src/Plugin/Condition/FieldValue.php	2026-06-02 19:21:36.372752700 -0400
+@@ -151,12 +151,25 @@
+     }
+     catch (\Exception $e) {
+       $contexts = $form_state->getTemporaryValue('gathered_contexts');
++
+       if (!empty($contexts['entity']) && $contexts['entity'] instanceof EntityContext) {
+         $this->setContext('entity', $contexts['entity']);
+       }
+-      elseif (!empty($contexts['layout_builder.entity'])) {
++      elseif (!empty($contexts['layout_builder.entity']) && $contexts['layout_builder.entity'] instanceof EntityContext) {
+         $this->setContext('entity', $contexts['layout_builder.entity']);
+       }
++      else {
++        foreach ($contexts as $context) {
++          if ($context instanceof EntityContext) {
++            $definition = $context->getContextDefinition();
++
++            if ($definition->getDataType() === 'entity:user') {
++              $this->setContext('entity', $context);
++              break;
++            }
++          }
++        }
++      }
+ 
+       try {
+         $entity = $this->getContextValue('entity');
