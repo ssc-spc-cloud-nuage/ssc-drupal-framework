@@ -152,7 +152,8 @@
         "drupal/webform": "^6.3@beta",
         "drupalwxt/wxt": "5.6.1",
         "enshrined/svg-sanitize": "^0.22.0",
-        "npm-asset/dompurify": "^3.0"
+        "npm-asset/dompurify": "^3.0",
+        "": ""
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3"
@@ -250,28 +251,28 @@
                 "3101231 - multilingual layout edit context": "https://www.drupal.org/files/issues/2022-02-16/layout-builder-translation-issue-3101231-34.patch",
                 "3089151 - fix drag/drop (needed for Field Groups)": "https://www.drupal.org/files/issues/2023-12-26/3089151-51.patch",
                 "3052608 - fixes DateTime issue in Paragraph breaking media upload": "https://www.drupal.org/files/issues/2023-04-11/3052608-22.patch",
-                "local   - clean preview of views sql query": "./patches/clean_views_sql_preview.patch",
+                "local   - clean preview of views sql query": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/clean_views_sql_preview.patch",
                 "2885278 - adds tabs to revision pages and removes double title": "https://www.drupal.org/files/issues/2023-08-08/drupal-n2885278-38-95x.patch",
                 "3325410 - show revision numbers": "https://www.drupal.org/files/issues/2022-12-05/add_revision_numbers-3325410-3.patch",
                 "3323621 - Fix null param 2 error when running updb going from D10.2 to D10.3": "https://www.drupal.org/files/issues/2022-11-25/3323621-2.patch",
                 "2862828 - boolean filtering fail when not set - module for this now?": "https://www.drupal.org/files/issues/2022-03-24/boolean-no-value-2862828-47.patch",
                 "3185750 - add TZ support for date/daterange fields": "https://www.drupal.org/files/issues/2024-06-28/3185850-54.patch",
                 "3261924 - remove new GD warning": "https://www.drupal.org/files/issues/2024-01-02/3261924-52.patch",
-                "local   - moderation": "./patches/moderation-translation-rc6.patch",
-                "2031149 - support other link protocols": "./patches/2031149-support-other-link-protocols.diff",
+                "local   - moderation": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/moderation-translation-rc6.patch",
+                "2031149 - support other link protocols": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/2031149-support-other-link-protocols.diff",
                 "3300404 - PHP8.1 - removes unserialize deprecated warning": "https://www.drupal.org/files/issues/2022-08-01/3300404-4.patch",
                 "2950758 - dont show fields just because twig debug enabled": "https://www.drupal.org/files/issues/2023-04-03/2950758-41_0.patch",
                 "3306820 - show field name on Manage Display": "https://www.drupal.org/files/issues/2022-08-30/3306820-machine-name-in-field-ui-table_0.patch",
-                "local - CTA block failing to translate on Test": "./patches/core-hack-custom-block-config.patch",
+                "local - CTA block failing to translate on Test": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/core-hack-custom-block-config.patch",
                 "3027240 - Undefined index: #parents FormState.php": "https://www.drupal.org/files/issues/2021-07-14/drupal-undefined_index_parents-3027240-fixed.patch",
                 "3353388 - Fix TypeError in FormElementHelper.php": "https://www.drupal.org/files/issues/2023-06-21/typeError_implode_3353388.patch",
-                "local - LB fails when custom block missing": "./patches/lb_inline-block-missing.patch",
-                "local - add TZ alter": "./patches/core-tz_alter.patch",
+                "local - LB fails when custom block missing": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb_inline-block-missing.patch",
+                "local - add TZ alter": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/core-tz_alter.patch",
                 "3332416 - fix CK5 extending out of container": "https://www.drupal.org/files/issues/2024-04-09/3332416-79.patch",
                 "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch",
                 "3025039 - remove error on non-translable field on translation": "https://www.drupal.org/files/issues/2024-05-01/3025039-94.patch",
-                "local - Show IDs in Views rearrange fields modal": "./patches/core-show_ids_views_rearrange.patch",
-                "local - core HACK to handle daterange nontranslated bug": "./patches/core-HACK-handle_nontranslated_daterange_fields.patch"
+                "local - Show IDs in Views rearrange fields modal": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/core-show_ids_views_rearrange.patch",
+                "local - core HACK to handle daterange nontranslated bug": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/core-HACK-handle_nontranslated_daterange_fields.patch"
             },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
@@ -298,7 +299,7 @@
             },
             "drupal/entity_reference_revisions": {
                 "2799479 - paragraph relationship to host": "https://www.drupal.org/files/issues/2024-08-24/entity_reference_revisions-2799479-231--no-tests.patch",
-                "local - moderation support": "./patches/err_moderation-translation-rc2.patch"
+                "local - moderation support": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/err_moderation-translation-rc2.patch"
             },
             "drupal/feeds": {
                 "3261687 - A stray renderRoot() invocation is causing bubbling of attached assets to break": "https://www.drupal.org/files/issues/2022-04-22/feeds-renderRoot-issue-3261687-5.patch"
@@ -314,18 +315,18 @@
             },
             "drupal/layout_library": {
                 "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
-                "local - fixes issues saving layouts disabling LL": "./patches/ignore_layout_selection_field_saving_layout.patch"
+                "local - fixes issues saving layouts disabling LL": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/ignore_layout_selection_field_saving_layout.patch"
             },
             "drupal/lb_tabs": {
-                "local - hide when empty": "./patches/lb_tabs-hide_empty.patch",
-                "local - modify anchors": "./patches/lb-tabs_custom.patch"
+                "local - hide when empty": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb_tabs-hide_empty.patch",
+                "local - modify anchors": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb-tabs_custom.patch"
             },
             "drupal/masquerade": {
-                "local - better unlink link in block": "./patches/masquerade-better_unlink.patch"
+                "local - better unlink link in block": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/masquerade-better_unlink.patch"
             },
             "drupal/message": {
                 "2981259 - allow setting token contexts": "https://www.drupal.org/files/issues/2018-06-24/allow_token_contexts-3.patch",
-                "local - allow inline styles (3183734 reworked for 2981259)": "./patches/message-allow_inline_styles.patch"
+                "local - allow inline styles (3183734 reworked for 2981259)": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/message-allow_inline_styles.patch"
             },
             "drupal/message_notify": {
                 "3211901 - allow sending headers": "https://www.drupal.org/files/issues/2022-05-26/allow-sending-headers-3211901-8.patch",
@@ -336,10 +337,10 @@
                 "3315049 - Search API support": "https://www.drupal.org/files/issues/2024-09-09/metatag--2024-09-09--3315049--mr-140.patch"
             },
             "drupal/openid_connect": {
-                "local - add login redirect hook": "./patches/openid_connect-login_redirect_alter.patch",
+                "local - add login redirect hook": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/openid_connect-login_redirect_alter.patch",
                 "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch",
                 "3383036 - remove lang prefix from redirec url": "https://www.drupal.org/files/issues/2024-04-04/3383036-36-3.0-alpha3.patch",
-                "local - 3497559 - Fix user role cleared after login": "./patches/openid_connect_issue_3497559_3.0.0-alpha8.patch"
+                "local - 3497559 - Fix user role cleared after login": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/openid_connect_issue_3497559_3.0.0-alpha8.patch"
             },
             "drupal/openid_connect_windows_aad": {
                 "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
@@ -352,16 +353,16 @@
             "drupal/readmore": {
                 "2185649 - reduce effect": "https://www.drupal.org/files/issues/2021-12-02/remove_slide_effect-2185649-5.patch",
                 "3183680 - use processed text": "https://git.drupalcode.org/project/readmore/-/merge_requests/3.patch",
-                "local - custom read more / read less text": "./patches/readmore_text_format_and_custom_text.patch"
+                "local - custom read more / read less text": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/readmore_text_format_and_custom_text.patch"
             },
             "drupal/sitewide_alert": {
                 "3524811 - Integrate revision diff support and ability to enable revision creation by default": "https://www.drupal.org/files/issues/2025-12-09/sitewide_alert-3524811-add-revision-support-15.diff"
             },
             "drupal/views_bulk_operations": {
-                "local - remove tmpstore items on cancel": "./patches/empty_on_cancel-local.patch"
+                "local - remove tmpstore items on cancel": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/empty_on_cancel-local.patch"
             },
             "drupal/viewscss": {
-                "local - silence errors": "./patches/viewscss-silence_errors.patch"
+                "local - silence errors": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/viewscss-silence_errors.patch"
             },
             "drupal/bootstrap_layouts": {
                 "3376161 - section admin labels": "https://www.drupal.org/files/issues/2023-07-21/add-admin-labels.patch"
@@ -380,7 +381,7 @@
                 "3352150 - Fix exception from certain Views handlers": "https://www.drupal.org/files/issues/2025-03-26/3352150-15--add_field_instance_dependencies.patch"
             },
             "drupal/mimemail": {
-                "local - allow string of multiple emails": "./patches/mimemail-allow_string_of_multiple.patch"
+                "local - allow string of multiple emails": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/mimemail-allow_string_of_multiple.patch"
             }
         },
         "patches-ignore": {
