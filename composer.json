@@ -152,8 +152,7 @@
         "drupal/webform": "^6.3@beta",
         "drupalwxt/wxt": "5.6.1",
         "enshrined/svg-sanitize": "^0.22.0",
-        "npm-asset/dompurify": "^3.0",
-        "": ""
+        "npm-asset/dompurify": "^3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3"
