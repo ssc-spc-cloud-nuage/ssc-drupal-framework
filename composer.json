@@ -115,7 +115,7 @@
         "drupal/restui": "^1.22",
         "drupal/s3fs": "^3.7",
         "drupal/search_api_autocomplete": "^1.10",
-        "drupal/search_api_exactmatch_boost": "1.x-dev@dev",
+        "drupal/search_api_exactmatch_boost": "^1.1",
         "drupal/sitewide_alert": "3.0",
         "drupal/slick_views": "^2.8",
         "drupal/smtp": "^1.4",
