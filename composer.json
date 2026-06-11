@@ -384,7 +384,8 @@
                 "local - fix above patch for FieldValue plugin": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/entity_field_condition-field_value.patch"
             },
             "drupal/search_api_exactmatch_boost": {
-                "3590949 - possible fix to WSOD for missing field": "https://www.drupal.org/files/issues/2026-05-19/3590949-3.patch"
+                "3590949 - possible fix to WSOD for missing field": "https://www.drupal.org/files/issues/2026-05-19/3590949-3.patch",
+                "3544663 - fix when added filter causes 0 results": "https://www.drupal.org/files/issues/2026-06-11/3544663-6.patch"
             }
         },
         "patches-ignore": {
