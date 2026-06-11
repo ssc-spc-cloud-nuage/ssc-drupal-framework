@@ -100,7 +100,7 @@
         "drupal/message": "1.8",
         "drupal/message_notify": "1.5",
         "drupal/message_subscribe": "^2.0",
-        "drupal/metatag": "^1.28",
+        "drupal/metatag": "^2",
         "drupal/mimemail": "^2.0",
         "drupal/module_filter": "^5.0",
         "drupal/multiple_fields_remove_button": "^2",
@@ -115,7 +115,7 @@
         "drupal/restui": "^1.22",
         "drupal/s3fs": "^3.7",
         "drupal/search_api_autocomplete": "^1.10",
-        "drupal/search_api_exactmatch_boost": "^1.1",
+        "drupal/search_api_exactmatch_boost": "1.x-dev@dev",
         "drupal/sitewide_alert": "3.0",
         "drupal/slick_views": "^2.8",
         "drupal/smtp": "^1.4",
@@ -385,7 +385,7 @@
             },
             "drupal/search_api_exactmatch_boost": {
                 "3590949 - possible fix to WSOD for missing field": "https://www.drupal.org/files/issues/2026-05-19/3590949-3.patch",
-                "3544663 - fix when added filter causes 0 results": "https://www.drupal.org/files/issues/2026-06-11/3544663-6.patch"
+                "3544663 - fix when added filter causes 0 results": "https://www.drupal.org/files/issues/2026-06-11/3544663-7.patch"
             }
         },
         "patches-ignore": {
