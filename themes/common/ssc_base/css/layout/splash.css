@@ -41,7 +41,7 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  column-gap: var(--splash-padding);
+  gap: calc(var(--splash-padding) / 2) var(--splash-padding);
   margin-top: -1rem;
   padding: var(--splash-padding);
   padding-top: 0;
@@ -112,7 +112,7 @@
   text-align: center;
 
   & h2 {
-    margin-block: 1rem;
+    margin-block: 0 1em;
     font-size: 1rem;
     font-weight: 500;
   }
