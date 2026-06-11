@@ -65,11 +65,11 @@
       <div class="login-container col-sm-11 col-md-8">
         <header class="login-header">
           <a href="{{ front_page }}">
-            <img id="header-logo" src='{{ base_path ~ directory }}/assets/login-logo-{{ language }}.svg'
+            <img id="header-logo" src='{{ base_path ~ directory }}/assets/logo-light-{{ language }}.svg'
                  alt="{{ 'Home'|t }}"/>
           </a>
         </header>
-        
+
         <main class="login-content">
           {# Help #}
           {% if page.help %}
@@ -90,12 +90,14 @@
 
         <footer class="login-footer">
           <img
-            src='{{ base_path ~ directory }}/assets/login-ssc-fip-{{ language }}.png'
-            alt='{{ 'Symbol of Shared Services Canada'|t }}' class="brand__ssc-logo"
+            src='/themes/common/ssc_base/assets/ssc-fip-black-{{ language }}.svg'
+            alt='{{ 'Symbol of Shared Services Canada'|tc }}'
+            class="brand__ssc-logo"
           />
           <img
-            src='{{ base_path ~ directory }}/assets/login-canada-logo.png'
-            alt='{{ 'Symbol of the Government of Canada'|t }}' class="brand__gc-logo"
+            src='/themes/common/ssc_base/assets/canada-fip-black.svg'
+            alt='{{ 'Symbol of the Government of Canada'|tc }}'
+            class="brand__gc-logo"
           />
         </footer>
       </div>
