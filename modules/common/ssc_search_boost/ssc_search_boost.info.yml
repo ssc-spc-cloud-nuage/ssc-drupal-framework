@@ -1,0 +1,5 @@
+name: 'SSC Search Boost'
+type: module
+description: 'Boost search results on exact title match'
+package: SSC
+core_version_requirement: ^10 || ^11

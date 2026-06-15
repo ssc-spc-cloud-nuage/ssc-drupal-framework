@@ -1,0 +1,183 @@
+<?php
+
+use Drupal\Core\Database\Query\AlterableInterface;
+use Drupal\Core\Database\Query\SelectInterface;
+
+/**
+ * Implements hook_query_alter().
+ */
+function ssc_search_boost_query_alter(AlterableInterface $query): void {
+  // Ensure this is only running on Search API queries.
+  if (!$query instanceof \Drupal\Core\Database\Query\SelectInterface) {
+    return;
+  }
+
+  // Search API DB text queries may be nested as subqueries, so check
+  // recursively before casting the query to SQL. Casting unrelated Views
+  // queries can break admin listings.
+  if (!_ssc_search_boost_has_search_api_text_table($query)) {
+    return;
+  }
+
+  // For Search API queries.
+  $sql = (string) $query;
+
+  // Only target Search API DB text scoring queries.
+  if (
+    strpos($sql, '_text') === FALSE ||
+    strpos($sql, 'SUM([t].[score]) AS "score"') === FALSE
+  ) {
+    return;
+  }
+
+  $index = ssc_search_boost_get_index_from_query_sql($sql);
+  if (!$index) {
+    return;
+  }
+
+  // Only run when this processor is enabled for the detected index.
+  if (!$index->isValidProcessor('ssc_exact_match_boost')) {
+    return;
+  }
+
+  $processor = $index->getProcessor('ssc_exact_match_boost');
+  $config = $processor->getConfiguration();
+
+  if (empty($config['query_params']) || empty($config['fields'])) {
+    return;
+  }
+
+  $keys = ssc_search_boost_get_search_keys($config);
+  if ($keys === '') {
+    return;
+  }
+
+  ssc_search_boost_apply_exact_match_boost($query, $index->id(), $keys, $config);
+}
+
+function _ssc_search_boost_has_search_api_text_table(SelectInterface $query): bool {
+  foreach ($query->getTables() as $table_info) {
+    $table = $table_info['table'] ?? NULL;
+
+    if (is_string($table)) {
+      if (
+        str_contains($table, 'search_api_db_') &&
+        str_contains($table, '_text')
+      ) {
+        return TRUE;
+      }
+    }
+
+    if ($table instanceof SelectInterface) {
+      if (_ssc_search_boost_has_search_api_text_table($table)) {
+        return TRUE;
+      }
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Detects the Search API index from the SQL query.
+ */
+function ssc_search_boost_get_index_from_query_sql(string $sql) {
+  $indexes = \Drupal::entityTypeManager()
+    ->getStorage('search_api_index')
+    ->loadMultiple();
+
+  foreach ($indexes as $index_id => $index) {
+    $text_table = 'search_api_db_' . $index_id . '_text';
+
+    if (strpos($sql, $text_table) !== FALSE) {
+      return $index;
+    }
+  }
+
+  return NULL;
+}
+
+/**
+ * Gets search text from configured request query parameters.
+ */
+function ssc_search_boost_get_search_keys(array $config): string {
+  $params = preg_split('/[\s,]+/', trim((string) ($config['query_params'] ?? '')));
+
+  if (empty($params)) {
+    return '';
+  }
+
+  $request = \Drupal::request();
+
+  foreach ($params as $param) {
+    $param = trim($param);
+
+    if ($param === '') {
+      continue;
+    }
+
+    $value = $request->query->get($param);
+
+    if (is_string($value) && trim($value) !== '') {
+      return preg_replace('/\s+/', ' ', trim($value));
+    }
+  }
+
+  return '';
+}
+
+/**
+ * Applies exact-match boost to the Search API DB scoring expression.
+ */
+function ssc_search_boost_apply_exact_match_boost(AlterableInterface $query, string $index_id, string $keys, array $config): void {
+  $database = \Drupal::database();
+  $fields = array_filter($config['fields'] ?? []);
+
+  if (empty($fields)) {
+    return;
+  }
+
+  $boost_sql = 'SUM(t.score)';
+  $has_boost = FALSE;
+
+  foreach ($fields as $field) {
+    if (!is_string($field) || $field === '') {
+      continue;
+    }
+
+    // Field IDs should already be safe from Search API config, but keep the
+    // alias/placeholder clean.
+    $safe_field = preg_replace('/[^a-zA-Z0-9_]+/', '_', $field);
+
+    $table = 'search_api_db_' . $index_id . '_' . $field;
+
+    if (!$database->schema()->tableExists($table)) {
+      continue;
+    }
+
+    $alias = 'ssc_exact_' . $safe_field;
+    $placeholder = ':ssc_exact_' . $safe_field;
+
+    $query->leftJoin(
+      $table,
+      $alias,
+      "{$alias}.item_id = t.item_id AND LOWER({$alias}.value) = LOWER({$placeholder})",
+      [$placeholder => $keys]
+    );
+
+    $boost_sql .= " + MAX(CASE WHEN {$alias}.item_id IS NOT NULL THEN 100000 ELSE 0 END)";
+    $has_boost = TRUE;
+  }
+
+  if (!$has_boost) {
+    return;
+  }
+
+  // Replace Search API DB's original score expression:
+  // SUM([t].[score]) AS "score"
+  $expressions =& $query->getExpressions();
+
+  if (isset($expressions['score'])) {
+    $expressions['score']['expression'] = $boost_sql;
+  }
+}
