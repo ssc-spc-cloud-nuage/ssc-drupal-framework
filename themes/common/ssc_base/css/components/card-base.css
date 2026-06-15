@@ -62,7 +62,7 @@
 .card__image {
   position: relative;
   z-index: -1;
-  background-image: url("/themes/common/ssc_base/assets/pattern-bright-bg.png");
+  background-image: url("/themes/common/ssc_base/assets/bg-pattern-light.png");
   background-size: cover;
   background-position: center;
   overflow: hidden;

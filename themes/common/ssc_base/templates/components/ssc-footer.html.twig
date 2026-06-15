@@ -1,3 +1,8 @@
+{#
+/**
+ * @file
+ * The global footer template file.
+#}
 {{ attach_library('ssc_base/footer') }}
 
 <footer id="wb-info" class="site-footer">
@@ -37,10 +42,16 @@
         <a href="#wb-cont">{{ 'Top of Page'|tc }}<span class="glyphicon glyphicon-chevron-up"></span></a>
       </div>
       <div class="brand__logos">
-        <img src='{{ base_path ~ directory }}/assets/ssc-fip-{{ language }}.svg'
-              alt='{{ 'Symbol of Shared Services Canada'|tc }}' class="brand__ssc-logo"/>
-        <img src='{{ logo_bottom_svg }}' alt='{{ 'Symbol of the Government of Canada'|tc }}'
-              class="brand__gc-logo"/>
+        <img
+          src='/themes/common/ssc_base/assets/ssc-fip-coloured-{{ language }}.svg'
+          alt='{{ 'Symbol of Shared Services Canada'|tc }}'
+          class="brand__ssc-logo"
+        />
+        <img
+          src='/themes/common/ssc_base/assets/canada-fip-coloured.svg'
+          alt='{{ 'Symbol of the Government of Canada'|tc }}'
+          class="brand__gc-logo"
+        />
       </div>
     </div>
   </div>
