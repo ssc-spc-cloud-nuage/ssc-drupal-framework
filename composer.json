@@ -276,6 +276,9 @@
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
             },
+            "drupal/bootstrap_layouts": {
+                "3376161 - section admin labels": "https://www.drupal.org/files/issues/2023-07-21/add-admin-labels.patch"
+            },
             "drupal/config_ignore": {
                 "3466656 - don't fail on missing config": "https://www.drupal.org/files/issues/2024-08-19/dont_fail_if_missing-3466656-4.patch"
             },
@@ -289,12 +292,20 @@
             "drupal/diff": {
                 "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
             },
-            "drupal/eva": {
-                "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
+            "drupal/entity_field_condition": {
+                "3364284 - Deprecated function: preg_match(): passing null.": "https://git.drupalcode.org/project/entity_field_condition/-/commit/c0cc0ed93723c7c85559ac327134c794d8c89ab7.patch",
+                "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2023-11-11/3091898-43.patch",
+                "local - fix above patch for FieldValue plugin": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/entity_field_condition-field_value.patch"
             },
             "drupal/entity_reference_revisions": {
                 "2799479 - paragraph relationship to host": "https://www.drupal.org/files/issues/2024-08-24/entity_reference_revisions-2799479-231--no-tests.patch",
                 "local - moderation support": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/err_moderation-translation-rc2.patch"
+            },
+            "drupal/entityform_block": {
+                "2424739 - Select form mode": "https://www.drupal.org/files/issues/2022-06-01/fixed_EntityContextDefinition.patch"
+            },
+            "drupal/eva": {
+                "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
             },
             "drupal/feeds": {
                 "3261687 - A stray renderRoot() invocation is causing bubbling of attached assets to break": "https://www.drupal.org/files/issues/2022-04-22/feeds-renderRoot-issue-3261687-5.patch"
@@ -303,7 +314,7 @@
                 "2723703 - views relationships": "https://www.drupal.org/files/issues/2021-02-22/2723703-73.patch"
             },
             "drupal/group": {
-              "3336280 - Fixes /admin/content page in certain scenarios.": "https://git.drupalcode.org/project/group/-/merge_requests/121.patch"
+                "3336280 - Fixes /admin/content page in certain scenarios.": "https://git.drupalcode.org/project/group/-/merge_requests/121.patch"
             },
             "drupal/layout_builder_st": {
                 "3119208 - allow use with page manager": "https://www.drupal.org/files/issues/2020-12-09/layout_builder_st-more-defensive-handling-3119208-4.patch"
@@ -315,6 +326,9 @@
             "drupal/lb_tabs": {
                 "local - hide when empty": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb_tabs-hide_empty.patch",
                 "local - modify anchors": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb-tabs_custom.patch"
+            },
+            "drupal/linkchecker": {
+                "3366753 - Filter out para rev results from report": "https://www.drupal.org/files/issues/2025-03-07/3366753-minimal.patch"
             },
             "drupal/masquerade": {
                 "local - better unlink link in block": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/masquerade-better_unlink.patch"
@@ -331,6 +345,9 @@
                 "3027873 - Add views field formatter": "https://www.drupal.org/files/issues/2023-07-23/metatag-field_formatter_for_views-3027873-27.patch",
                 "3315049 - Search API support": "https://www.drupal.org/files/issues/2024-09-09/metatag--2024-09-09--3315049--mr-140.patch"
             },
+            "drupal/mimemail": {
+                "local - allow string of multiple emails": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/mimemail-allow_string_of_multiple.patch"
+            },
             "drupal/openid_connect": {
                 "local - add login redirect hook": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/openid_connect-login_redirect_alter.patch",
                 "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch",
@@ -341,6 +358,10 @@
                 "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
                 "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2023-06-16/openid_connect_windows_aad-User_photo_submodule-3273039-7.patch"
             },
+            "drupal/page_manager": {
+                "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch",
+                "3438993 - mandatory parameters missing for route entity.page.devel_load": "https://www.drupal.org/files/issues/2024-08-14/page-manager-3438993-MR34-24.patch"
+            },
             "drupal/paragraphs": {
                 "3068944 - paragraphs to follow translation setting for showing fields": "https://www.drupal.org/files/issues/2021-05-05/paragraphWidget-multilanguage-enable-buton.patch",
                 "2887353 - module to sync paragraph translations": "https://www.drupal.org/files/issues/2022-07-26/paragraphs-translation-sync-2887353-54.patch"
@@ -350,6 +371,13 @@
                 "3183680 - use processed text": "https://git.drupalcode.org/project/readmore/-/merge_requests/3.patch",
                 "local - custom read more / read less text": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/readmore_text_format_and_custom_text.patch"
             },
+            "drupal/search_api": {
+                "3352150 - Fix exception from certain Views handlers": "https://www.drupal.org/files/issues/2025-03-26/3352150-15--add_field_instance_dependencies.patch"
+            },
+            "drupal/search_api_exactmatch_boost": {
+                "3590949 - possible fix to WSOD for missing field": "https://www.drupal.org/files/issues/2026-05-19/3590949-3.patch",
+                "3544663 - fix when added filter causes 0 results": "https://www.drupal.org/files/issues/2026-06-11/3544663-7.patch"
+            },
             "drupal/sitewide_alert": {
                 "3524811 - Integrate revision diff support and ability to enable revision creation by default": "https://www.drupal.org/files/issues/2025-12-09/sitewide_alert-3524811-add-revision-support-15.diff"
             },
@@ -358,34 +386,6 @@
             },
             "drupal/viewscss": {
                 "local - silence errors": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/viewscss-silence_errors.patch"
-            },
-            "drupal/bootstrap_layouts": {
-                "3376161 - section admin labels": "https://www.drupal.org/files/issues/2023-07-21/add-admin-labels.patch"
-            },
-            "drupal/entityform_block": {
-                "2424739 - Select form mode": "https://www.drupal.org/files/issues/2022-06-01/fixed_EntityContextDefinition.patch"
-            },
-            "drupal/linkchecker": {
-                "3366753 - Filter out para rev results from report": "https://www.drupal.org/files/issues/2025-03-07/3366753-minimal.patch"
-            },
-            "drupal/page_manager": {
-                "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch",
-                "3438993 - mandatory parameters missing for route entity.page.devel_load": "https://www.drupal.org/files/issues/2024-08-14/page-manager-3438993-MR34-24.patch"
-            },
-            "drupal/search_api": {
-                "3352150 - Fix exception from certain Views handlers": "https://www.drupal.org/files/issues/2025-03-26/3352150-15--add_field_instance_dependencies.patch"
-            },
-            "drupal/mimemail": {
-                "local - allow string of multiple emails": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/mimemail-allow_string_of_multiple.patch"
-            },
-            "drupal/entity_field_condition": {
-                "3364284 - Deprecated function: preg_match(): passing null.": "https://git.drupalcode.org/project/entity_field_condition/-/commit/c0cc0ed93723c7c85559ac327134c794d8c89ab7.patch",
-                "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2023-11-11/3091898-43.patch",
-                "local - fix above patch for FieldValue plugin": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/entity_field_condition-field_value.patch"
-            },
-            "drupal/search_api_exactmatch_boost": {
-                "3590949 - possible fix to WSOD for missing field": "https://www.drupal.org/files/issues/2026-05-19/3590949-3.patch",
-                "3544663 - fix when added filter causes 0 results": "https://www.drupal.org/files/issues/2026-06-11/3544663-7.patch"
             }
         },
         "patches-ignore": {
