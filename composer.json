@@ -115,7 +115,6 @@
         "drupal/restui": "^1.22",
         "drupal/s3fs": "^3.7",
         "drupal/search_api_autocomplete": "^1.10",
-        "drupal/search_api_exactmatch_boost": "^1.1",
         "drupal/sitewide_alert": "3.0",
         "drupal/slick_views": "^2.8",
         "drupal/smtp": "^1.4",
@@ -374,11 +373,7 @@
             "drupal/search_api": {
                 "3352150 - Fix exception from certain Views handlers": "https://www.drupal.org/files/issues/2025-03-26/3352150-15--add_field_instance_dependencies.patch"
             },
-            "drupal/search_api_exactmatch_boost": {
-                "3590949 - possible fix to WSOD for missing field": "https://www.drupal.org/files/issues/2026-05-19/3590949-3.patch",
-                "3544663 - fix when added filter causes 0 results": "https://www.drupal.org/files/issues/2026-06-11/3544663-7.patch"
-            },
-            "drupal/sitewide_alert": {
+                "drupal/sitewide_alert": {
                 "3524811 - Integrate revision diff support and ability to enable revision creation by default": "https://www.drupal.org/files/issues/2025-12-09/sitewide_alert-3524811-add-revision-support-15.diff"
             },
             "drupal/views_bulk_operations": {
