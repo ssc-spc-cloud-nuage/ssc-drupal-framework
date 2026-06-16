@@ -8,8 +8,10 @@
   --clr-banner-accent: #FF9900;
   --size-owner-min: 60px;
   --size-owner-min-halfed: calc(var(--size-owner-min) / 2);
-  margin-top: 30px;
+
+  margin-bottom: 30px;
   padding: 24px;
+  padding-bottom: 0;
   background-color: var(--clr-banner-primary);
   border-radius: var(--size-border-radius-medium);
   text-align: center;
