@@ -13,9 +13,13 @@
     }
   }
   & .card__image {
-    width: 60px;
-    height: fit-content;
     background-image: none;
     border-radius: var(--size-card-image-border-radius);
+
+    & img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
   }
 }
