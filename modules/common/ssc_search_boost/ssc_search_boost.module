@@ -3,6 +3,8 @@
 use Drupal\Core\Database\Query\AlterableInterface;
 use Drupal\Core\Database\Query\SelectInterface;
 
+const SSC_SEARCH_BOOST_EXACT_SCORE = 1000000000;
+
 /**
  * Implements hook_query_alter().
  */
@@ -165,7 +167,7 @@ function ssc_search_boost_apply_exact_match_boost(AlterableInterface $query, str
       [$placeholder => $keys]
     );
 
-    $boost_sql .= " + MAX(CASE WHEN {$alias}.item_id IS NOT NULL THEN 100000 ELSE 0 END)";
+    $boost_sql .= " + MAX(CASE WHEN {$alias}.item_id IS NOT NULL THEN " . SSC_SEARCH_BOOST_EXACT_SCORE . " ELSE 0 END)";
     $has_boost = TRUE;
   }
 
@@ -180,4 +182,6 @@ function ssc_search_boost_apply_exact_match_boost(AlterableInterface $query, str
   if (isset($expressions['score'])) {
     $expressions['score']['expression'] = $boost_sql;
   }
+
+  return;
 }
