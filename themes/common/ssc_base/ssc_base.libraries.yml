@@ -57,6 +57,7 @@ global:
   js:
     js/global.js: {}
     js/ssc-loader.js: {}
+    js/ssc-tabs.js: {}
   dependencies:
     - core/jquery
     - core/drupal
