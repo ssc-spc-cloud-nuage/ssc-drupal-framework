@@ -11,9 +11,6 @@
     margin-left: -0.938rem;
     margin-right: -0.938rem;
   }
-  & .layout__region--content > :first-child:is(.structured-page__sections) {
-    margin-top: -2.375rem;
-  }
 }
 
 /* Collapsible section */

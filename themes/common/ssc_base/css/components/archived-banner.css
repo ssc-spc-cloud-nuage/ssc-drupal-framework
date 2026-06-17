@@ -9,7 +9,7 @@
   --size-owner-min: 60px;
   --size-owner-min-halfed: calc(var(--size-owner-min) / 2);
 
-  margin-bottom: 30px;
+  margin-bottom: var(--size-owner-min);
   padding: 24px;
   padding-bottom: 0;
   background-color: var(--clr-banner-primary);
