@@ -3,6 +3,7 @@
 namespace Drupal\ssc_common\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Render\Markup;
 
 /**
  * Provides a 'FooterAsideBlock' block.
@@ -22,7 +23,8 @@ class FooterAsideBlock extends BlockBase {
 
     return [
       '#type' => 'markup',
-      '#markup' => $config->get('footer_aside.value'),
+      // Required in order to avoid the stripping out of web components.
+      '#markup' => Markup::create($config->get('footer_aside.value')),
       '#cache' => [
         'tags' => $config->getCacheTags(),
       ]
