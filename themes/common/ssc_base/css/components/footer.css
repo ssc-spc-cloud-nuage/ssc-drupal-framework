@@ -8,7 +8,7 @@
   --clr-footer-heading: var(--clr-ssc-white);
   --clr-footer-bg: var(--clr-ssc-violet-dark);
   --clr-footer-accent: var(--clr-ssc-pink-300);
-  --clr-footer-separator: var(--clr-ssc-violet-400);
+  --clr-footer-separator: var(--clr-ssc-slate-900);
   --clr-footer-logo: color-mix(in srgb, var(--clr-footer-bg), black 25%);
 
   --clr-subfooter-text: var(--clr-ssc-white);
@@ -17,7 +17,7 @@
   --clr-subfooter-bg: var(--clr-ssc-black);
 
   --size-footer-padding: 60px;
-  --size-footer-gap: 60px;
+  --size-footer-gap: 40px;
   --size-grid-gap: 30px;
 
   isolation: isolate;
