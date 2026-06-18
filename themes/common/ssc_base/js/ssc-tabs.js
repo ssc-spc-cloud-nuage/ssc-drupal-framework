@@ -4,7 +4,7 @@ class SSCTabs extends HTMLElement {
   #panels = [];
   #navItems = [];
   #contentEl = null;
-  #accordionBreakpoint = 600;
+  #accordionBreakpoint = 500;
   #accordionResizeObserver = null;
   #onAccordionResize = (entries) => {
     const [entry] = entries;
@@ -110,9 +110,10 @@ class SSCTabs extends HTMLElement {
         }
 
         :host {
-          --ssc-tabs-bg-secondary: #40425a;
+          --ssc-tabs-bg-primary: #000;
+          --ssc-tabs-bg-secondary: var(--clr-ssc-slate-800);
           --ssc-tabs-text-primary: #fff;
-          --ssc-tabs-text-secondary: #9197c9;
+          --ssc-tabs-text-secondary: var(--clr-ssc-slate-400);
           --ssc-tabs-border-size: 4px;
 
           display: block;
@@ -130,7 +131,7 @@ class SSCTabs extends HTMLElement {
 
         :host([variant="side"]) {
           & .ssc-tabs {
-            grid-template-columns: clamp(240px, 34%, 320px) minmax(0, 1fr);
+            grid-template-columns: clamp(180px, 34%, 320px) minmax(0, 1fr);
             align-items: stretch;
 
             @container (max-width: ${this.#accordionBreakpoint}px) {
@@ -154,7 +155,6 @@ class SSCTabs extends HTMLElement {
         .ssc-tabs__nav {
           position: relative;
           display: grid;
-          gap: 0.35rem;
           height: fit-content;
           margin: 0;
           padding: 0;
@@ -188,10 +188,14 @@ class SSCTabs extends HTMLElement {
           border-radius: var(--ssc-tabs-border-size);
           color: var(--ssc-tabs-text-secondary);
           font: inherit;
+          line-height: 1.4;
           text-align: left;
           cursor: pointer;
           transition: color 160ms ease;
 
+          &:hover {
+            color: white;
+          }
           &::before {
             content: "";
             position: absolute;
@@ -202,7 +206,7 @@ class SSCTabs extends HTMLElement {
           }
 
           &:hover::before {
-            background-color: rgb(0 0 0 / 0.75);
+            background-color: color-mix(in srgb, var(--ssc-tabs-bg-primary), transparent 70%);
           }
 
           &[aria-selected="true"] {
@@ -236,17 +240,17 @@ class SSCTabs extends HTMLElement {
           min-width: 0;
           min-height: 100%;
           padding: 1.5rem;
-          border: 1px solid var(--ssc-tabs-bg-secondary);
           border-radius: 8px;
+          background-color: color-mix(in srgb, var(--ssc-tabs-bg-primary), transparent 75%);
         }
 
         .ssc-tabs__panel {
           line-height: 1.5;
 
           & .ssc-tabs__panel-title {
-            margin: 0 0 0.5rem;
+            margin: 0 0 0.75rem;
             color: var(--ssc-tabs-text-secondary);
-            font-size: 1.125rem;
+            font-size: 1.25rem;
           }
         }
 
@@ -298,6 +302,7 @@ class SSCTabs extends HTMLElement {
             margin-top: 0;
             padding-block: 0;
             padding-inline: 1rem;
+            background-color: color-mix(in srgb, var(--ssc-tabs-bg-primary), transparent 75%);
             border: 1px solid var(--ssc-tabs-bg-secondary);
             border-color: transparent;
             border-width: 0 1px 1px;
@@ -378,6 +383,7 @@ class SSCTabs extends HTMLElement {
 
       if (isAccordionLayout) {
         panel.hidden = false;
+        panel.inert = !isActivePanel;
         panel.setAttribute("data-expanded", String(isActivePanel));
         return;
       }
