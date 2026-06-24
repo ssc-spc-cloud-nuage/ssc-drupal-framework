@@ -4,8 +4,7 @@
   flex-direction: column;
   gap: 12px;
   margin-top: 36px;
-  padding: 24px;
-  padding-top: 40px;
+  padding: 48px 24px 24px;
   border-radius: var(--size-border-radius-medium);
   background-color: var(--clr-ssc-gray-light);
   text-align: center;

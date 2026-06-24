@@ -103,4 +103,5 @@ legend {
   margin-top: 0.25em;
   width: 0.9em;
   aspect-ratio: 1;
+  cursor: pointer;
 }
