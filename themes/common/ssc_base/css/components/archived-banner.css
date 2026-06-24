@@ -11,13 +11,11 @@
 
   margin-bottom: var(--size-owner-min);
   padding: 24px;
-  padding-bottom: 0;
   background-color: var(--clr-banner-primary);
   border-radius: var(--size-border-radius-medium);
   text-align: center;
 
-  :has(.archived-wrapper__owner) {
-    margin-bottom: var(--size-owner-min-halfed);
+  &:has(.archived-wrapper__owner) {
     padding-bottom: 0;
   }
 }
