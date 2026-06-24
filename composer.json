@@ -381,6 +381,9 @@
             },
             "drupal/viewscss": {
                 "local - silence errors": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/viewscss-silence_errors.patch"
+            },
+            "drupal/block_field": {
+                "3558223 - widget not listing blocks on FR form": "https://www.drupal.org/files/issues/2026-05-26/3558223-field-widget-multilingual.patch"
             }
         },
         "patches-ignore": {
