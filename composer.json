@@ -415,6 +415,12 @@
                 },
                 "drupal/webform": {
                     "Enter drupal/webform patch #3205860 description here": "https://www.drupal.org/files/issues/2021-03-26/webform_clientside_validation-3205860-2.patch"
+                },
+                "drupal/layout_builder_st": {
+                    "3420063 - Call to a member function getConfig() OverridesSectionStorage.php":
+                    "https://git.drupalcode.org/project/layout_builder_st/-/merge_requests/6.diff",
+                    "3411037 - Fix core removing contextual translation links":
+                    "https://www.drupal.org/files/issues/2025-05-14/3411037-contextual-links-removed-from-core-26.patch"
                 }
             }
         }
