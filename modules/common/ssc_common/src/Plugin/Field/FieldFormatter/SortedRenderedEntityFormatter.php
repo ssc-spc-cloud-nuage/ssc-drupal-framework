@@ -20,7 +20,8 @@ use Drupal\node\Entity\Node;
  *   label = @Translation("Sorted rendered entity"),
  *   description = @Translation("Display the referenced entities rendered by entity_view() with SSC custom sort."),
  *   field_types = {
- *     "entity_reference_revisions"
+ *     "entity_reference_revisions",
+ *     "entity_reference"
  *   }
  * )
  */
@@ -64,6 +65,9 @@ class SortedRenderedEntityFormatter extends EntityReferenceRevisionsEntityFormat
       if (!empty($item->_loaded)) {
         $entity = $item->entity;
 
+        // Paragraph Reference or Node Reference.
+        $paragraph = $item->entity->getEntityTypeId() == 'paragraph';
+
         // Set the entity in the correct language for display.
         if ($entity instanceof TranslatableInterface) {
           $entity = \Drupal::service('entity.repository')->getTranslationFromContext($entity, $langcode);
@@ -87,7 +91,12 @@ class SortedRenderedEntityFormatter extends EntityReferenceRevisionsEntityFormat
               $entities[$delta]->sort_title = strtolower($internal_node->getTitle());
             }
             else {
-              $entities[$delta]->sort_title = strtolower($entity->field_title->value);
+              if ($paragraph) {
+                $entities[$delta]->sort_title = strtolower($entity->field_title->value);
+              }
+              else {
+                $entities[$delta]->sort_title = strtolower($entity->getTitle());
+              }
             }
           }
         }
