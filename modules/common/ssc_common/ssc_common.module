@@ -17,6 +17,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\paragraphs\ParagraphInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
@@ -1033,4 +1034,76 @@ function ssc_common_page_attachments(array &$page): void {
   else {
     $page['#attached']['library'][] = 'ssc_common/site';
   }
+}
+
+/**
+ * Implements hook_field_widget_single_element_form_alter().
+ */
+function ssc_common_field_widget_single_element_form_alter(array &$element, FormStateInterface $form_state, array $context): void {
+  $entity = $context['items']->getEntity();
+
+  // Only alter fields belonging to paragraph entities.
+  if (!$entity instanceof ParagraphInterface) {
+    return;
+  }
+
+  // Find any entity_autocomplete elements inside this field widget.
+  _add_autocomplete_quote_validator($element);
+}
+
+/**
+ * Recursively adds our validator to entity autocomplete elements.
+ */
+function _add_autocomplete_quote_validator(array &$element): void {
+  if (($element['#type'] ?? NULL) === 'entity_autocomplete') {
+    /*
+     * Obtain Drupal's normal validators from the element definition. Setting
+     * #element_validate ourselves without retaining these would prevent
+     * Drupal's normal entity autocomplete validation from running.
+     */
+    $element_info = \Drupal::service('plugin.manager.element_info')
+      ->getInfo('entity_autocomplete');
+
+    $validators = $element_info['#element_validate'] ?? [];
+
+    // Ensure it is not added more than once during AJAX rebuilds.
+    $callback = '_normalize_entity_autocomplete_quotes';
+
+    if (!in_array($callback, $validators, TRUE)) {
+      array_unshift($validators, $callback);
+    }
+
+    $element['#element_validate'] = $validators;
+  }
+
+  foreach ($element as &$child) {
+    if (is_array($child)) {
+      _add_autocomplete_quote_validator($child);
+    }
+  }
+}
+
+/**
+ * Normalizes repeated quotation marks before autocomplete validation.
+ */
+function _normalize_entity_autocomplete_quotes(array &$element, FormStateInterface $form_state, array &$complete_form): void {
+  $value = $form_state->getValue($element['#parents']);
+
+  if (!is_string($value) || $value === '') {
+    return;
+  }
+
+  // Convert any run of two or more double quotes to one double quote.
+  $normalized_value = preg_replace('/"{2,}/u', '"', $value);
+
+  if ($normalized_value === NULL || $normalized_value === $value) {
+    return;
+  }
+
+  /*
+   * Update both the form-state value and the element value so the subsequent
+   * Drupal entity autocomplete validator receives the corrected string.
+   */
+  $form_state->setValueForElement($element, $normalized_value);
+  $element['#value'] = $normalized_value;
 }
