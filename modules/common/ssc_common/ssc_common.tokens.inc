@@ -3,6 +3,7 @@
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Render\Markup;
 use Drupal\node\Entity\Node;
 
 /**
@@ -19,6 +20,45 @@ function ssc_common_token_info_alter(&$info): void {
         'description' => "Provides tokens for FR field values of the field: $field",
       ];
     }
+  }
+}
+
+/**
+ * Implements hook_tokens_alter().
+ */
+function ssc_common_tokens_alter(
+  array &$replacements,
+  array $context,
+  BubbleableMetadata $bubbleable_metadata,
+): void {
+  foreach ($context['tokens'] as $name => $original) {
+    if (!preg_match(
+      '/^(?<base>.+):_lang_(?<langcode>[a-zA-Z0-9_-]+)$/',
+      $name,
+      $matches,
+    )) {
+      continue;
+    }
+
+    $langcode = strtolower($matches['langcode']);
+
+    if (!\Drupal::languageManager()->getLanguage($langcode)) {
+      continue;
+    }
+
+    $base_token = sprintf(
+      '[%s:%s]',
+      $context['type'],
+      $matches['base'],
+    );
+
+    $replacements[$original] = Markup::create(_replace_token_in_language(
+      $base_token,
+      $langcode,
+      $context['data'],
+      $context['options'],
+      $bubbleable_metadata,
+    ));
   }
 }
 
@@ -273,4 +313,54 @@ function _get_message_entity_ref_fields(): array {
   }
 
   return array_unique($results);
+}
+
+/**
+ * Replaces a token under a temporarily negotiated language.
+ */
+function _replace_token_in_language(
+  string $token,
+  string $langcode,
+  array $data,
+  array $options,
+  BubbleableMetadata $bubbleable_metadata,
+): string {
+  $language_manager = \Drupal::languageManager();
+  $custom_negotiator = \Drupal::service(
+    'backlinks.language_negotiator',
+  );
+
+  $original_negotiator = $language_manager->getNegotiator();
+
+  // Resolve this before changing the negotiator.
+  $original_langcode = $language_manager
+    ->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)
+    ->getId();
+
+  try {
+    $language_manager->setNegotiator($custom_negotiator);
+
+    $custom_negotiator->setLanguageCode($langcode);
+    $language_manager->reset();
+
+    $options['langcode'] = $langcode;
+    $options['join'] = '<br>';
+
+    return \Drupal::token()->replace(
+      $token,
+      $data,
+      $options,
+      $bubbleable_metadata,
+    );
+  }
+  finally {
+    /*
+     * Restore the custom negotiator's internal language first, in case this
+     * same service instance is used again later in the request.
+     */
+    $custom_negotiator->setLanguageCode($original_langcode);
+
+    $language_manager->setNegotiator($original_negotiator);
+    $language_manager->reset();
+  }
 }
