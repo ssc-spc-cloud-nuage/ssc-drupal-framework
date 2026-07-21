@@ -21,7 +21,6 @@
         "drupal/azure_key_vault": "^1.0",
         "drupal/backup_migrate": "^5.1",
         "drupal/better_exposed_filters": "^7.1",
-        "drupal/better_formats": "^1.0@beta",
         "drupal/bg_image_formatter": "1.18.0",
         "drupal/block_field": "1.0.0-rc5",
         "drupal/calendar": "^1.0@beta",
