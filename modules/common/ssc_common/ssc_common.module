@@ -16,6 +16,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\paragraphs\ParagraphInterface;
 use Drupal\taxonomy\Entity\Term;
@@ -159,8 +160,12 @@ function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id)
   $form_object = $form_state->getFormObject();
   if ($form_object instanceof EntityFormInterface) {
     $entity = $form_object->getEntity();
-    if (!$entity || !$entity->hasTranslation('fr')) {
-      $form["actions"]["submit"]["#value"] = t('Save and translate');
+    if (
+      $entity instanceof NodeInterface &&
+      $entity->isTranslatable() &&
+      !$entity->hasTranslation('fr')
+    ) {
+      $form['actions']['submit']['#value'] = t('Save and translate');
       $form['actions']['submit']['#submit'][] = '_redirect_to_translate';
     }
   }
