@@ -155,22 +155,24 @@ function ssc_common_form_alter(&$form, FormStateInterface $form_state, $form_id)
     }
   }
 
-  // Modify SAVE button on Workflow node forms and redirect to Add translation form.
+  // Modify SAVE button node forms and redirect to Add translation form.
+  $form_object = $form_state->getFormObject();
+  if ($form_object instanceof EntityFormInterface) {
+    $entity = $form_object->getEntity();
+    if (!$entity || !$entity->hasTranslation('fr')) {
+      $form["actions"]["submit"]["#value"] = t('Save and translate');
+      $form['actions']['submit']['#submit'][] = '_redirect_to_translate';
+    }
+  }
+
   // Disable Live (published) workflow option if translations doesn't exist.
   if (isset($form['moderation_state'])) {
     // Move moderation state field to Meta group
     $form['moderation_state']['#group'] = 'meta';
     $form['moderation_state']['#weight'] = 100;
     $form['revision_information']['#weight'] = 9;
-    // Redo Save button
-    $form_object = $form_state->getFormObject();
     if ($form_object instanceof EntityFormInterface) {
-      $entity = $form_object->getEntity();
-      if (!$entity || !$entity->hasTranslation('fr')) {
-        $form["actions"]["submit"]["#value"] = t('Save and translate');
-        $form['actions']['submit']['#submit'][] = '_redirect_to_translate';
-        unset($form['moderation_state']['widget'][0]['state']['#options']['published']);
-      }
+      unset($form['moderation_state']['widget'][0]['state']['#options']['published']);
     }
   }
 
