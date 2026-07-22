@@ -1,0 +1,16 @@
+--- a/core/modules/layout_builder/src/Form/ConfigureVisibilityForm.php
++++ b/core/modules/layout_builder/src/Form/ConfigureVisibilityForm.php
+@@ -102,6 +102,13 @@
+   protected $configuration;
+ 
+   /**
++   * The class resolver.
++   *
++   * @var \Drupal\Core\DependencyInjection\ClassResolverInterface
++   */
++  protected $classResolver;
++
++  /**
+    * Constructs a ConfigureVisibilityForm object.
+    *
+    * @param \Drupal\layout_builder\LayoutTempstoreRepositoryInterface $layout_tempstore_repository
