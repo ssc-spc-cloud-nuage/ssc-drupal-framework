@@ -237,7 +237,6 @@
         },
         "patches": {
             "drupal/core": {
-                "2916876 - LB block visiblity": "https://www.drupal.org/files/issues/2023-12-19/drupal-n2916876-207.patch",
                 "2942975 - allow LB setup to be exported with content": "https://www.drupal.org/files/issues/2024-12-20/2942975-273_0.patch",
                 "2979914 - add placeholder to Views search field": "https://www.drupal.org/files/issues/2020-10-03/2979914-17.patch",
                 "2944173 - allow tokens in url of links (ckeditor)": "https://www.drupal.org/files/issues/2021-10-01/xss_attrs-2944173-60.patch",
@@ -271,7 +270,9 @@
                 "3221375 - drush not clearing FR field labels": "https://www.drupal.org/files/issues/2024-02-23/3221375_lost-field-labels-translations.patch",
                 "3025039 - remove error on non-translable field on translation": "https://www.drupal.org/files/issues/2024-05-01/3025039-94.patch",
                 "local - Show IDs in Views rearrange fields modal": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/core-show_ids_views_rearrange.patch",
-                "local - core HACK to handle daterange nontranslated bug": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/core-HACK-handle_nontranslated_daterange_fields.patch"
+                "local - core HACK to handle daterange nontranslated bug": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/core-HACK-handle_nontranslated_daterange_fields.patch",
+                "2916876 - LB block visiblity": "https://www.drupal.org/files/issues/2023-12-19/drupal-n2916876-207.patch",
+                "local - tmp fix until layout_builder_st is fixed ($classResolver)": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb-classResolver.patch"
             },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
