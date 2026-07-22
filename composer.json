@@ -89,6 +89,7 @@
         "drupal/layout_builder_lock": "^2.0@RC",
         "drupal/layout_builder_modal": "^2.0",
         "drupal/layout_builder_tabs": "^1.0",
+        "drupal/layout_library": "1.0-beta6",
         "drupal/lb_tabs": "^3.0",
         "drupal/linkchecker": "^2.1@beta",
         "drupal/linkchecker_summary_mail": "^2.0@beta",
