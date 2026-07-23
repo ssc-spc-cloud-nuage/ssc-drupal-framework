@@ -376,8 +376,9 @@
             "drupal/search_api": {
                 "3352150 - Fix exception from certain Views handlers": "https://www.drupal.org/files/issues/2025-03-26/3352150-15--add_field_instance_dependencies.patch"
             },
-                "drupal/sitewide_alert": {
-                "3524811 - Integrate revision diff support and ability to enable revision creation by default": "https://www.drupal.org/files/issues/2025-12-09/sitewide_alert-3524811-add-revision-support-15.diff"
+            "drupal/sitewide_alert": {
+                "3524811 - Integrate revision diff support and ability to enable revision creation by default": "https://www.drupal.org/files/issues/2025-12-09/sitewide_alert-3524811-add-revision-support-15.diff",
+                "3612842 - expire page cache": "https://www.drupal.org/files/issues/2026-07-23/3612842-2.patch"
             },
             "drupal/views_bulk_operations": {
                 "local - remove tmpstore items on cancel": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/empty_on_cancel-local.patch"
