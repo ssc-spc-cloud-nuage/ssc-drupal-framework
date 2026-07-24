@@ -1,0 +1,149 @@
+<?php
+
+/**
+ * @file
+ * Provides tokens for MSO/Outlook-safe email markup.
+ *
+ * These tokens exist so that raw HTML containing MSO conditional comments
+ * (e.g. <!--[if mso]>...<![endif]-->) never has to be typed directly into a
+ * CKEditor 5 field. CKEditor 5's data processor is known to strip or corrupt
+ * HTML comments that wrap real tags - see:
+ *   https://www.drupal.org/project/drupal/issues/3482646
+ *   https://github.com/ckeditor/ckeditor5/issues/10118
+ *
+ * By storing only a plain-text token in the field and expanding it to real
+ * markup at token-replacement time - which happens after the value has
+ * already left CKEditor (e.g. in Message::getText() -> Token::replace()) -
+ * the MSO block is never touched by CKEditor and survives intact into the
+ * outgoing email.
+ *
+ * Usage in a CKEditor field (typed as plain text, not source-edited HTML):
+ *
+ *   [node:mso-button:field_series:field_background_colour:Read this edition]
+ *
+ * Where:
+ * - field_series        is the machine name of the entity reference field
+ *                        on the node that points to a taxonomy term.
+ * - field_background_colour  is the machine name of a Color field on that
+ *                        term (its "color" property is used).
+ * - Read this edition    is the visible button label. It may contain spaces
+ *                        (and even colons) since it is always the last
+ *                        segment of the token name.
+ */
+
+use Drupal\Component\Render\MarkupInterface;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Render\Markup;
+use Drupal\node\NodeInterface;
+
+/**
+ * Default button fill colour, used if the term/field/value isn't available.
+ */
+const MSO_TOKENS_DEFAULT_COLOUR = '#154D8C';
+
+/**
+ * Implements hook_token_info().
+ */
+function mso_tokens_token_info() {
+  $info['tokens']['node']['mso-button'] = [
+    'name' => t('MSO-safe CTA button'),
+    'description' => t('Renders MSO button. Usage: [node:mso-button:TERM_FIELD:COLOUR_FIELD:LABEL].'),
+  ];
+
+  return $info;
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function mso_tokens_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+  $replacements = [];
+
+  if ($type !== 'node' || empty($data['node'])) {
+    return $replacements;
+  }
+
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $data['node'];
+  $prefix = 'mso-button:';
+
+  foreach ($tokens as $name => $original) {
+    if (strpos($name, $prefix) !== 0) {
+      continue;
+    }
+
+    // Split into exactly 3 pieces so the label - which may itself contain
+    // spaces or colons - is always captured whole as the last piece.
+    $parts = explode(':', substr($name, strlen($prefix)), 3);
+
+    if (count($parts) !== 3) {
+      // Leave malformed token unreplaced so not hidden.
+      continue;
+    }
+
+    [$term_field, $colour_field, $label] = $parts;
+    $replacements[$original] = _mso_tokens_build_button(
+      $node,
+      $term_field,
+      $colour_field,
+      $label,
+      $options,
+      $bubbleable_metadata,
+    );
+  }
+
+  return $replacements;
+}
+
+/**
+ * Builds the MSO-safe CTA button markup.
+ */
+function _mso_tokens_build_button(NodeInterface $node, string $term_field, string $colour_field, string $label, $token_options, BubbleableMetadata $bubbleable_metadata): MarkupInterface|string {
+  $colour = MSO_TOKENS_DEFAULT_COLOUR;
+
+  $bubbleable_metadata->addCacheableDependency($node);
+
+  if ($node->hasField($term_field) && !$node->get($term_field)->isEmpty()) {
+    $term = $node->get($term_field)->entity;
+
+    if ($term) {
+      $bubbleable_metadata->addCacheableDependency($term);
+
+      if ($term->hasField($colour_field) && !$term->get($colour_field)->isEmpty()) {
+        $value = $term->get($colour_field)->color;
+        if (!empty($value)) {
+          $colour = $value;
+        }
+      }
+    }
+  }
+
+  $url = $node->toUrl('canonical', ['absolute' => TRUE])->toString();
+
+  // Translate the EN label.
+  $translation_options = [];
+  if (!empty($token_options['langcode'])) {
+    $translation_options['langcode'] = $token_options['langcode'];
+  }
+  $label = (string) t($label, [], $translation_options);
+
+  $url = Html::escape($url);
+  $colour = Html::escape($colour);
+  $label = Html::escape($label);
+
+  $html = <<<HTML
+<!--[if mso]>
+ <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{$url}" style="height:100px;v-text-anchor:middle;width:500px;" arcsize="10%" stroke="f" fillcolor="{$colour}">
+ <w:anchorlock/>
+ <center style="font-size:20px">
+<![endif]-->
+<a class="message-section__cta" href="{$url}">{$label}</a>
+<!--[if mso]>
+ </center>
+ </v:roundrect>
+<![endif]-->
+HTML;
+
+  return Markup::create($html);
+}

@@ -1,0 +1,5 @@
+name: MSO Email Tokens
+type: module
+description: 'Provides a token for an MSO button.'
+package: SSC
+core_version_requirement: ^10 || ^11
