@@ -134,15 +134,36 @@ function _mso_tokens_build_button(NodeInterface $node, string $term_field, strin
 
   $html = <<<HTML
 <!--[if mso]>
- <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{$url}" style="height:100px;v-text-anchor:middle;width:500px;" arcsize="10%" stroke="f" fillcolor="{$colour}">
- <w:anchorlock/>
- <center style="font-size:20px">
+  <v:roundrect
+    xmlns:v="urn:schemas-microsoft-com:vml"
+    xmlns:w="urn:schemas-microsoft-com:office:word"
+    href="{$url}"
+    style="height:100px;v-text-anchor:middle;width:460px;"
+    arcsize="10%"
+    strokecolor="{$colour}"
+    fillcolor="{$colour}"
+  >
+    <w:anchorlock/>
+    <center
+      style="
+        color:#ffffff;
+        mso-color-alt:#ffffff;
+        font-family:Arial, sans-serif;
+        font-size:20px;"
+    >
+      {$label}
+    </center>
+  </v:roundrect>
 <![endif]-->
-<a class="message-section__cta" href="{$url}">{$label}</a>
-<!--[if mso]>
- </center>
- </v:roundrect>
-<![endif]-->
+
+<!--[if !mso]><!-->
+  <a
+    href="{$url}"
+    class="message-section__cta"
+  >
+    {$label}
+  </a>
+<!--<![endif]-->
 HTML;
 
   return Markup::create($html);
