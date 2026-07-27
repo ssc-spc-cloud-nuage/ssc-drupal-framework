@@ -119,12 +119,22 @@ function _mso_tokens_build_button(NodeInterface $node, string $term_field, strin
     }
   }
 
-  $url = $node->toUrl('canonical', ['absolute' => TRUE])->toString();
+  // Build the canonical URL in the requested language.
+  $langcode = $token_options['langcode'] ?? NULL;
 
-  // Translate the EN label.
+  $url_node = $node;
+  if ($langcode && $node->hasTranslation($langcode)) {
+    $url_node = $node->getTranslation($langcode);
+  }
+
+  $url = $url_node
+    ->toUrl('canonical', ['absolute' => TRUE])
+    ->toString();
+
+  // Translate the label.
   $translation_options = [];
-  if (!empty($token_options['langcode'])) {
-    $translation_options['langcode'] = $token_options['langcode'];
+  if ($langcode) {
+    $translation_options['langcode'] = $langcode;
   }
   $label = (string) t($label, [], $translation_options);
 
