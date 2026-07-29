@@ -14,7 +14,7 @@
   background-color: var(--clr-ssc-violet-800);
   border-radius: 100vw;
   box-shadow: 0 6px 10px -6px rgb(0 0 0 / 0.5);
-  animation: glideIn 300ms var(--ease-out-cubic);
+  animation: loader-glide-in 300ms var(--ease-out-cubic);
   animation-fill-mode: forwards;
 
   & svg {
@@ -22,11 +22,12 @@
     fill: var(--clr-ssc-violet-800);
   }
   & ellipse {
-    animation: pulse var(--time-loader-duration) var(--ease-out-circ);
+    transform-origin: center;
+    animation: loader-pulse var(--time-loader-duration) var(--ease-out-circ);
     animation-iteration-count: infinite;
   }
   & g {
-    animation: fadeOut var(--time-loader-duration) var(--ease-in-quad);
+    animation: loader-fade-out var(--time-loader-duration) var(--ease-in-quad);
     animation-iteration-count: infinite;
   }
 }
@@ -38,7 +39,7 @@
 }
 
 /* Keyframes animations */
-@keyframes glideIn {
+@keyframes loader-glide-in {
   from {
     transform: translate(-50%, -50%) scale(0.8);
     opacity: 0;
@@ -48,18 +49,16 @@
     opacity: 1;
   }
 }
-@keyframes pulse {
+@keyframes loader-pulse {
   0% {
-    rx: 0;
-    ry: 0;
+    scale: 0;
   }
   75%,
   100% {
-    rx: 120px;
-    ry: 100px;
+    scale: 1;
   }
 }
-@keyframes fadeOut {
+@keyframes loader-fade-out {
   0% {
     fill: var(--clr-ssc-white);
   }
