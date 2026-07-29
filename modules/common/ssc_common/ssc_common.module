@@ -955,6 +955,12 @@ function ssc_common_openid_connect_userinfo_save(UserInterface $account, array $
   $account->set('field_first_name', $context['userinfo']['givenName']);
   $account->set('field_last_name', $context['userinfo']['surname']);
   $account->set('field_aad_name', $context['userinfo']['displayName']);
+
+  // Set preferred language from AAD, if present.
+  if (!empty($context['userinfo']['preferredLanguage'])) {
+    $account->set('preferred_langcode', str_replace('-CA', '', $context['userinfo']['preferredLanguage']));
+  }
+
 }
 
 function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state): void {
