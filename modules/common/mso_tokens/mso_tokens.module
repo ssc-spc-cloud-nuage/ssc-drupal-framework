@@ -40,7 +40,7 @@ use Drupal\node\NodeInterface;
 /**
  * Default button fill colour, used if the term/field/value isn't available.
  */
-const MSO_TOKENS_DEFAULT_COLOUR = '#154D8C';
+const MSO_TOKENS_DEFAULT_COLOUR = '#4b3e99';
 
 /**
  * Implements hook_token_info().
@@ -151,14 +151,15 @@ function _mso_tokens_build_button(NodeInterface $node, string $term_field, strin
     style="height:100px;v-text-anchor:middle;width:460px;"
     arcsize="10%"
     strokecolor="{$colour}"
-    fillcolor="{$colour}"
+    strokeweight="2px"
+    filled="false"
   >
     <w:anchorlock/>
     <center
       style="
-        color:#ffffff;
-        mso-color-alt:#ffffff;
-        font-family:Arial, sans-serif;
+        color:{$colour};
+        mso-color-alt:{$colour};
+        font-family:Aptos,Helvetica,Arial,sans-serif;
         font-size:20px;"
     >
       {$label}
