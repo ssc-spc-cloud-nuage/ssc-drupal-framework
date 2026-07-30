@@ -1069,15 +1069,20 @@ function ssc_common_field_widget_single_element_form_alter(array &$element, Form
  */
 function _add_autocomplete_quote_validator(array &$element): void {
   if (($element['#type'] ?? NULL) === 'entity_autocomplete') {
-    /*
-     * Obtain Drupal's normal validators from the element definition. Setting
-     * #element_validate ourselves without retaining these would prevent
-     * Drupal's normal entity autocomplete validation from running.
-     */
-    $element_info = \Drupal::service('plugin.manager.element_info')
-      ->getInfo('entity_autocomplete');
+    // Preserve any validator the widget already attached to this specific
+    // element (e.g. LinkWidget::validateUriElement, for Link fields that
+    // support picking internal content via this same 'entity_autocomplete'
+    // element type). Only fall back to the element type's static default
+    // when nothing has been set yet - which is the case for plain entity
+    // reference widgets, since Drupal doesn't merge in the type's default
+    // #element_validate until later during form building.
+    $validators = $element['#element_validate'] ?? NULL;
 
-    $validators = $element_info['#element_validate'] ?? [];
+    if ($validators === NULL) {
+      $element_info = \Drupal::service('plugin.manager.element_info')
+        ->getInfo('entity_autocomplete');
+      $validators = $element_info['#element_validate'] ?? [];
+    }
 
     // Ensure it is not added more than once during AJAX rebuilds.
     $callback = '_normalize_entity_autocomplete_quotes';
