@@ -94,7 +94,7 @@
         "drupal/linkchecker": "^2.1@beta",
         "drupal/linkchecker_summary_mail": "^2.0@beta",
         "drupal/log_stdout": "^3.0",
-        "drupal/mail_redirect": "^4.2.6",
+        "drupal/mail_redirect": "4.2.4",
         "drupal/masquerade": "^2.0",
         "drupal/maxlength": "^3.1",
         "drupal/media_library_form_element": "^2.1",
