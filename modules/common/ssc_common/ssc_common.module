@@ -932,37 +932,6 @@ function ssc_common_paragraph_load($entity): void {
   $pid[$paragraph->getType()] = $paragraph->id();
 }
 
-/* Function to set username and display name from OpendID and MS Graph.
- *    NOTE: this is only valid for AAD not Common API. Skip this if the
- *  SG Auth module is enabled.
- */
-function ssc_common_openid_connect_userinfo_save(UserInterface $account, array $context): void {
-  // \Drupal::logger('SSC')->info(print_r($context['userinfo'], true));
-
-  // For now just skip if SG Auth is enabled.
-  $module_handler = \Drupal::moduleHandler();
-  if ($module_handler->moduleExists('sg_auth')) {
-    return;
-  }
-
-  // Even though we should have SG Auth enabled if Common API connection, lets test this anyway.
-  if (!isset($context['userinfo']['displayName'])) {
-    return;
-  }
-
-  // Set user profile fields.
-  $account->setUsername($context['userinfo']['email']);
-  $account->set('field_first_name', $context['userinfo']['givenName']);
-  $account->set('field_last_name', $context['userinfo']['surname']);
-  $account->set('field_aad_name', $context['userinfo']['displayName']);
-
-  // Set preferred language from AAD, if present.
-  if (!empty($context['userinfo']['preferredLanguage'])) {
-    $account->set('preferred_langcode', str_replace('-CA', '', $context['userinfo']['preferredLanguage']));
-  }
-
-}
-
 function ssc_common_form_user_form_alter(&$form, FormStateInterface $form_state): void {
   $form['timezone']['#group'] = 'group_locale';
 }
