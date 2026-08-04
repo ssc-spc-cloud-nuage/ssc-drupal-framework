@@ -144,37 +144,42 @@ function _mso_tokens_build_button(NodeInterface $node, string $term_field, strin
 
   $html = <<<HTML
 <!--[if mso]>
-  <v:roundrect
-    xmlns:v="urn:schemas-microsoft-com:vml"
-    xmlns:w="urn:schemas-microsoft-com:office:word"
-    href="{$url}"
-    style="height:100px;v-text-anchor:middle;width:460px;"
-    arcsize="10%"
-    strokecolor="{$colour}"
-    strokeweight="2px"
-    filled="false"
+<v:roundrect
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:w="urn:schemas-microsoft-com:office:word"
+  href="{$url}"
+  style="height:100px;v-text-anchor:middle;width:460px;"
+  arcsize="10%"
+  strokecolor="{$colour}"
+  strokeweight="2px"
+  filled="false"
+>
+  <w:anchorlock/>
+  <center
+    style="
+      color:{$colour};
+      mso-color-alt:{$colour};
+      font-family:Aptos,Helvetica,Arial,sans-serif;
+      font-size:20px;"
   >
-    <w:anchorlock/>
-    <center
-      style="
-        color:{$colour};
-        mso-color-alt:{$colour};
-        font-family:Aptos,Helvetica,Arial,sans-serif;
-        font-size:20px;"
-    >
-      {$label}
-    </center>
-  </v:roundrect>
+  <style>
+    .message-section__cta {
+      padding: 0;
+      border: none;
+    }
+  </style>
 <![endif]-->
-
-<!--[if !mso]><!-->
   <a
     href="{$url}"
     class="message-section__cta"
+    target="_blank"
   >
     {$label}
   </a>
-<!--<![endif]-->
+<!--[if mso]>
+  </center>
+</v:roundrect>
+<![endif]-->
 HTML;
 
   return Markup::create($html);
