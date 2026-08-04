@@ -127,8 +127,22 @@ function _mso_tokens_build_button(NodeInterface $node, string $term_field, strin
     $url_node = $node->getTranslation($langcode);
   }
 
+  $query = [];
+
+  if (!empty($term)) {
+    \Drupal::moduleHandler()->alter(
+      'mso_button_query',
+      $query,
+      $node,
+      $term
+    );
+  }
+
   $url = $url_node
-    ->toUrl('canonical', ['absolute' => TRUE])
+    ->toUrl('canonical', [
+      'absolute' => TRUE,
+      'query' => $query,
+    ])
     ->toString();
 
   // Translate the label.
