@@ -94,7 +94,7 @@
         "drupal/linkchecker": "^2.1@beta",
         "drupal/linkchecker_summary_mail": "^2.0@beta",
         "drupal/log_stdout": "^3.0",
-        "drupal/mail_redirect": "4.2.4",
+        "drupal/mail_redirect": "^4.2.6",
         "drupal/masquerade": "^2.0",
         "drupal/maxlength": "^3.1",
         "drupal/media_library_form_element": "^2.1",
@@ -107,7 +107,7 @@
         "drupal/module_filter": "^5.0",
         "drupal/multiple_fields_remove_button": "^2",
         "drupal/o365": "5.0.22",
-        "drupal/openid_connect": "3.0.0-alpha8",
+        "drupal/openid_connect": "3.x-dev",
         "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.4",
         "drupal/phpmailer_smtp": "^2",
@@ -353,8 +353,7 @@
             "drupal/openid_connect": {
                 "local - add login redirect hook": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/openid_connect-login_redirect_alter.patch",
                 "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch",
-                "3383036 - remove lang prefix from redirec url": "https://www.drupal.org/files/issues/2024-04-04/3383036-36-3.0-alpha3.patch",
-                "local - 3497559 - Fix user role cleared after login": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/openid_connect_issue_3497559_3.0.0-alpha8.patch"
+                "3383036 - remove lang prefix from redirect url": "https://www.drupal.org/files/issues/2024-04-04/3383036-36-3.0-alpha3.patch"
             },
             "drupal/openid_connect_windows_aad": {
                 "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
