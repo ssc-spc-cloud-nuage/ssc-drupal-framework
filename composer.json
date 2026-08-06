@@ -387,6 +387,9 @@
             },
             "drupal/block_field": {
                 "3558223 - widget not listing blocks on FR form": "https://www.drupal.org/files/issues/2026-05-26/3558223-field-widget-multilingual.patch"
+            },
+            "drupal/views_data_export": {
+                "3173296 - fix batch mode crashing": "https://www.drupal.org/files/issues/2026-02-05/views_data_export-3173296-45.patch"
             }
         },
         "patches-ignore": {
