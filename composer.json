@@ -356,8 +356,8 @@
                 "3383036 - remove lang prefix from redirect url": "https://www.drupal.org/files/issues/2024-04-04/3383036-36-3.0-alpha3.patch"
             },
             "drupal/openid_connect_windows_aad": {
-                "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-12-22/openid_connect_windows_aad-User_photo_submodule-3273039-9.patch",
-                "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2023-06-16/openid_connect_windows_aad-User_photo_submodule-3273039-7.patch"
+                "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
+                "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2023-12-22/openid_connect_windows_aad-User_photo_submodule-3273039-9.patch"
             },
             "drupal/page_manager": {
                 "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch",
