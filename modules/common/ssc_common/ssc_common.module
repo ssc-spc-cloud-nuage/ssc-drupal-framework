@@ -1094,3 +1094,16 @@ function _normalize_entity_autocomplete_quotes(array &$element, FormStateInterfa
   $form_state->setValueForElement($element, $normalized_value);
   $element['#value'] = $normalized_value;
 }
+
+function ssc_common_mail_alter(&$message) {
+  // Set special From params to work with SMTP Multiple module.
+  $from = $message['params']['headers']['From'] ?? $message['headers']['From'];
+  $from_name = '';
+  $from_email = $from;
+  if (preg_match('/^\s*(.*?)\s*<([^>]+)>\s*$/', $from, $matches)) {
+    $from_name = trim($matches[1], '" ');
+    $from_email = trim($matches[2]);
+  }
+  $message['params']['from_name'] = $from_name;
+  $message['params']['from_mail'] = $from_email;
+}
