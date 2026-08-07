@@ -394,7 +394,7 @@
             },
             "drupal/smtp_multiple": {
                 "3600575 - pass full message object in alter": "https://www.drupal.org/files/issues/2026-06-12/3600575-2.patch",
-                "3615319 - add UI and Key support": "https://www.drupal.org/files/issues/2026-08-06/3615319-3.patch"
+                "3615319 - add UI and Key support": "https://www.drupal.org/files/issues/2026-08-07/3615319-5.patch"
             },
             "drupal/XXXsmtp": {
                 "3134249 - Adds Key support": ""
