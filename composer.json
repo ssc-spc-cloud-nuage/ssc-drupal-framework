@@ -120,6 +120,7 @@
         "drupal/sitewide_alert": "3.0",
         "drupal/slick_views": "^2.8",
         "drupal/smtp": "^1.4",
+        "drupal/smtp_multiple": "2.x-dev",
         "drupal/social_link_field": "^2.1",
         "drupal/stringoverrides": "1.x-dev@dev",
         "drupal/subpathauto": "^1.4",
@@ -390,6 +391,13 @@
             },
             "drupal/views_data_export": {
                 "3173296 - fix batch mode crashing": "https://www.drupal.org/files/issues/2026-02-05/views_data_export-3173296-45.patch"
+            },
+            "drupal/smtp_multiple": {
+                "3600575 - pass full message object in alter": "https://www.drupal.org/files/issues/2026-06-12/3600575-2.patch",
+                "3615319 - add UI and Key support": "https://www.drupal.org/files/issues/2026-08-06/3615319-3.patch"
+            },
+            "drupal/XXXsmtp": {
+                "3134249 - Adds Key support": ""
             }
         },
         "patches-ignore": {
