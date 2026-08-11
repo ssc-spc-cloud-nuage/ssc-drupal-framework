@@ -394,7 +394,8 @@
             },
             "drupal/smtp_multiple": {
                 "3600575 - pass full message object in alter": "https://www.drupal.org/files/issues/2026-06-12/3600575-2.patch",
-                "3615319 - add UI and Key support": "https://www.drupal.org/files/issues/2026-08-07/3615319-5.patch"
+                "3615319 - add UI and Key support": "https://www.drupal.org/files/issues/2026-08-07/3615319-5.patch",
+                "local - fix per-address SMTP password key override": "./patches/smtp_multiple-local_password_key_override.patch"
             },
             "drupal/smtp": {
                 "3134249 - Adds Key support": "https://www.drupal.org/files/issues/2026-08-10/3134249-31-key_dependency.patch"
