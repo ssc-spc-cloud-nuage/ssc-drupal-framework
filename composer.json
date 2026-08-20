@@ -399,6 +399,9 @@
             },
             "drupal/smtp": {
                 "3134249 - Adds Key support": "https://www.drupal.org/files/issues/2026-08-10/3134249-31-key_dependency.patch"
+            },
+            "drupal/taxonomy_manager": {
+                "3572033 - Error adding terms": "https://www.drupal.org/files/issues/2026-06-16/taxonomy_manager-null-delimiter-3572033-5.patch"
             }
         },
         "patches-ignore": {
