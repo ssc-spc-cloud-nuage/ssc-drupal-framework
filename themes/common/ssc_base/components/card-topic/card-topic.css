@@ -19,8 +19,6 @@
   }
   & .card__summary {
     color: var(--clr-ssc-black);
-    font-size: 1rem;
-    line-height: 1.5rem;
   }
   & .card__summary p:last-of-type {
     margin-bottom: 0;
