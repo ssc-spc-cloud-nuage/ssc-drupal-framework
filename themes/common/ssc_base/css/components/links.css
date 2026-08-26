@@ -1,0 +1,17 @@
+/**
+ * @file
+ * Styles for links.
+ */
+
+/* External links */
+:is(.site-navigation, .site-footer) a:is([href^="http://"], [href^="https://"]) {
+  &::after {
+    position: relative;
+    bottom: 0.125em;
+    content: " \f35d";
+    font-family: var(--ff-font-awesome);
+    font-size: 0.825em;
+    font-weight: 900;
+    color: color-mix(in srgb, currentColor, transparent 50%);
+  }
+}
