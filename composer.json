@@ -117,7 +117,7 @@
         "drupal/restui": "^1.22",
         "drupal/s3fs": "^3.7",
         "drupal/search_api_autocomplete": "^1.10",
-        "drupal/sitewide_alert": "3.0",
+        "drupal/sitewide_alert": "^3.1.2",
         "drupal/slick_views": "^2.8",
         "drupal/smtp": "^1.4",
         "drupal/smtp_multiple": "2.x-dev",
@@ -377,8 +377,8 @@
                 "3352150 - Fix exception from certain Views handlers": "https://www.drupal.org/files/issues/2025-03-26/3352150-15--add_field_instance_dependencies.patch"
             },
             "drupal/sitewide_alert": {
-                "3524811 - Integrate revision diff support and ability to enable revision creation by default": "https://www.drupal.org/files/issues/2025-12-09/sitewide_alert-3524811-add-revision-support-15.diff",
-                "3612842 - expire page cache": "https://www.drupal.org/files/issues/2026-07-23/3612842-2.patch"
+                "3524811 - Integrate revision diff support and ability to enable revision creation by default": "https://www.drupal.org/files/issues/2026-05-21/sitewide_alert-3524811-add-revision-support-16.diff",
+                "3620515 - InvalidArgumentException deleting a translation (label() called on removed translation)": "https://www.drupal.org/files/issues/2026-09-02/sitewide_alert-3620515-2.patch"
             },
             "drupal/views_bulk_operations": {
                 "local - remove tmpstore items on cancel": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/empty_on_cancel-local.patch"
