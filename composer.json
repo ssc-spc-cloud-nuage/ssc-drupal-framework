@@ -9,8 +9,8 @@
         "ext-dom": "*",
         "ext-fileinfo": "*",
         "chi-teck/drupal-code-generator": "*",
-        "drupal/access_unpublished": "1.6.0",
-        "drupal/address": "2.0.2",
+        "drupal/access_unpublished": "^1.9",
+        "drupal/address": "^2.0.4",
         "drupal/address_static_map": "1.1.4",
         "drupal/administration_language_negotiation": "2.0.2",
         "drupal/adobe_analytics": "^1.0",
@@ -39,22 +39,22 @@
         "drupal/content_lock": "2.4.0",
         "drupal/core-recommended": "10.6.13",
         "drupal/css_editor": "^2",
-        "drupal/custom_breadcrumbs": "1.1.2",
-        "drupal/date_popup": "2.0.2",
+        "drupal/custom_breadcrumbs": "^1.1.3",
+        "drupal/date_popup": "^2.0.3",
         "drupal/daterange_compact": "2.1.1",
         "drupal/default_content_deploy": "^2.1.1",
-        "drupal/devel": "5.3.1",
-        "drupal/devel_entity_updates": "^4.2",
+        "drupal/devel": "^5.5",
+        "drupal/devel_entity_updates": "^5",
         "drupal/devel_kint_extras": "^1.1",
         "drupal/devel_php": "^1.7",
         "drupal/draggableviews": "2.1.4",
         "drupal/encrypt": "^3.2",
         "drupal/entity_clone": "^2.1@beta",
-        "drupal/entity_field_condition": "1.4",
+        "drupal/entity_field_condition": "^1.5",
         "drupal/entity_print": "^2.15",
         "drupal/entityform_block": "^1.0@alpha",
         "drupal/environment_indicator": "^4",
-        "drupal/eva": "3.1.1",
+        "drupal/eva": "^3.1.2",
         "drupal/extlink": "^2.0",
         "drupal/facets": "^3",
         "drupal/feeds": "^3.0@RC",
@@ -63,9 +63,9 @@
         "drupal/field_formatter_class": "^1.8",
         "drupal/field_permissions": "^1.4",
         "drupal/field_tools": "^1",
-        "drupal/flag": "4.0.0-beta7",
+        "drupal/flag": "^5",
         "drupal/focal_point": "^2.1",
-        "drupal/footnotes": "4.0.0-beta5",
+        "drupal/footnotes": "^4",
         "drupal/form_mode_manager": "^3.1",
         "drupal/fpa": "^4",
         "drupal/fvm": "^2.0",
@@ -89,17 +89,17 @@
         "drupal/layout_builder_lock": "^2.0@RC",
         "drupal/layout_builder_modal": "^2.0",
         "drupal/layout_builder_tabs": "^1.0",
-        "drupal/layout_library": "1.0-beta6",
+        "drupal/layout_library": "^1",
         "drupal/lb_tabs": "^3.0",
         "drupal/linkchecker": "^2.1@beta",
         "drupal/linkchecker_summary_mail": "^2.0@beta",
         "drupal/log_stdout": "^3.0",
-        "drupal/mail_redirect": "4.2.4",
+        "drupal/mail_redirect": "^4.2.6",
         "drupal/masquerade": "^2.0",
-        "drupal/maxlength": "^3.1",
+        "drupal/maxlength": "^3",
         "drupal/media_library_form_element": "^2.1",
         "drupal/media_library_theme_reset": "^2.0@beta",
-        "drupal/message": "1.8",
+        "drupal/message": "^1.9",
         "drupal/message_notify": "1.5",
         "drupal/message_subscribe": "^2.0",
         "drupal/metatag": "^2",
@@ -110,7 +110,6 @@
         "drupal/openid_connect": "3.x-dev",
         "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.4",
-        "drupal/phpmailer_smtp": "^2",
         "drupal/rabbit_hole": "^1.0",
         "drupal/readmore": "^2",
         "drupal/realname": "^2.0",
@@ -125,6 +124,7 @@
         "drupal/stringoverrides": "1.x-dev@dev",
         "drupal/subpathauto": "^1.4",
         "drupal/svg_image": "^3.2",
+        "drupal/svg_image_field": "^2.3",
         "drupal/svg_sanitizer": "^2.0",
         "drupal/taxonomy_manager": "^2.0",
         "drupal/telephone_formatter": "^1.3",
@@ -135,7 +135,7 @@
         "drupal/tour": "^2.0",
         "drupal/tour_extras": "^1.0",
         "drupal/tranc": "^1.0.5",
-        "drupal/translatable_menu_link_uri": "2.1.1",
+        "drupal/translatable_menu_link_uri": "^2.1",
         "drupal/twig_extensions": "^2.4",
         "drupal/twig_tweak": "^3.4",
         "drupal/ultimate_cron": "^2.0@beta",
@@ -145,7 +145,7 @@
         "drupal/views_autosubmit": "^1.6",
         "drupal/views_block_filter_block": "^2.1",
         "drupal/views_bulk_edit": "^3.0",
-        "drupal/views_bulk_operations": "4.3.4",
+        "drupal/views_bulk_operations": "^4",
         "drupal/views_current_path": "^3.0",
         "drupal/views_data_export": "^1.5",
         "drupal/views_field_view": "^1.0@beta",
@@ -232,7 +232,7 @@
                 "type:drupal-drush"
             ]
         },
-        "composer-exit-on-patch-failure": true,
+        "composer-exit-on-patch-failure": false,
         "enable-patching": true,
         "patchLevel": {
             "drupal/core": "-p2"
@@ -296,8 +296,7 @@
                 "3227907 - show EN current revision": "https://www.drupal.org/files/issues/2021-08-12/3227907-4-list-current-revision-all-translations.diff"
             },
             "drupal/entity_field_condition": {
-                "3364284 - Deprecated function: preg_match(): passing null.": "https://git.drupalcode.org/project/entity_field_condition/-/commit/c0cc0ed93723c7c85559ac327134c794d8c89ab7.patch",
-                "3091898 - provide field condition when context available (LB)": "https://www.drupal.org/files/issues/2023-11-11/3091898-43.patch",
+                "3091898 - provide field condition when context available (LB), trimmed to just add the FieldValue plugin (rest of -43 conflicts with 1.5.0 baseline)": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/entity_field_condition-add_fieldvalue_plugin.patch",
                 "local - fix above patch for FieldValue plugin": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/entity_field_condition-field_value.patch"
             },
             "drupal/entity_reference_revisions": {
@@ -307,14 +306,8 @@
             "drupal/entityform_block": {
                 "2424739 - Select form mode": "https://www.drupal.org/files/issues/2022-06-01/fixed_EntityContextDefinition.patch"
             },
-            "drupal/eva": {
-                "2024011 - don't add everywhere by default": "https://www.drupal.org/files/issues/2019-06-06/eva-hide_by_default-2024011-11.patch"
-            },
             "drupal/feeds": {
                 "3261687 - A stray renderRoot() invocation is causing bubbling of attached assets to break": "https://www.drupal.org/files/issues/2022-04-22/feeds-renderRoot-issue-3261687-5.patch"
-            },
-            "drupal/flag": {
-                "2723703 - views relationships": "https://www.drupal.org/files/issues/2021-02-22/2723703-73.patch"
             },
             "drupal/group": {
                 "3336280 - Fixes /admin/content page in certain scenarios.": "https://git.drupalcode.org/project/group/-/merge_requests/121.patch"
@@ -324,7 +317,7 @@
             },
             "drupal/layout_library": {
                 "3081497 - option to hide preview": "https://www.drupal.org/files/issues/2019-11-07/3081497_add-hide-content-preview-02.patch",
-                "3298697 - fixes issues saving layouts disabling LL": "https://www.drupal.org/files/issues/2026-05-27/layout_library-3298697-avoid-field-delete-for-inserts-10.diff"
+                "3298697 - fixes issues saving layouts disabling LL": "https://www.drupal.org/files/issues/2026-09-02/layout_library-3298697-11.patch"
             },
             "drupal/lb_tabs": {
                 "local - hide when empty": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb_tabs-hide_empty.patch",
@@ -379,9 +372,6 @@
             "drupal/sitewide_alert": {
                 "3524811 - Integrate revision diff support and ability to enable revision creation by default": "https://www.drupal.org/files/issues/2026-05-21/sitewide_alert-3524811-add-revision-support-16.diff",
                 "3620515 - InvalidArgumentException deleting a translation (label() called on removed translation)": "https://www.drupal.org/files/issues/2026-09-02/sitewide_alert-3620515-2.patch"
-            },
-            "drupal/views_bulk_operations": {
-                "local - remove tmpstore items on cancel": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/empty_on_cancel-local.patch"
             },
             "drupal/viewscss": {
                 "local - silence errors": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/viewscss-silence_errors.patch"
