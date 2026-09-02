@@ -1,0 +1,24 @@
+diff --git a/src/Form/OpenIDConnectClientFormBase.php b/src/Form/OpenIDConnectClientFormBase.php
+index fc76a39..d34c375 100644
+--- a/src/Form/OpenIDConnectClientFormBase.php
++++ b/src/Form/OpenIDConnectClientFormBase.php
+@@ -281,6 +281,7 @@ abstract class OpenIDConnectClientFormBase extends EntityForm {
+         return Url::fromRoute('openid_connect.redirect_controller_redirect', $route_parameters, [
+           'absolute' => TRUE,
+           'language' => $this->languageManager->getLanguage(LanguageInterface::LANGCODE_NOT_APPLICABLE),
++          'path_processing' => FALSE,
+         ])->toString();
+       }
+       catch (InvalidParameterException $e) {
+diff --git a/src/Plugin/OpenIDConnectClientBase.php b/src/Plugin/OpenIDConnectClientBase.php
+index 006318e..50ace16 100644
+--- a/src/Plugin/OpenIDConnectClientBase.php
++++ b/src/Plugin/OpenIDConnectClientBase.php
+@@ -517,6 +517,7 @@ abstract class OpenIDConnectClientBase extends PluginBase implements OpenIDConne
+     $options += [
+       'absolute' => TRUE,
+       'language' => $this->languageManager->getLanguage(LanguageInterface::LANGCODE_NOT_APPLICABLE),
++      'path_processing' => FALSE,
+     ];
+     return Url::fromRoute('openid_connect.redirect_controller_redirect', $route_parameters, $options);
+   }
