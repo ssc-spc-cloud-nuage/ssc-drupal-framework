@@ -347,7 +347,7 @@
             "drupal/openid_connect": {
                 "local - add login redirect hook": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/openid_connect-login_redirect_alter.patch",
                 "3375886 - Squelch noise about iss_allowed_domains": "https://git.drupalcode.org/project/openid_connect/-/merge_requests/86.patch",
-                "local (3383036) - remove lang prefix from redirect url": "./patches/openid_connect-3383036-36-3.0-alpha9.patch"
+                "local (3383036) - remove lang prefix from redirect url": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/openid_connect-3383036-36-3.0-alpha9.patch"
             },
             "drupal/openid_connect_windows_aad": {
                 "3189492 - Windows AAD userinfo 'email' property": "https://www.drupal.org/files/issues/2023-10-18/3189492-windows-aad-userinfo-12.patch",
