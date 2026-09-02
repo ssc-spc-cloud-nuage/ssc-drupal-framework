@@ -1,0 +1,474 @@
+diff --git a/src/Plugin/Condition/FieldValue.php b/src/Plugin/Condition/FieldValue.php
+new file mode 100644
+index 0000000..a6ab639
+--- /dev/null
++++ b/src/Plugin/Condition/FieldValue.php
+@@ -0,0 +1,468 @@
++<?php
++
++namespace Drupal\entity_field_condition\Plugin\Condition;
++
++use Drupal\Core\Ajax\AjaxResponse;
++use Drupal\Core\Ajax\ReplaceCommand;
++use Drupal\Core\Condition\ConditionPluginBase;
++use Drupal\Core\Entity\EntityFieldManagerInterface;
++use Drupal\Core\Entity\EntityTypeManagerInterface;
++use Drupal\Core\Entity\FieldableEntityInterface;
++use Drupal\Core\Form\FormStateInterface;
++use Drupal\Core\Form\SubformStateInterface;
++use Drupal\Core\Messenger\MessengerTrait;
++use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
++use Drupal\Core\Plugin\Context\EntityContext;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++
++/**
++ * Pass checks if entity's field value equal to defined value.
++ *
++ * @Condition(
++ *   id = "field_value",
++ *   label = @Translation("Field Value"),
++ *   description = @Translation("Allows to select entity field & value."),
++ *   is_multistep = TRUE,
++ *   context_definitions = {
++ *     "entity" = @ContextDefinition(
++ *       "entity",
++ *       required = TRUE,
++ *       label = @Translation("entity")
++ *     )
++ *   }
++ * )
++ */
++class FieldValue extends ConditionPluginBase implements ContainerFactoryPluginInterface {
++
++  use MessengerTrait;
++
++  /**
++   * @var mixed
++   *   Entity field's value to test against.
++   */
++  protected $value;
++
++  /**
++   * @var string
++   *   Entity field.
++   */
++  protected $entity_field;
++
++  /**
++   * The entity type manager.
++   *
++   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
++   */
++  protected $entityTypeManager;
++
++  /**
++   * The entity field manager.
++   *
++   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
++   */
++  protected $entityFieldManager;
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
++    return new static(
++      $configuration,
++      $plugin_id,
++      $plugin_definition,
++      $container->get('entity_type.manager'),
++      $container->get('entity_field.manager')
++    );
++  }
++
++  /**
++   * Creates a new ExampleCondition instance.
++   *
++   * @param array $configuration
++   *   The plugin configuration, i.e. an array with configuration values keyed
++   *   by configuration option name. The special key 'context' may be used to
++   *   initialize the defined contexts by setting it to an array of context
++   *   values keyed by context names.
++   * @param string $plugin_id
++   *   The plugin_id for the plugin instance.
++   * @param mixed $plugin_definition
++   *   The plugin implementation definition.
++   * @param EntityTypeManagerInterface $entity_type_manager
++   *   The entity type manager.
++   * @param EntityFieldManagerInterface $entity_field_manager
++   *   The entity field manager.
++   */
++  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager = NULL, EntityFieldManagerInterface $entity_field_manager = NULL) {
++    parent::__construct($configuration, $plugin_id, $plugin_definition);
++    $this->entityTypeManager = $entity_type_manager;
++    $this->entityFieldManager = $entity_field_manager;
++
++    $this->entity_field = $this->configuration['field'];
++    $this->value = $this->configuration['value'];
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
++    // This method receives a sub form state instead of the full form state.
++    // There is an ongoing discussion around this which could result in the
++    // passed form state going back to a full form state. In order to prevent
++    // future breakage because of a core update we'll just check which type of
++    // FormStateInterface we've been passed and act accordingly.
++    // @See https://www.drupal.org/node/2798261
++    if ($form_state instanceof SubformStateInterface) {
++      $form_state = $form_state->getCompleteFormState();
++    }
++
++    // For cases with ajax multistep popup, provided by ctools & layout_library
++    // use POST data inter requests value to avoid useless form rebuilding.
++    $user_input = $form_state->getUserInput();
++
++    switch (TRUE) {
++      case !empty($user_input['entity_fields']):
++        $field_name = $user_input['entity_fields'];
++        break;
++
++      case !empty($user_input['settings']['entity_fields']):
++        $field_name = $user_input['settings']['entity_fields'];
++        break;
++
++      case !empty($form_state->getValue('entity_fields')):
++        $field_name = $form_state->getValue('entity_fields');
++        break;
++
++      case !empty($form_state->getValue('settings')['entity_fields']):
++        $field_name = $form_state->getValue('settings')['entity_fields'];
++        break;
++
++      case (!empty($user_input['field']) && $field_name = $user_input['field']):
++      case ($field_name = $this->entity_field):
++        break;
++    }
++
++    if ($field_name && !empty($user_input['field']) && $user_input['field'] !== $field_name) {
++      $field_name = $user_input['field'];
++    }
++
++    // Temporary fix for ctools context issue with ManageCondition form.
++    try {
++      $entity = $this->getContextValue('entity');
++    }
++    catch (\Exception $e) {
++      $contexts = $form_state->getTemporaryValue('gathered_contexts');
++      if (!empty($contexts['entity']) && $contexts['entity'] instanceof EntityContext) {
++        $this->setContext('entity', $contexts['entity']);
++      }
++      elseif (!empty($contexts['layout_builder.entity'])) {
++        $this->setContext('entity', $contexts['layout_builder.entity']);
++      }
++
++      try {
++        $entity = $this->getContextValue('entity');
++      }
++      catch (\Exception $e) {
++        return [
++          '#type' => 'markup',
++          '#markup' => $this->t('error: context "entity" is missing.'),
++        ];
++      }
++    }
++
++    $entity_type = $entity->getEntityTypeId();
++    $bundle = $entity->bundle();
++
++    $is_back_op = !empty($user_input['_triggering_element_name'])
++      && $user_input['_triggering_element_name'] === 'back';
++
++    if (!empty($field_name) && !$is_back_op) {
++      $this->entity_field = $field_name;
++
++      // Provide previous step fields for multistep ajax forms.
++      $form['field'] = [
++        '#type' => 'hidden',
++        '#value' => $field_name,
++      ];
++
++      $form['#title'] = $this->t('Select a value for chosen field');
++      $stub_entity = $this->entityTypeManager->getStorage($entity_type)->create([
++        'type' => $bundle,
++      ]);
++
++      $form_state->set('entity', $stub_entity);
++
++      /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $form_display */
++      $form_display = $this->entityTypeManager->getStorage('entity_form_display')
++        ->load("{$entity_type}.{$bundle}.default");
++
++      if ($form_display) {
++        $form_state->set('form_display', $form_display);
++
++        if ($component = $form_display->getComponent($field_name)) {
++          $widget = $form_display->getRenderer($field_name);
++          if (!$widget) {
++            $this->messenger()->addWarning($this->t('Logic could not render entity field widget'));
++          }
++          else {
++            $items = $entity->get($field_name);
++            if ($this->value && $this->entity_field === $field_name) {
++              $items->setValue($this->value);
++            }
++            $items->filterEmptyItems();
++            $form['#parents'] = [];
++            $form['value'] = $widget->form($items, $form, $form_state);
++          }
++        }
++      }
++
++      if (empty($form['value'])) {
++        $form = $this->buildTextValueForm($form, $form_state);
++      }
++
++      $form['value_is_null'] = [
++        '#type' => 'checkbox',
++        '#title' => $this->t('Is NULL'),
++        '#default_value' => $this->configuration['value_is_null'],
++      ];
++
++      $form['actions']['back'] = [
++        '#type' => 'submit',
++        '#name' => 'back',
++        '#value' => $this->t('Back'),
++        '#ajax' => [
++          'callback' => [$this, 'ajaxBack'],
++        ],
++        '#submit' => [$this, 'submitBack'],
++      ];
++
++      $form_state->setRebuild();
++    }
++    else {
++      $entity_fields = $this->entityFieldManager->getFieldDefinitions($entity_type, $bundle);
++
++      $options = [];
++
++      foreach ($entity_fields as $key => $field) {
++        $options[$key] = $field->getName();
++      }
++
++      $form['#title'] = $this->t('Select a entity field');
++      $form['entity_fields'] = [
++        '#type' => 'select',
++        '#chosen' => FALSE,
++        '#options' => $options,
++        '#default_value' => $user_input['field'] ?? $this->configuration['field'],
++        '#title' => $this->t('Entity Field'),
++        '#description' => $this->t('Choose the entity field that will be used for this selection rule.'),
++      ];
++
++      if ($is_back_op) {
++        // Allow to rebuild the form in ajax.
++        $form_state->setRebuild();
++      }
++      $strip_first_step_fields = TRUE;
++    }
++
++    $form = parent::buildConfigurationForm($form, $form_state);
++
++    $context_mapping = !empty($user_input['settings']['context_mapping']) ?$user_input['settings']['context_mapping'] : [];
++    foreach ($context_mapping as $item => $value) {
++      if (!empty($form['context_mapping'][$item])) {
++        $form['context_mapping'][$item]['#default_value'] = $value;
++      }
++    }
++
++    if (!empty($strip_first_step_fields)) {
++      unset($form['negate']);
++      $form['submit']['#value'] = $this->t('Continue');
++    }
++
++    return $form;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function buildTextValueForm(array $form, FormStateInterface $form_state) {
++    $form['is_simple_value'] = [
++      '#type' => 'hidden',
++      '#value' => '1',
++    ];
++
++    $form['value'] = [
++      '#type' => 'textfield',
++      '#title' => $this->t('Value'),
++      '#description' => $this->t(
++        'Select value for selected field :field',
++        [':field' => $form_state->getValue('settings')['entity_fields']]
++      ),
++      '#default_value' => $this->getValue()[0]['value'] ?? '',
++    ];
++
++    return $form;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function ajaxBack(array $form, FormStateInterface $form_state) {
++    $response = new AjaxResponse();
++
++    $selector = "form.{$form['#form_id']}";
++    $response->addCommand(new ReplaceCommand($selector, $form));
++    return $response;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
++    $field_name = $form_state->getValue('entity_fields');
++    $value = $form_state->getValue('value');
++    if (!empty($field_name)) {
++      $form_state->setRebuild(TRUE);
++      return;
++    }
++
++    if ($form_state->getValue('is_simple_value')) {
++      $value = ['0' => ['value' => $value]];
++    }
++
++    if (empty($value) && $this->getEntityField() && ($field_value = $form_state->getValue($this->getEntityField()))) {
++      if (is_array($field_value) && !isset($field_value[0])) {
++        $value = [0 => $field_value];
++      }
++      else {
++        $value = $field_value;
++      }
++    }
++
++    if (!empty($value)) {
++      $this->value = $value;
++
++      $this->configuration['value_is_null'] = $form_state->getValue('value_is_null');
++      $this->configuration['field'] = $this->getEntityField();
++      $this->configuration['value'] = $value;
++      $entity = $this->getContextValue('entity');
++      $this->configuration['entity_type_id'] = $entity->getEntityTypeId();
++      $this->configuration['bundle'] = $entity->bundle();
++    }
++
++    parent::submitConfigurationForm($form, $form_state);
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function defaultConfiguration() {
++    return [
++      'entity_type_id' => '',
++      'bundle' => '',
++      'field' => '',
++      'value_is_null' => '',
++      'value' => '',
++    ] + parent::defaultConfiguration();
++  }
++
++  /**
++   * Unset unwanted keys from array recursively.
++   *
++   * @param $array
++   * @param $unwanted_key
++   */
++  protected function recursive_unset(&$array, $unwanted_key) {
++    unset($array[$unwanted_key]);
++    foreach ($array as &$value) {
++      if (is_array($value)) {
++        $this->recursive_unset($value, $unwanted_key);
++      }
++    }
++  }
++
++  /**
++   * Converts ints to strings recursively.
++   *
++   * @param $array
++   */
++  protected function recursive_ints_to_strings(&$array) {
++    foreach ($array as &$value) {
++      if (is_array($value)) {
++        $this->recursive_ints_to_strings($value);
++      }
++      elseif (is_numeric($value)) {
++        $value = (string) $value;
++      }
++    }
++  }
++
++  /**
++   * Evaluates the condition and returns TRUE or FALSE accordingly.
++   *
++   * @return bool
++   *   TRUE if the condition has been met, FALSE otherwise.
++   *
++   * @throws \Drupal\Component\Plugin\Exception\PluginException
++   */
++  public function  evaluate() {
++    if (empty($this->configuration['field']) && !$this->isNegated()) {
++      return TRUE;
++    }
++
++    $entity = $this->getContextValue('entity');
++    $field = $this->configuration['field'];
++
++    if ($entity instanceof FieldableEntityInterface) {
++      $value = $entity->{$field}->getValue();
++
++      // Drop garbage attributes that added dynamically.
++      $this->recursive_unset($value, '_loaded');
++      $this->recursive_unset($value, '_attributes');
++      $this->recursive_unset($value, '_accessCacheability');
++      $value_to_compare = $value;
++
++      // Compare if null.
++      if ($this->configuration['value_is_null']) {
++        return is_null($value_to_compare);
++      }
++      // Regular comparison.
++      $specified_value = $this->configuration['value'];
++      if (is_array($specified_value)) {
++        $this->recursive_ints_to_strings($specified_value);
++      }
++
++      return $value_to_compare === $specified_value;
++    }
++
++    return FALSE;
++  }
++
++  /**
++   * Provides a human readable summary of the condition's configuration.
++   */
++  public function summary() {
++    // Field.
++    $field = $this->configuration['field'];
++
++    return t('field "@field" is @negate"@value"', [
++      '@field' => $field_label ?? $field,
++      '@negate' => $this->isNegated() ? 'NOT ' : '',
++      '@value' => !empty($this->configuration['value_is_null']) ? 'NULL'
++        : json_encode($this->configuration['value']),
++    ]);
++  }
++
++  /**
++   * {@inheritDoc}
++   */
++  public function getValue() {
++    return $this->value;
++  }
++
++  /**
++   * {@inheritDoc}
++   */
++  public function getEntityField() {
++    return $this->entity_field;
++  }
++
++}
