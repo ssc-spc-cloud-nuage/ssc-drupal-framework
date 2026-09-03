@@ -31,6 +31,7 @@
         "drupal/ckwordcount": "2.1.0",
         "drupal/coder": "*",
         "drupal/color_field": "3.0.2",
+        "drupal/condition_path": "^3.0",
         "drupal/conditional_fields": "^4.0.1",
         "drupal/config_filter": "2.7.0",
         "drupal/config_ignore": "^3.3",
@@ -110,6 +111,7 @@
         "drupal/openid_connect": "^3",
         "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.4",
+        "drupal/page_manager": "4.0 as 4.0-rc2",
         "drupal/rabbit_hole": "^1.0",
         "drupal/readmore": "^2",
         "drupal/realname": "^2.0",
@@ -354,7 +356,7 @@
                 "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2025-11-05/openid_connect_windows_aad-User_photo_submodule-3273039-11.patch"
             },
             "drupal/page_manager": {
-                "3176661 - support page titles": "https://www.drupal.org/files/issues/2022-11-15/page_manager-lb-title-3176661-15.patch",
+                "3176661 - support page titles": "https://git.drupalcode.org/project/page_manager/-/merge_requests/45.diff",
                 "3438993 - mandatory parameters missing for route entity.page.devel_load": "https://www.drupal.org/files/issues/2024-08-14/page-manager-3438993-MR34-24.patch"
             },
             "drupal/paragraphs": {
@@ -396,30 +398,8 @@
         },
         "patches-ignore": {
             "drupalwxt/wxt": {
-                "drupal/diff": {
-                    "Enter drupal/diff patch #3004705 description here": "https://www.drupal.org/files/issues/2018-12-03/ModerationState-error-of-translated-node-in-revision-overview-page-3004705-4.patch",
-                    "Enter drupal/diff patch #3228798 description here": "https://www.drupal.org/files/issues/2021-08-19/diff-a11y-3228798-10.patch",
-                    "Enter drupal/diff patch #2844337 description here": "https://www.drupal.org/files/issues/diff-remove-thumbnails-errors-2844337-17.patch",
-                    "Enter drupal/diff patch #2834253 description here": "https://www.drupal.org/files/issues/2021-08-19/diff-missing-column-headers-2834253-15.patch",
-                    "Enter drupal/diff patch #3183380 description here": "https://www.drupal.org/files/issues/2020-11-19/3183380-add-compare-revisions.patch"
-                },
-                "drupal/entity_embed": {
-                    "3272732 - CKE5 compatibility": "https://www.drupal.org/files/issues/2023-06-19/entity_embed-3272732-93.patch"
-                },
                 "drupal/fontawesome": {
                     "3071758 - Fix multiple icons issue": "https://git.drupalcode.org/project/fontawesome/-/merge_requests/4.diff"
-                },
-                "drupal/entity_browser": {
-                    "3350169 - Fix PHP 8.2 deprecation issue with WidgetSelectorBase-class":
-                    "https://www.drupal.org/files/issues/2023-06-15/3350169-8_0.patch"
-                },
-                "drupal/password_policy": {
-                    "Enter drupal/password_policy patch #3362201 description here":
-                    "https://www.drupal.org/files/issues/2023-05-23/password_policy-d10.patch"
-                },
-                "drupal/migrate_plus": {
-                    "3404491 - [PHP 8.2] Call to deprecated function utf8_encode() at ./src/Plugin/migrate_plus/data_parser/Json.php Line 42":
-                    "https://www.drupal.org/files/issues/2023-11-27/migrate-plus-php82-warning.patch"
                 },
                 "drupal/webform": {
                     "Enter drupal/webform patch #3205860 description here": "https://www.drupal.org/files/issues/2021-03-26/webform_clientside_validation-3205860-2.patch"
@@ -429,6 +409,12 @@
                     "https://git.drupalcode.org/project/layout_builder_st/-/merge_requests/6.diff",
                     "3411037 - Fix core removing contextual translation links":
                     "https://www.drupal.org/files/issues/2025-05-14/3411037-contextual-links-removed-from-core-26.patch"
+                },
+                "drupal/page_manager": {
+                    "Enter drupal/page_manager patch #2710169 description here":
+                    "https://www.drupal.org/files/issues/page_manager-block-css-attributes-9.patch",
+                    "Enter drupal/page_manager patch #2752227 description here":
+                    "https://www.drupal.org/files/issues/2021-04-14/2752227-47.patch"
                 }
             }
         }
