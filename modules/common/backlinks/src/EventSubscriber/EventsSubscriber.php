@@ -61,7 +61,7 @@ class EventsSubscriber implements EventSubscriberInterface {
       if (!count($view->result)) return;
 
       $rendered = $view->render();
-      $output = \Drupal::service('renderer')->renderPlain($rendered);
+      $output = \Drupal::service('renderer')->renderInIsolation($rendered);
       \Drupal::messenger()
         ->addMessage($output, 'warning', FALSE);
     }

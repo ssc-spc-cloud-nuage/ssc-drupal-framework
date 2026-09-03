@@ -15,7 +15,6 @@
         "drupal/administration_language_negotiation": "2.0.2",
         "drupal/adobe_analytics": "^1.0",
         "drupal/adv_varnish": "4.0.13",
-        "drupal/advagg": "^6",
         "drupal/ape": "^1.6",
         "drupal/auto_entitylabel": "^3.4",
         "drupal/azure_key_vault": "^1.0",

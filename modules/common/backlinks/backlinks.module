@@ -45,7 +45,7 @@ function backlinks_node_insert(Node $node) {
   backlinks_node_update($node);
 }
 
-function _update_backlinks(Node $node, $langcode = NULL) {
+function update_backlinks(Node $node, $langcode = NULL) {
   if (!$langcode) {
     $langcode = $node->language()->getId();
   }
@@ -202,7 +202,7 @@ function backlinks_cron() {
       // This should not happen anymore as Q cleanup added to _delete hook.
       if ($node) {
         // Scan for links.
-        _update_backlinks($node, $result->langcode);
+        update_backlinks($node, $result->langcode);
         // Need to still process FR even if no FR item added to Q due to deleted Paragraphs issue.
         // So if we ae processing EN record and there is no equivalent FR record; then run as FR.
         if ($result->langcode == 'en') {
@@ -221,7 +221,7 @@ function backlinks_cron() {
         if (!in_array($nid, $fr)) {
           $node = Node::load($nid);
           if ($node) {
-            _update_backlinks($node, 'fr');
+            update_backlinks($node, 'fr');
           }
         }
       }
