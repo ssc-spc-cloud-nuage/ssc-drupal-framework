@@ -2,6 +2,7 @@
 
 namespace Drupal\ssc_common\Controller;
 
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -58,7 +59,7 @@ class Http404Controller extends ControllerBase implements ContainerInjectionInte
     $view->setDisplay($display_id);
     $view->initHandlers();
 
-    $form_state = new \Drupal\Core\Form\FormState();
+    $form_state = new FormState();
     $form_state->setFormState([
       'view' => $view,
       'display' => $view->display_handler->display,

@@ -19,8 +19,8 @@ class SSCTwig extends AbstractExtension {
 
   public function getFilters() {
     return [
-      new TwigFilter('is_news', [$this, 'isNews']),
-      new TwigFilter('time_ago', [$this, 'timeAgo']),
+      new TwigFilter('is_news', $this->isNews(...)),
+      new TwigFilter('time_ago', $this->timeAgo(...)),
     ];
   }
 

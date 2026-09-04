@@ -69,7 +69,7 @@ function ssc_common_requirements($phase): array {
 
       $requirements['ssc-plus'] = [
         'title' => t('SSC'),
-        'value' => \Drupal::service('renderer')->renderPlain($build),
+        'value' => \Drupal::service('renderer')->renderInIsolation($build),
         'severity' => REQUIREMENT_INFO,
       ];
     }

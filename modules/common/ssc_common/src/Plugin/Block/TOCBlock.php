@@ -2,6 +2,7 @@
 
 namespace Drupal\ssc_common\Plugin\Block;
 
+use Drupal\node\NodeInterface;
 use Drupal\Core\Block\Annotation\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -57,7 +58,7 @@ class TOCBlock extends BlockBase {
     $toc_type_id = $this->configuration['toc_type'];
 
     $node = \Drupal::routeMatch()->getParameter('node');
-    if (!($node instanceof \Drupal\node\NodeInterface)) {
+    if (!($node instanceof NodeInterface)) {
       return [
         '#markup' => $this->t('TOC (' . $toc_type_id . '): Not a NODE page') // , ['%type' => $toc_type_id]) not passing in var ??,
       ];

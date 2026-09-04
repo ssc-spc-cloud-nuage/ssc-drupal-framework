@@ -159,8 +159,9 @@ class LanguageSwitcherBlock extends LanguageBlock {
    */
   private function getTranslatedPath($report_path, $langcode) {
     $storage = \Drupal::entityTypeManager()->getStorage('pbi_report');
-    $query = $storage->getQuery();
-    $query->condition('path', $report_path);
+    $query = $storage->getQuery()
+      ->condition('path', $report_path)
+      ->accessCheck(FALSE);
     $entity_ids = $query->execute();
 
     if ($entity_ids) {

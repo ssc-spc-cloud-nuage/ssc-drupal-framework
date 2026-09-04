@@ -2,6 +2,8 @@
 
 namespace Drupal\ssc_common\Plugin\Filter;
 
+use Drupal\Component\Utility\DeprecationHelper;
+use Drupal\Core\StringTranslation\ByteSizeMarkup;
 use Drupal\Component\Utility\Html;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
@@ -90,7 +92,7 @@ class FileMeta extends FilterBase {
       }
 
       $file = reset($files) ?: NULL;
-      $filesize = format_size($file->getSize());
+      $filesize = ByteSizeMarkup::create($file->getSize());
       $size_bits = explode(' ', $filesize);
       // Drupal's stored mimetype is stupidly based on file extension; so use PHP function.
       $filemime = mime_content_type($uri);

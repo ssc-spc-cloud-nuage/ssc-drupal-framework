@@ -39,11 +39,10 @@ class DateFormatter extends \Drupal\Core\Datetime\DateFormatter {
     }
 
     // Create a DrupalDateTime object from the timestamp and timezone.
-    $create_settings = [
+    $settings = [
       'langcode' => $langcode,
-      'country' => $this->country(),
     ];
-    $date = DrupalDateTime::createFromTimestamp($timestamp, $this->timezones[$timezone], $create_settings);
+    $date = DrupalDateTime::createFromTimestamp($timestamp, $this->timezones[$timezone], $settings);
 
     // If we have a non-custom date format use the provided date format pattern.
     if ($type !== 'custom') {
@@ -60,9 +59,6 @@ class DateFormatter extends \Drupal\Core\Datetime\DateFormatter {
     }
 
     // Call $date->format().
-    $settings = [
-      'langcode' => $langcode,
-    ];
     return $date->format($format, $settings);
   }
 

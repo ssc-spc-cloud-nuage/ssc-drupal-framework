@@ -2,6 +2,7 @@
 
 namespace Drupal\ssc_common\Plugin\views\field;
 
+use Drupal\Core\Routing\RouteMatch;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
@@ -79,7 +80,7 @@ class Breadcrumbs extends FieldPluginBase {
       $attributes = $router->matchRequest($request);
       $request->attributes->add($attributes);
 
-      $route_match = \Drupal\Core\Routing\RouteMatch::createFromRequest($request);
+      $route_match = RouteMatch::createFromRequest($request);
       $breadcrumb = $this->breadcrumbBuilder->build($route_match);
 
       $links = $breadcrumb->getLinks();

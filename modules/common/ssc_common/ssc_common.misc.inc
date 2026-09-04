@@ -5,7 +5,7 @@
  *
  * - used with _post_update to copy trimmed Body to Summary
  */
-
+use Drupal\views\Views;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
@@ -136,7 +136,7 @@ function get_landing_pages() {
     $landing_pages = $cache->data;
   }
   else {
-    $view = \Drupal\views\Views::getView('landing_pages');
+    $view = Views::getView('landing_pages');
     $view->setDisplay('default');
     $view->execute();
 
