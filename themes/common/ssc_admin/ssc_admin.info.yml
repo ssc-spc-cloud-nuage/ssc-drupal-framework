@@ -3,7 +3,7 @@ type: theme
 base theme: claro
 description: A custom SSC admin theme based on Claro.
 package: SSC
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 libraries:
   - ssc_admin/global
 regions:
