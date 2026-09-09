@@ -1,0 +1,11 @@
+--- a/src/Form/EntityRevisionOverviewForm.php
++++ b/src/Form/EntityRevisionOverviewForm.php
+@@ -177,7 +177,7 @@
+         $row['select_column_one'] = $this->buildSelectColumn('radios_left', $vid, $is_default_vid ? FALSE : $vids[1]);
+         $row['select_column_two'] = $this->buildSelectColumn('radios_right', $vid, $is_default_vid ? $vid : FALSE);
+       }
+-      if ($is_default_vid) {
++      if ($is_current_revision) {
+         $row['operations'] = [
+           '#prefix' => '<em>',
+           '#markup' => $this->t('Current revision'),
