@@ -72,13 +72,17 @@ function ssc_common_token_info(): array {
     'description' =>  t('Value from path_slug field if available or node title.'),
   ];
 
-  // Add dynamic LP NID tokens for use in Custom Breadcrumbs and elsewhere.
+  // Add dynamic LP NID and title tokens for use in Custom Breadcrumbs and elsewhere.
   $landing_pages = get_landing_pages();
   foreach ($landing_pages as $bundle => $nid) {
     $bundle_label = ucwords(str_replace('_', ' ', $bundle));
     $info['tokens']['site'][$bundle . '-landing_page-nid'] = [
       'name' => t($bundle_label . ' Landing Page NID'),
       'description' => t('The NID of the ' . $bundle_label . ' Landing Page.'),
+    ];
+    $info['tokens']['site'][$bundle . '-landing_page-title'] = [
+      'name' => t($bundle_label . ' Landing Page title'),
+      'description' => t('The title of the ' . $bundle_label . ' Landing Page.'),
     ];
   }
 
@@ -114,7 +118,7 @@ function ssc_common_token_info(): array {
 /**
  * Implements hook_tokens().
  */
-function  ssc_common_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata): array|string {
+function ssc_common_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata): array|string {
   $replacements = [];
   switch ($type) {
     case 'node':
@@ -160,9 +164,25 @@ function  ssc_common_tokens($type, $tokens, array $data, array $options, Bubblea
       foreach ($tokens as $name => $original) {
         // Find the desired token by name.
         if (stristr($name, 'landing_page-nid')) {
-          $landing_pages = get_landing_pages();
           $bundle = str_replace('-landing_page-nid', '', $name);
+          $landing_pages = get_landing_pages();
           $replacements[$original] = $landing_pages[$bundle] ?? NULL;
+        }
+        elseif (stristr($name, 'landing_page-title')) {
+          $bundle = str_replace('-landing_page-title', '', $name);
+          $language_manager = \Drupal::languageManager();
+          $lang = $language_manager
+            ->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)
+            ->getId();
+          $landing_pages = get_landing_pages();
+          $nid = $landing_pages[$bundle] ?? NULL;
+          $node = Node::load($nid);
+
+          if ($node->hasTranslation($lang)) {
+            $node = $node->getTranslation($lang);
+          }
+
+          $replacements[$original] = $node->getTitle();
         }
       }
       break;
