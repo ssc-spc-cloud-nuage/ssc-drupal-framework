@@ -781,28 +781,34 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
   $variables['#cache']['contexts'][] = 'languages:language_content';
 
   $view = $variables['view'];
-
-  if ($view->id() !== 'header_pieces' && $view->id() !== 'newsletter_header_pieces' && $view->id() !== 'revision_header_pieces') {
-    return;
-  }
-
   $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
 
-  // Ensure the language is french.
-  if ($language !== 'fr') {
-    return;
-  }
+  // Fix 1st of the month in FR.
+  $views = [
+    'header_pieces',
+    'newsletter_header_pieces',
+    'revision_header_pieces',
+  ];
+  if (in_array($view->id(), $views)) {
+    // Ensure the language is French.
+    if ($language !== 'fr') {
+      return;
+    }
 
-  $field_val = $variables['field'];
+    $field_val = $variables['field'];
 
-  // Verify our dateline field exists.
-  if ($field_val->options['id'] == 'field_dateline__revision_id') {
-    $dateline_field_entity = $variables['row']->_entity;
-    $date_field = new \DateTime($dateline_field_entity->get('field_dateline')->value); // Convert the value into a DateTime.
+    // Verify our dateline field exists.
+    if ($field_val->options['id'] == 'field_dateline__revision_id') {
+      $dateline_field_entity = $variables['row']->_entity;
+      // Convert the value into a DateTime.
+      $date_field = new \DateTime($dateline_field_entity->get('field_dateline')->value);
 
-    // Make sure it's the first of the month before transforming the output.
-    if ($date_field->format('j') == 1) {
-      $variables['output'] = 'Le 1er '.\Drupal::service('date.formatter')->format($date_field->getTimestamp(),'custom','F Y',NULL,'fr'); // Change the outputted value to show 'Le 1er M Y'
+      // Make sure it's the first of the month before transforming the output.
+      if ($date_field->format('j') == 1) {
+        // Change the outputted value to show 'Le 1er M Y'.
+        $variables['output'] = 'Le 1er ' . \Drupal::service('date.formatter')
+            ->format($date_field->getTimestamp(), 'custom', 'F Y', NULL, 'fr');
+      }
     }
   }
 
