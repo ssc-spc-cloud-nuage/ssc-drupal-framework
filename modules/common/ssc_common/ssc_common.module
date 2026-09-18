@@ -807,11 +807,7 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
       // Make sure it's the first of the month before transforming the output.
       if ($date_field->format('j') == 1) {
         // Change the outputted value to show 'Le 1er'.
-        $variables['output'] = Markup::create(str_replace(
-          'Le 1 ',
-          'Le 1er ',
-          $variables['output']
-        ));
+        $variables['output'] = Markup::create(str_replace('Le 1 ', 'Le 1er ', $variables['output']));
       }
     }
   }
