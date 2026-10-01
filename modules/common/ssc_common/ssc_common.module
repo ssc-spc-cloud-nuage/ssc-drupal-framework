@@ -781,6 +781,7 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
   // Target specific view and field.
   $variables['#cache']['contexts'][] = 'languages:language_content';
 
+  \Drupal::logger('ssc-framework')->info("The view is %view", ['%view'=>$variables['view']->id()]);
   $view = $variables['view'];
   $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
 
@@ -789,6 +790,7 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
     'header_pieces',
     'newsletter_header_pieces',
     'revision_header_pieces',
+    'news_teaser'
   ];
   if (in_array($view->id(), $views)) {
     // Ensure the language is French.
@@ -799,7 +801,7 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
     $field_val = $variables['field'];
 
     // Verify the dateline field exists.
-    if ($field_val->options['id'] == 'field_dateline__revision_id') {
+    if ($field_val->options['id'] == 'field_dateline__revision_id' || $field_val->options['id'] == 'field_dateline') {
       $dateline_field_entity = $variables['row']->_entity;
       // Convert the value into a DateTime.
       $date_field = new \DateTime($dateline_field_entity->get('field_dateline')->value);
