@@ -781,7 +781,6 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
   // Target specific view and field.
   $variables['#cache']['contexts'][] = 'languages:language_content';
 
-  \Drupal::logger('ssc-framework')->info("The view is %view", ['%view'=>$variables['view']->id()]);
   $view = $variables['view'];
   $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
 
