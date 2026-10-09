@@ -410,7 +410,7 @@
             "drupal/taxonomy_manager": {
                 "3572033 - Error adding terms": "https://www.drupal.org/files/issues/2026-06-16/taxonomy_manager-null-delimiter-3572033-5.patch"
             },
-            "drupal/ckeditor_detailsr": {
+            "drupal/ckeditor_details": {
                 "3244311 - Allow <details> element to be placed without <div>": "https://git.drupalcode.org/-/project/60374/uploads/a05e4f5b40e2c77f1a693d82f49c1c3f/3244311-backwards-reroll-20260925.patch"
             }
         },
