@@ -1,0 +1,18 @@
+diff --git a/core/modules/node/src/Controller/NodeController.php b/core/modules/node/src/Controller/NodeController.php
+index ea26a79..f4704cc 100644
+--- a/core/modules/node/src/Controller/NodeController.php
++++ b/core/modules/node/src/Controller/NodeController.php
+@@ -162,11 +162,11 @@ class NodeController extends ControllerBase implements ContainerInjectionInterfa
+       // this case.
+       $is_current_revision = $revision->isDefaultRevision() || (!$current_revision_displayed && $revision->wasDefaultRevision());
+       if ($is_current_revision) {
+-        $link = $node->toLink($date)->toString();
++        $link = $node->toLink($date . " [$vid]")->toString();
+         $current_revision_displayed = TRUE;
+       }
+       else {
+-        $link = Link::fromTextAndUrl($date, new Url('entity.node.revision', [
++        $link = Link::fromTextAndUrl($date . " [$vid]", new Url('entity.node.revision', [
+           'node' => $node->id(),
+           'node_revision' => $vid,
+         ]))->toString();
