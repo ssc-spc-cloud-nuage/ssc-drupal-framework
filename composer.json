@@ -27,7 +27,7 @@
         "drupal/chosen": "^5.0",
         "drupal/ckeditor5_paste_filter": "^1.1",
         "drupal/ckeditor_codemirror": "^3.1.0",
-        "drupal/ckeditor_details": "2.1.1 as 2.1@beta",
+        "drupal/ckeditor_details": "2.1.1",
         "drupal/coder": "*",
         "drupal/color_field": "3.0.2",
         "drupal/condition_path": "^3.0",
@@ -111,7 +111,7 @@
         "drupal/openid_connect": "^3",
         "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.4",
-        "drupal/page_manager": "4.0 as 4.0-rc2",
+        "drupal/page_manager": "4.0",
         "drupal/rabbit_hole": "^1.0",
         "drupal/readmore": "^2",
         "drupal/realname": "^2.0",
@@ -416,23 +416,8 @@
         },
         "patches-ignore": {
             "drupalwxt/wxt": {
-                "drupal/fontawesome": {
-                    "3071758 - Fix multiple icons issue": "https://git.drupalcode.org/project/fontawesome/-/merge_requests/4.diff"
-                },
                 "drupal/webform": {
                     "Enter drupal/webform patch #3205860 description here": "https://www.drupal.org/files/issues/2021-03-26/webform_clientside_validation-3205860-2.patch"
-                },
-                "drupal/layout_builder_st": {
-                    "3420063 - Call to a member function getConfig() OverridesSectionStorage.php":
-                    "https://git.drupalcode.org/project/layout_builder_st/-/merge_requests/6.diff",
-                    "3411037 - Fix core removing contextual translation links":
-                    "https://www.drupal.org/files/issues/2025-05-14/3411037-contextual-links-removed-from-core-26.patch"
-                },
-                "drupal/page_manager": {
-                    "Enter drupal/page_manager patch #2710169 description here":
-                    "https://www.drupal.org/files/issues/page_manager-block-css-attributes-9.patch",
-                    "Enter drupal/page_manager patch #2752227 description here":
-                    "https://www.drupal.org/files/issues/2021-04-14/2752227-47.patch"
                 },
                 "drupal/diff": {
                     "Enter drupal/diff patch #2844337 description here":
