@@ -802,19 +802,29 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
     // Verify the dateline field exists.
     if ($field_val->options['id'] == 'field_dateline__revision_id' || $field_val->options['id'] == 'field_dateline') {
       $dateline_field_entity = $variables['row']->_entity;
+      $date_field = null;
 
+      // Fix for upcoming events slider.
       if (!$dateline_field_entity->hasField('field_dateline')) {
-        return;
+        if ($dateline_field_entity->hasField('field_session_date_range')) {
+          // Convert session date range into DateTime.
+          $date_field = new \DateTime($dateline_field_entity->get('field_session_date_range')->value);
+        }
+      } else {
+        // Convert the dateline field value into a DateTime.
+        $date_field = new \DateTime($dateline_field_entity->get('field_dateline')->value);
       }
-      // Convert the value into a DateTime.
-      $date_field = new \DateTime($dateline_field_entity->get('field_dateline')->value);
 
-      // Make sure it's the first of the month before transforming the output.
-      if ($date_field->format('j') == 1) {
-        // Change the outputted value to show 'Le 1er'.
-        $dateline = str_replace('Le 1 ', 'Le 1er ', $variables['output']);
-        $variables['output'] = Markup::create($dateline);
+      // Make sure we have a value for our date field.
+      if ($date_field != null) {
+        // Make sure it's the first of the month before transforming the output.
+        if ($date_field->format('j') == 1) {
+          // Change the outputted value to show 'Le 1er'.
+          $dateline = str_replace('Le 1 ', 'Le 1er ', $variables['output']);
+          $variables['output'] = Markup::create($dateline);
+        }
       }
+
     }
   }
 
