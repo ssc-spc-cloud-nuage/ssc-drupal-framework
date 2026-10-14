@@ -805,12 +805,12 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
       $date_field = null;
 
       // Fix for upcoming events slider.
-      if (!$dateline_field_entity->hasField('field_dateline')) {
-        if ($dateline_field_entity->hasField('field_session_date_range')) {
-          // Convert session date range into DateTime.
-          $date_field = new \DateTime($dateline_field_entity->get('field_session_date_range')->value);
-        }
-      } else {
+      if ($dateline_field_entity->hasField('field_session_date_range')) {
+        // Convert session date range into DateTime.
+        $date_field = new \DateTime($dateline_field_entity->get('field_session_date_range')->value);
+      }
+
+      if ($dateline_field_entity->hasField('field_dateline')) {
         // Convert the dateline field value into a DateTime.
         $date_field = new \DateTime($dateline_field_entity->get('field_dateline')->value);
       }
