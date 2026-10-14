@@ -802,6 +802,10 @@ function ssc_common_preprocess_views_view_field(array &$variables): void {
     // Verify the dateline field exists.
     if ($field_val->options['id'] == 'field_dateline__revision_id' || $field_val->options['id'] == 'field_dateline') {
       $dateline_field_entity = $variables['row']->_entity;
+
+      if (!$dateline_field_entity->hasField('field_dateline')) {
+        return;
+      }
       // Convert the value into a DateTime.
       $date_field = new \DateTime($dateline_field_entity->get('field_dateline')->value);
 
