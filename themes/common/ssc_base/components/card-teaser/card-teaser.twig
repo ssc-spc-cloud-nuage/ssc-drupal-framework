@@ -32,14 +32,20 @@
     {% endif %}
 
     <div class="card__body">
+      <div class="glossary-context-class">{{ context }}</div>
       <h3 class="card__title">
-        <a href="{{ link }}" class="stretched-link card__link">
-          {{- title -}}
+        {% if link %}
+          <a href="{{ link }}" class="stretched-link card__link">
+            {{- title -}}
 
-          {% if title_postfix %}
-            <span class="card__title-postfix">({{- title_postfix -}})</span>
-          {% endif %}
-        </a>
+            {% if title_postfix %}
+              <span class="card__title-postfix">({{- title_postfix -}})</span>
+            {% endif %}
+          </a>
+        {% else %}
+          <div class="title-class">{{- title -}}</div>
+          <div class="other-language-title-class">{{- other_language_label -}}</div>
+        {% endif %}
       </h3>
 
       {% if show_summary %}
