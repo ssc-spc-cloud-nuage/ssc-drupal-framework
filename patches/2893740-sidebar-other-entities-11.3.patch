@@ -1,0 +1,719 @@
+diff --git a/core/lib/Drupal/Core/Entity/ContentEntityFormWithSidebar.php b/core/lib/Drupal/Core/Entity/ContentEntityFormWithSidebar.php
+new file mode 100644
+index 0000000..fcf0be0
+--- /dev/null
++++ b/core/lib/Drupal/Core/Entity/ContentEntityFormWithSidebar.php
+@@ -0,0 +1,231 @@
++<?php
++
++namespace Drupal\Core\Entity;
++
++use Drupal\Component\Datetime\TimeInterface;
++use Drupal\Core\Form\FormStateInterface;
++use Symfony\Component\DependencyInjection\ContainerInterface;
++use Drupal\Core\Datetime\DateFormatterInterface;
++use Drupal\Core\Session\AccountInterface;
++use Drupal\user\EntityOwnerInterface;
++
++/**
++ * Entity form variant for content entity types.
++ *
++ * @see \Drupal\Core\ContentEntityBase
++ */
++class ContentEntityFormWithSidebar extends ContentEntityForm {
++
++  /**
++   * The current user object.
++   *
++   * @var \Drupal\Core\Session\AccountInterface
++   */
++  protected $currentUser;
++
++  /**
++   * The date formatter service.
++   *
++   * @var \Drupal\Core\Datetime\DateFormatterInterface
++   */
++  protected $dateFormatter;
++
++  /**
++   * Constructs a ContentEntityFormWithSidebar object.
++   *
++   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
++   *   The entity repository service.
++   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
++   *   The entity type bundle service.
++   * @param \Drupal\Component\Datetime\TimeInterface $time
++   *   The time service.
++   * @param \Drupal\Core\Session\AccountInterface $current_user
++   *   The current user.
++   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
++   *   The date formatter service.
++   */
++  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info, TimeInterface $time, ?AccountInterface $current_user = NULL, ?DateFormatterInterface $date_formatter = NULL) {
++    $this->entityRepository = $entity_repository;
++    $this->entityTypeBundleInfo = $entity_type_bundle_info;
++    $this->time = $time;
++
++    if (is_null($current_user)) {
++      $current_user = \Drupal::currentUser();
++    }
++    $this->currentUser = $current_user;
++
++    if (is_null($date_formatter)) {
++      $date_formatter = \Drupal::service('date.formatter');
++    }
++    $this->dateFormatter = $date_formatter;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public static function create(ContainerInterface $container): static {
++    return new static(
++      $container->get('entity.repository'),
++      $container->get('entity_type.bundle.info'),
++      $container->get('datetime.time'),
++      $container->get('current_user'),
++      $container->get('date.formatter')
++    );
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function form(array $form, FormStateInterface $form_state): array {
++
++    $form['#theme'] = ['content_entity_form'];
++
++    // Advanced tab must be the first, because other fields rely on that.
++    if (!isset($form['advanced'])) {
++      $form['advanced'] = [
++        '#type' => 'container',
++        '#weight' => 99,
++        '#accordion' => TRUE,
++      ];
++    }
++
++    $form = parent::form($form, $form_state);
++    $form['meta'] = [
++      '#type' => 'container',
++      '#group' => 'advanced',
++      '#weight' => -10,
++      '#title' => $this->t('Status'),
++      '#attributes' => ['class' => ['entity-meta__header']],
++      '#tree' => TRUE,
++    ];
++
++    $form['advanced']['#attributes']['class'][] = 'entity-meta';
++
++    if ($this->entity instanceof EntityPublishedInterface) {
++      $form['meta']['published'] = [
++        '#type' => 'item',
++        '#markup' => $this->entity->isPublished() ? $this->t('Published') : $this->t('Not published'),
++        '#access' => !$this->entity->isNew(),
++        '#wrapper_attributes' => ['class' => ['entity-meta__title']],
++      ];
++    }
++    if ($this->entity instanceof EntityChangedInterface) {
++      $form['meta']['changed'] = [
++        '#type' => 'item',
++        '#title' => $this->t('Last saved'),
++        '#markup' => !$this->entity->isNew() ? $this->dateFormatter->format($this->entity->getChangedTime(), 'short') : $this->t('Not saved yet'),
++        '#wrapper_attributes' => ['class' => ['entity-meta__last-saved']],
++      ];
++    }
++    if ($this->entity instanceof EntityOwnerInterface && $this->entity->getOwner()) {
++      $form['meta']['author'] = [
++        '#type' => 'item',
++        '#title' => $this->t('Author'),
++        '#markup' => $this->entity->getOwner()->getAccountName(),
++        '#wrapper_attributes' => ['class' => ['entity-meta__author']],
++      ];
++    }
++
++    $form['status']['#group'] = 'footer';
++
++    // Author information for administrators.
++    $owner_key = $this->entity->getEntityType()->getKey('owner');
++    if (($this->entity instanceof EntityOwnerInterface && isset($form[$owner_key])) || isset($form['created'])) {
++      $form['author'] = [
++        '#type' => 'details',
++        '#title' => $this->t('Authoring information'),
++        '#group' => 'advanced',
++        '#weight' => 90,
++        '#optional' => TRUE,
++      ];
++
++      if (isset($form[$owner_key])) {
++        $form[$owner_key]['#group'] = 'author';
++      }
++
++      if (isset($form['created'])) {
++        $form['created']['#group'] = 'author';
++      }
++    }
++
++    // Content entity forms do not use the parent's #after_build callback
++    // because they only need to rebuild the entity in the validation and the
++    // submit handler because Field API uses its own #after_build callback for
++    // its widgets.
++    unset($form['#after_build']);
++
++    $this->getFormDisplay($form_state)->buildForm($this->entity, $form, $form_state);
++    // Allow modules to act before and after form language is updated.
++    $form['#entity_builders']['update_form_langcode'] = '::updateFormLangcode';
++
++    if ($this->showRevisionUi()) {
++      $this->addRevisionableFormFields($form);
++    }
++
++    $form['footer'] = [
++      '#type' => 'container',
++      '#weight' => 99,
++      '#attributes' => [
++        'class' => ['entity-content-form-footer'],
++      ],
++      '#optional' => TRUE,
++    ];
++
++    return $form;
++  }
++
++  /**
++   * Add revision form fields if the entity enabled the UI.
++   *
++   * @param array $form
++   *   An associative array containing the structure of the form.
++   *
++   * @return void
++   *   No return value.
++   */
++  protected function addRevisionableFormFields(array &$form): void {
++    /** @var ContentEntityTypeInterface $entity_type */
++    $entity_type = $this->entity->getEntityType();
++
++    $new_revision_default = $this->getNewRevisionDefault();
++
++    // Add a log field if the "Create new revision" option is checked, or if the
++    // current user has the ability to check that option.
++    $form['revision_information'] = [
++      '#type' => 'container',
++      '#title' => $this->t('Revision information'),
++      // Open by default when "Create new revision" is checked.
++      '#open' => $new_revision_default,
++      '#group' => 'meta',
++      '#weight' => 20,
++      '#optional' => TRUE,
++      '#attributes' => [
++        'class' => ['entity-content-form-revision-information'],
++      ],
++      '#attached' => [
++        'library' => ['core/drupal.entity-form'],
++      ],
++    ];
++
++    $form['revision'] = [
++      '#type' => 'checkbox',
++      '#title' => $this->t('Create new revision'),
++      '#default_value' => $new_revision_default,
++      '#access' => !$this->entity->isNew(),
++      '#group' => 'revision_information',
++    ];
++    // Get log message field's key from definition.
++    $log_message_field = $entity_type->getRevisionMetadataKey('revision_log_message');
++    if ($log_message_field && isset($form[$log_message_field])) {
++      $form[$log_message_field] += [
++        '#group' => 'revision_information',
++        '#states' => [
++          'visible' => [
++            ':input[name="revision"]' => ['checked' => TRUE],
++          ],
++        ],
++      ];
++    }
++  }
++
++}
+diff --git a/core/modules/system/src/Hook/SystemThemeHooks.php b/core/modules/system/src/Hook/SystemThemeHooks.php
+index a494d23..71231e2 100644
+--- a/core/modules/system/src/Hook/SystemThemeHooks.php
++++ b/core/modules/system/src/Hook/SystemThemeHooks.php
+@@ -132,6 +132,9 @@ class SystemThemeHooks {
+           'view_mode' => NULL,
+         ],
+       ],
++      'content_entity_form_with_sidebar' => [
++        'render element' => 'form',
++      ],
+     ];
+ 
+     return array_merge($themeCommonElements, $systemTheme);
+diff --git a/core/modules/system/templates/content-entity-form-with-sidebar.html.twig b/core/modules/system/templates/content-entity-form-with-sidebar.html.twig
+new file mode 100644
+index 0000000..c6dc548
+--- /dev/null
++++ b/core/modules/system/templates/content-entity-form-with-sidebar.html.twig
+@@ -0,0 +1,12 @@
++{#
++/**
++ * @file
++ * Default theme implementation for a content entity form.
++ *
++ * Available variables:
++ * - form: The node add/edit form.
++ *
++ * @ingroup themeable
++ */
++#}
++{{ form }}
+diff --git a/core/profiles/demo_umami/themes/umami/templates/classy/content-edit/content-entity-form-with-sidebar.html.twig b/core/profiles/demo_umami/themes/umami/templates/classy/content-edit/content-entity-form-with-sidebar.html.twig
+new file mode 100644
+index 0000000..9d9e9bb
+--- /dev/null
++++ b/core/profiles/demo_umami/themes/umami/templates/classy/content-edit/content-entity-form-with-sidebar.html.twig
+@@ -0,0 +1,22 @@
++{#
++/**
++ * @file
++ * Theme override for a content entity form.
++ *
++ * Two column template for a content entity add/edit form.
++ *
++ * Available variables:
++ * - form: The content entity form.
++ */
++#}
++<div class="layout-content-entity-form clearfix">
++  <div class="layout-region layout-region-content-entity-main">
++    {{ form|without('advanced', 'actions') }}
++  </div>
++  <div class="layout-region layout-region-content-entity-secondary">
++    {{ form.advanced }}
++  </div>
++  <div class="layout-region layout-region-content-entity-footer">
++    {{ form.actions }}
++  </div>
++</div>
+diff --git a/core/themes/claro/claro.libraries.yml b/core/themes/claro/claro.libraries.yml
+index f50cfa0..e71f056 100644
+--- a/core/themes/claro/claro.libraries.yml
++++ b/core/themes/claro/claro.libraries.yml
+@@ -370,6 +370,12 @@ tableselect:
+     - core/tabbable
+     - core/once
+ 
++content-entity-form-with-sidebar:
++  version: VERSION
++  css:
++    layout:
++      css/layout/content-entity-form-with-sidebar.css: {}
++
+ classy.file:
+   version: VERSION
+   css:
+diff --git a/core/themes/claro/css/layout/content-entity-form-with-sidebar.css b/core/themes/claro/css/layout/content-entity-form-with-sidebar.css
+new file mode 100644
+index 0000000..97a5294
+--- /dev/null
++++ b/core/themes/claro/css/layout/content-entity-form-with-sidebar.css
+@@ -0,0 +1,281 @@
++/*
++ * DO NOT EDIT THIS FILE.
++ * See the following change record for more information,
++ * https://www.drupal.org/node/3084859
++ * @preserve
++ */
++
++/**
++ * Layout overrides for node add/edit form.
++ */
++
++:root {
++  --color-absolutezero: var(--color-blue-600);
++  --color-white: #fff;
++  --color-text: var(--color-gray);
++  --color-text-light: var(--color-gray-500);
++  --color-gray-050-o-40: rgb(243, 244, 249, 0.4);
++  --color-gray-200-o-80: rgb(212, 212, 218, 0.8);
++  --color-maximumred: var(--color-red-500);
++  --color-sunglow: #ffd23f;
++  --color-sunglow-shaded: #977405;
++  --color-lightninggreen: #26a769;
++  --color-focus: var(--color-lightninggreen);
++  --color-absolutezero-hover: var(--color-blue-650);
++  --color-absolutezero-active: var(--color-blue-700);
++  --color-maximumred-hover: var(--color-red-550);
++  --color-maximumred-active: var(--color-red-600);
++  --color-bgblue-hover: var(--color-blue-020);
++  --color-bgblue-active: var(--color-blue-050);
++  --color-bgred-hover: var(--color-red-020);
++  --color-bgred-active: var(--color-red-050);
++  --color-gray: #232429;
++  --color-gray-900: #393a3f;
++  --color-gray-800: #55565b;
++  --color-gray-700: #75767b;
++  --color-gray-600: #828388;
++  --color-gray-500: #919297;
++  --color-gray-400: #adaeb3;
++  --color-gray-300: #c1c2c7;
++  --color-gray-200: #d3d4d9;
++  --color-gray-100: #dedfe4;
++  --color-gray-050: #f3f4f9;
++  --color-gray-025: #f9faff;
++  --color-blue: var(--color-blue-600);
++  --color-blue-900: #000f33;
++  --color-blue-800: #001f66;
++  --color-blue-700: #002e9a;
++  --color-blue-650: #0036b1;
++  --color-blue-600: #003ecc;
++  --color-blue-500: #004eff;
++  --color-blue-400: #3371ff;
++  --color-blue-300: #6694ff;
++  --color-blue-200: #99b8ff;
++  --color-blue-100: #ccdbff;
++  --color-blue-070: #dbe6ff;
++  --color-blue-050: #e5edff;
++  --color-blue-020: #f5f8ff;
++  --color-red: var(--color-red-500);
++  --color-red-900: #2c0707;
++  --color-red-800: #580e0e;
++  --color-red-700: #841515;
++  --color-red-600: #b01c1c;
++  --color-red-550: #c61f1f;
++  --color-red-500: #dc2323;
++  --color-red-400: #e34f4f;
++  --color-red-300: #ea7b7b;
++  --color-red-200: #f1a7a7;
++  --color-red-100: #f8d3d3;
++  --color-red-070: #fae0e0;
++  --color-red-050: #fce9e9;
++  --color-red-020: #fdf5f5;
++  --color-fg: var(--color-text);
++  --color-bg: var(--color-white);
++  --color-link: var(--color-absolutezero);
++  --color-link-hover: var(--color-absolutezero-hover);
++  --color-link-active: var(--color-absolutezero-active);
++  --color-divider: rgb(142, 146, 156, 0.5);
++  --font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
++  --font-family-serif: "Times New Roman", times, serif;
++  --line-height: 1.5;
++  --line-height-heading: 1.3;
++  --line-height-form-label: calc(18rem / 16);
++  --font-size-base: 1rem;
++  --font-size-xl: 2.25rem;
++  --font-size-h1: 2.027rem;
++  --font-size-h2: 1.802rem;
++  --font-size-h3: 1.602rem;
++  --font-size-h4: 1.424rem;
++  --font-size-h5: 1.266rem;
++  --font-size-h6: 1.125rem;
++  --font-size-s: 0.889rem;
++  --font-size-xs: 0.79rem;
++  --font-size-xxs: 0.702rem;
++  --font-size-label: var(--font-size-s);
++  --font-size-description: var(--font-size-xs);
++  --space-xl: 3rem;
++  --space-l: 1.5rem;
++  --space-m: 1rem;
++  --space-s: 0.75rem;
++  --space-xs: 0.5rem;
++  --speed-transition: 0.2s;
++  --transition: all var(--speed-transition) ease-out;
++  --base-border-radius: 2px;
++  --focus-border-size: 0.1875rem;
++  --focus-border-offset-size: 2px;
++  --outline-size: 2px;
++  --focus-outline: var(--outline-size) dotted transparent;
++  --focus-box-shadow: 0 0 0 var(--focus-border-offset-size) var(--color-white), 0 0 0 calc(var(--focus-border-size) + var(--focus-border-offset-size)) var(--color-focus);
++  --shadow-z3: 0 0.875rem 1.875rem rgb(0, 0, 0, 0.1);
++  --input-fg-color: var(--color-fg);
++  --input-bg-color: var(--color-bg);
++  --input-fg-color--description: var(--color-gray-800);
++  --input-fg-color--placeholder: var(--color-gray-700);
++  --input-border-color: var(--color-gray-500);
++  --input--hover-border-color: var(--color-text);
++  --input--focus-border-color: var(--color-absolutezero);
++  --input--error-color: var(--color-maximumred);
++  --input--error-border-color: var(--color-maximumred);
++  --input--disabled-color: rgb(84, 85, 96, 0.6);
++  --input--disabled-fg-color: var(--color-gray-800);
++  --input--disabled-bg-color: #f2f2f3;
++  --input--disabled-border-color: #bababf;
++  --input--disabled-border-opacity: 0.5;
++  --input-border-radius-size: 0.125rem;
++  --input-border-size: 1px;
++  --input--error-border-size: 2px;
++  --input-padding-vertical: calc(var(--space-s) - var(--input-border-size));
++  --input-padding-horizontal: calc(var(--space-m) - var(--input-border-size));
++  --input-font-size: var(--font-size-base);
++  --input-line-height: var(--space-l);
++  --input-padding-vertical--small: calc(var(--space-xs) - (var(--input-border-size) * 2));
++  --input-padding-horizontal--small: calc(var(--space-m) - var(--input-border-size));
++  --input-font-size--small: var(--font-size-xs);
++  --input-line-height--small: 1.3125rem;
++  --input--extrasmall-padding-vertical: calc(0.15rem - var(--input-border-size));
++  --input--extrasmall-padding-horizontal: calc(var(--space-xs) - var(--input-border-size));
++  --input--extrasmall-font-size: var(--font-size-s);
++  --input--extrasmall-line-height: calc(var(--space-m) + 0.2rem);
++  --input--required-mark-size: 0.4375rem;
++  --input--label-spacing: 1.6875rem;
++  --details-border-color: var(--color-gray-100);
++  --details-summary-shadow-color: var(--color-focus);
++  --details-summary-focus-border-size: var(--focus-border-size);
++  --details-desktop-wrapper-padding-start: calc(var(--space-m) + var(--space-s) + var(--space-xs));
++  --details-box-shadow: 0 2px 0.25rem rgb(0, 0, 0, 0.1);
++  --details-border-size: 1px;
++  --details-border-size-radius: 2px;
++  --details-accordion-border-size-radius: var(--base-border-radius);
++  --details-spread-box-shadow-radius: 2px;
++  --details-bg-color-transition-duration: 0.12s;
++  --details-box-shadow-transition-duration: 0.2s;
++  --details-transform-transition-duration: 0.12s;
++  --details-line-height: 1.295rem;
++  --button--focus-border-color: var(--color-blue-300);
++  --button-border-radius-size: var(--base-border-radius);
++  --button-fg-color: var(--color-text);
++  --button-bg-color: var(--color-gray-200);
++  --button--hover-bg-color: var(--color-gray-300);
++  --button--active-bg-color: var(--color-gray-400);
++  --button--disabled-bg-color: #ebebed;
++  --button--disabled-fg-color: var(--color-gray-500);
++  --button-fg-color--primary: var(--color-white);
++  --button-bg-color--primary: var(--color-absolutezero);
++  --button--hover-bg-color--primary: var(--color-absolutezero-hover);
++  --button--active-bg-color--primary: var(--color-absolutezero-active);
++  --button--focus-bg-color--primary: var(--button-bg-color--primary);
++  --button--disabled-bg-color--primary: var(--color-gray-200);
++  --button--disabled-fg-color--primary: var(--color-gray-600);
++  --button-fg-color--danger: var(--color-white);
++  --button-bg-color--danger: var(--color-maximumred);
++  --button--hover-bg-color--danger: var(--color-maximumred-hover);
++  --button--active-bg-color--danger: var(--color-maximumred-active);
++  --dropbutton-widget-z-index: 100;
++  --jui-dropdown-fg-color: var(--color-gray-800);
++  --jui-dropdown-bg-color: var(--color-white);
++  --jui-dropdown--active-fg-color: var(--color-white);
++  --jui-dropdown--active-bg-color: var(--color-absolutezero);
++  --jui-dropdown-border-color: rgb(216, 217, 224, 0.8);
++  --jui-dropdown-shadow-color: rgb(34, 35, 48, 0.1);
++  --jui-dialog-title-color: var(--color-white);
++  --jui-dialog-title-bg-color: var(--color-text);
++  --jui-dialog-title-font-size: var(--font-size-h4);
++  --jui-dialog-close-button-size: calc(var(--space-m) * 2);
++  --jui-dialog-close-button-border-radius: 50%;
++  --jui-dialog-close-button-reserved-space: calc(var(--space-m) * 4);
++  --jui-dialog-off-canvas-close-button-reserved-space: calc(var(--space-m) * 3);
++  --jui-dialog-border-radius: 0.25rem;
++  --jui-dialog-box-shadow: 0 0 var(--space-m) calc(var(--space-m) / -4) var(--color-text);
++  --jui-dialog--focus-outline: 2px dotted transparent;
++  --jui-dialog--focus-box-shadow: 0 0 0 0.1875rem var(--color-focus);
++  --jui-dialog-z-index: 1260;
++  --jui-dialog-off-canvas-z-index: 501;
++  --progress-bar-border-size: 1px;
++  --progress-bar-small-size: calc(var(--space-xs) - (2 * var(--progress-bar-border-size)));
++  --progress-bar-small-size-radius: var(--space-xs);
++  --progress-bar-spacing-size: var(--space-xs);
++  --progress-bar-transition: width 0.5s ease-out;
++  --progress-bar-label-color: var(--color-text);
++  --progress-bar-description-color: var(--color-gray-800);
++  --progress-bar-description-font-size: var(--font-size-xs);
++  --progress-track-border-color: var(--color-gray-500);
++  --progress-track-bg-color: var(--color-gray-200);
++  --ajax-progress-margin-horizontal: var(--space-s);
++  --breadcrumb-height: 1.25rem;
++  --layout-region-edit-width: min(60rem, 100%);
++  --layout-region-edit-extended-width: min(68rem, 100%);
++  --vertical-tabs-margin-vertical: var(--space-s);
++  --vertical-tabs-border-radius: var(--details-accordion-border-size-radius);
++  --vertical-tabs-shadow: var(--details-box-shadow);
++  --vertical-tabs-border-color: var(--details-border-color);
++  --vertical-tabs-border-size: 1px;
++  --vertical-tabs-border: var(--vertical-tabs-border-size) solid var(--vertical-tabs-border-color);
++  --vertical-tabs-menu-item-shadow-extraspace: 0.5rem;
++  --vertical-tabs-menu-item--top-margin: calc(var(--vertical-tabs-menu-item-shadow-extraspace) * -2);
++  --vertical-tabs-menu-item--right-margin: calc(var(--vertical-tabs-border-size) * -1);
++  --vertical-tabs-menu-item--bottom-margin: calc(var(--vertical-tabs-menu-item-shadow-extraspace) * -1);
++  --vertical-tabs-menu-item--left-margin: calc(var(--vertical-tabs-menu-item-shadow-extraspace) * -1);
++  --vertical-tabs-menu-separator-color: var(--color-gray-200);
++  --vertical-tabs-menu-separator-size: 1px;
++  --vertical-tabs-menu-width: 20em;
++  --vertical-tabs-pane-width: calc(100% - var(--vertical-tabs-menu-width));
++  --vertical-tabs-menu-link-focus-border-size: var(--details-summary-focus-border-size);
++  --vertical-tabs-menu-link--active-border-size: 0.25rem;
++  --vertical-tabs-menu-link--active-border-color: var(--color-absolutezero);
++  --vertical-tabs-menu--z-index: 0;
++}
++
++:root {
++  --content-entity-meta-width: 22.5rem;
++}
++
++.layout-region {
++  box-sizing: border-box;
++}
++
++.layout-region--content-entity-footer .layout-region__content {
++  margin-top: var(--space-l);
++}
++
++/**
++ * Wide screens
++ */
++
++@media screen and (min-width: 61rem) {
++  .layout-region--content-entity-main,
++  .layout-region--content-entity-footer {
++    float: left; /* LTR */
++    width: calc(100% - var(--content-entity-meta-width));
++    padding-right: var(--space-l); /* LTR */
++  }
++  [dir="rtl"] .layout-region--content-entity-main,
++  [dir="rtl"] .layout-region--content-entity-footer {
++    float: right;
++    padding-right: 0;
++    padding-left: var(--space-l);
++  }
++
++  .layout-region--content-entity-main .layout-region__content,
++  .layout-region--content-entity-footer .layout-region__content {
++    max-width: 48rem;
++    margin-right: auto;
++    margin-left: auto;
++  }
++
++  .layout-region--content-entity-footer .layout-region__content {
++    margin-top: var(--space-xs);
++  }
++
++  .layout-region--content-entity-secondary {
++    float: right; /* LTR */
++    width: var(--content-entity-meta-width);
++  }
++  [dir="rtl"] .layout-region--content-entity-secondary {
++    float: left;
++  }
++
++  /* Push sidebar down to horizontal align with form section */
++  .layout-region--content-entity-secondary {
++    margin-top: var(--space-l);
++  }
++}
+diff --git a/core/themes/claro/css/layout/content-entity-form-with-sidebar.pcss.css b/core/themes/claro/css/layout/content-entity-form-with-sidebar.pcss.css
+new file mode 100644
+index 0000000..b508091
+--- /dev/null
++++ b/core/themes/claro/css/layout/content-entity-form-with-sidebar.pcss.css
+@@ -0,0 +1,59 @@
++/**
++ * Layout overrides for node add/edit form.
++ */
++
++@import "../base/variables.pcss.css";
++
++:root {
++  --content-entity-meta-width: 22.5rem;
++}
++
++.layout-region {
++  box-sizing: border-box;
++}
++
++.layout-region--content-entity-footer .layout-region__content {
++  margin-top: var(--space-l);
++}
++
++/**
++ * Wide screens
++ */
++@media screen and (min-width: 61rem) {
++  .layout-region--content-entity-main,
++  .layout-region--content-entity-footer {
++    float: left; /* LTR */
++    width: calc(100% - var(--content-entity-meta-width));
++    padding-right: var(--space-l); /* LTR */
++  }
++  [dir="rtl"] .layout-region--content-entity-main,
++  [dir="rtl"] .layout-region--content-entity-footer {
++    float: right;
++    padding-right: 0;
++    padding-left: var(--space-l);
++  }
++
++  .layout-region--content-entity-main .layout-region__content,
++  .layout-region--content-entity-footer .layout-region__content {
++    max-width: 48rem;
++    margin-right: auto;
++    margin-left: auto;
++  }
++
++  .layout-region--content-entity-footer .layout-region__content {
++    margin-top: var(--space-xs);
++  }
++
++  .layout-region--content-entity-secondary {
++    float: right; /* LTR */
++    width: var(--content-entity-meta-width);
++  }
++  [dir="rtl"] .layout-region--content-entity-secondary {
++    float: left;
++  }
++
++  /* Push sidebar down to horizontal align with form section */
++  .layout-region--content-entity-secondary {
++    margin-top: var(--space-l);
++  }
++}
+diff --git a/core/themes/claro/templates/content-edit/content-entity-form-with-sidebar.html.twig b/core/themes/claro/templates/content-edit/content-entity-form-with-sidebar.html.twig
+new file mode 100644
+index 0000000..9ce0e56
+--- /dev/null
++++ b/core/themes/claro/templates/content-edit/content-entity-form-with-sidebar.html.twig
+@@ -0,0 +1,31 @@
++{#
++/**
++ * @file
++ * Theme override for a content entity form with sidebar.
++ *
++ * Two column template for a content entity add/edit form.
++ *
++ * Available variables:
++ * - form: The content entity form.
++ */
++#}
++{{ attach_library('claro/content-entity-form-with-sidebar') }}
++<div class="layout-content-entity-form clearfix">
++  <div class="layout-region layout-region--content-entity-main">
++    <div class="layout-region__content">
++      {{ form|without('advanced', 'footer', 'actions') }}
++    </div>
++  </div>
++  <div class="layout-region layout-region--content-entity-secondary">
++    <div class="layout-region__content">
++      {{ form.advanced }}
++    </div>
++  </div>
++  <div class="layout-region layout-region--content-entity-footer">
++    <div class="layout-region__content">
++      <div class="divider"></div>
++      {{ form.footer }}
++      {{ form.actions }}
++    </div>
++  </div>
++</div>
+diff --git a/core/themes/stable9/templates/content-edit/content-entity-form-with-sidebar.html.twig b/core/themes/stable9/templates/content-edit/content-entity-form-with-sidebar.html.twig
+new file mode 100644
+index 0000000..a2ed6a4
+--- /dev/null
++++ b/core/themes/stable9/templates/content-edit/content-entity-form-with-sidebar.html.twig
+@@ -0,0 +1,10 @@
++{#
++/**
++ * @file
++ * Theme override for a content entity form.
++ *
++ * Available variables:
++ * - form: The content entity form.
++ */
++#}
++{{ form }}
