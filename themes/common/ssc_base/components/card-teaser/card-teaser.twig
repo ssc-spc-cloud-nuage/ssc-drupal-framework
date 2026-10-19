@@ -1,7 +1,7 @@
 {% set card_classes = [
   'card',
   'card-teaser',
-  'card-' ~ type|lower|replace({' ':'-'})
+  'card-' ~ type|clean_class
 ] %}
 {% set card_attributes = create_attribute()
   .addClass(card_classes)
