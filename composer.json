@@ -415,6 +415,15 @@
             },
             "drupalwxt/wxt": {
                 "local - wxt_core: undefined #access key on revision_information (D11.3 warning)": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/wxt-core-revision_access-undefined-key.patch"
+            },
+            "drupal/layout_builder_st": {
+                "3592219 - extend core ClassResolver": "https://git.drupalcode.org/-/project/60458/uploads/b57c08b430a136185f1fe8bcfc036b53/layout_builder_st-3592219-extend-core-class-resolver.upstream.patch"
+            },
+            "drupal/adobe_analytics": {
+                "3595154  - field type category must be an ID": "https://git.drupalcode.org/-/project/21074/uploads/f8678bf24ef395b9e55f361458514ab1/adobe_analytics-field_type_category.patch"
+            },
+            "drupal/conditional_fields": {
+                "3245121 - save values as sequence (MR !94)": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/94.diff"
             }
         },
         "patches-ignore": {
