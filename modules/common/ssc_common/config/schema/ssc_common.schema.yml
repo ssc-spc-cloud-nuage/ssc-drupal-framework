@@ -32,3 +32,11 @@ filter_settings.remove_nbsp:
   mapping:
     tags:
       type: string
+
+field.formatter.settings.ssc_translation_language:
+  type: mapping
+  label: 'Value from a specific translation formatter settings'
+  mapping:
+    language_mode:
+      type: string
+      label: 'Language to display'

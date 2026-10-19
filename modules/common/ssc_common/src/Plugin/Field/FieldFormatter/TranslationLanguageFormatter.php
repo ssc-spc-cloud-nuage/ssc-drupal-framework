@@ -94,14 +94,15 @@ class TranslationLanguageFormatter extends FormatterBase implements ContainerFac
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $form['language_mode'] = [
+    $element = parent::settingsForm($form, $form_state);
+    $element['language_mode'] = [
       '#type' => 'select',
       '#title' => $this->t('Language to display'),
       '#options' => $this->languageModeOptions(),
       '#default_value' => $this->getSetting('language_mode'),
       '#description' => $this->t('Which translation of the entity to pull this value from, regardless of the language the entity is currently being rendered in. "Opposite" assumes a bilingual English/French site.'),
     ];
-    return $form;
+    return $element;
   }
 
   /**
