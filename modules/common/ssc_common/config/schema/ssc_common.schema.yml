@@ -40,3 +40,20 @@ field.formatter.settings.ssc_translation_language:
     language_mode:
       type: string
       label: 'Language to display'
+
+views.field.breadcrumbs_field:
+  type: views_field
+  label: 'Breadcrumbs'
+  mapping:
+    crumb_index:
+      type: integer
+      label: 'Breadcrumb position'
+
+# Metatag 2.x ships no schema for its Views formatter.
+field.formatter.settings.metatag_views_formatter:
+  type: mapping
+  label: 'Metatag Views formatter settings'
+  mapping:
+    field:
+      type: string
+      label: 'Meta tag'
