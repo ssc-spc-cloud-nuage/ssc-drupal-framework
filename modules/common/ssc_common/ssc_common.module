@@ -318,6 +318,23 @@ function ssc_common_form_sitewide_alert_add_form_alter(&$form, FormStateInterfac
   }
 
   // Move parts to Sidebar - allowed by this: https://www.drupal.org/project/drupal/issues/2893740
+  // The D11 patch is opt-in (ContentEntityFormWithSidebar) and SitewideAlertForm
+  // extends ContentEntityForm, so opt in here the same way the subclass does:
+  // use the sidebar template, turn the vertical tabs into the sidebar container
+  // and put revision information in the meta box at its top.
+  $form['#theme'] = ['content_entity_form_with_sidebar'];
+  $form['advanced']['#type'] = 'container';
+  $form['advanced']['#accordion'] = TRUE;
+  $form['advanced']['#attributes']['class'][] = 'entity-meta';
+  $form['meta'] = [
+    '#type' => 'container',
+    '#group' => 'advanced',
+    '#weight' => -10,
+    '#attributes' => ['class' => ['entity-meta__header']],
+  ];
+  $form['revision_information']['#type'] = 'container';
+  $form['revision_information']['#group'] = 'meta';
+
   $form['dismissible']['#group'] = 'revision_information';
   $form['status']['#group'] = 'revision_information';
   $form["dismissible_ignore_previous"]["#group"] = 'revision_information';
