@@ -108,7 +108,7 @@
         "drupal/module_filter": "^5.0",
         "drupal/multiple_fields_remove_button": "^2",
         "drupal/o365": "^6.0",
-        "drupal/openid_connect": "^3",
+        "drupal/openid_connect": "3.x-dev",
         "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.4",
         "drupal/page_manager": "4.0",
@@ -427,6 +427,9 @@
             },
             "drupal/address_static_map": {
                 "3594656  - settingsForm returns whole Views form, pollutes formatter settings": "https://git.drupalcode.org/-/project/66010/uploads/da891d162ea27bc523bfbe91157bef3d/address_static_map-settings_form_element.patch"
+            },
+            "drupal/ckeditor_codemirror": {
+                "local - library path check independent of cwd": "./patches/ckeditor_codemirror-library_path.patch"
             }
         },
         "patches-ignore": {
