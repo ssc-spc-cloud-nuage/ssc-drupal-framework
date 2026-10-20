@@ -424,6 +424,9 @@
             },
             "drupal/conditional_fields": {
                 "3245121 - save values as sequence (MR !94)": "https://git.drupalcode.org/project/conditional_fields/-/merge_requests/94.diff"
+            },
+            "drupal/address_static_map": {
+                "3594656  - settingsForm returns whole Views form, pollutes formatter settings": "https://git.drupalcode.org/-/project/66010/uploads/da891d162ea27bc523bfbe91157bef3d/address_static_map-settings_form_element.patch"
             }
         },
         "patches-ignore": {
