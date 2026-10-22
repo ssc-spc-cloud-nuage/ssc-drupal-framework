@@ -1,0 +1,34 @@
+--- a/ckeditor_codemirror.module
++++ b/ckeditor_codemirror.module
+@@ -12,9 +12,9 @@
+  *   The path to the specified library or FALSE if the library wasn't found.
+  */
+ function _ckeditor_codemirror_get_library_path(string $library): bool|string {
+-  $path = "libraries/$library";
++  $path = DRUPAL_ROOT . "/libraries/$library";
+   if (file_exists($path)) {
+-    return DRUPAL_ROOT . "/$path";
++    return $path;
+   }
+   return FALSE;
+ }
+--- a/ckeditor_codemirror.install
++++ b/ckeditor_codemirror.install
+@@ -17,7 +17,7 @@
+ 
+   // Check for CodeMirror library.
+   $library_path = _ckeditor_codemirror_get_library_path('codemirror');
+-  if (file_exists("/$library_path/lib/codemirror.js")) {
++  if (file_exists("$library_path/lib/codemirror.js")) {
+     $return['codemirror_library'] = [
+       'title' => t('CodeMirror'),
+       'severity' => REQUIREMENT_OK,
+@@ -40,7 +40,7 @@
+ 
+   // Check for CKEditor 5 CodeMirror plugin library.
+   $library_path = _ckeditor_codemirror_get_library_path('ckeditor5-source-editing-codemirror');
+-  if (file_exists("/$library_path/build/source-editing-codemirror.js")) {
++  if (file_exists("$library_path/build/source-editing-codemirror.js")) {
+     $return['ckeditor5_source_editing_codemirror_library'] = [
+       'title' => t('CKEditor 5 CodeMirror plugin'),
+       'severity' => REQUIREMENT_OK,
