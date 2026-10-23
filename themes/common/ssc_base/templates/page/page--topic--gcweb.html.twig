@@ -1,0 +1,11 @@
+{#
+/**
+ * @file
+ * Topic page template.
+ *
+ * WxT 6.x ships page--topic--gcweb.html.twig in wxt_bootstrap, which outranks
+ * the site theme's page--gcweb.html.twig for topic nodes. Hand back to
+ * whichever page--gcweb template the active theme provides.
+ */
+#}
+{% include 'page--gcweb.html.twig' %}

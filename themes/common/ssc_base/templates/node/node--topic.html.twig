@@ -1,0 +1,11 @@
+{#
+/**
+ * @file
+ * Topic node template.
+ *
+ * WxT 6.x ships node--topic.html.twig in wxt_bootstrap, which wraps content in
+ * an extra .container and breaks full-width sections. Hand back to whichever
+ * node--full template the active theme provides (pre-WxT 6 behaviour).
+ */
+#}
+{% include 'node--full.html.twig' %}

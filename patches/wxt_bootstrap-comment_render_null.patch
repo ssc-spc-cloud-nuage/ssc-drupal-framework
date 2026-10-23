@@ -1,0 +1,13 @@
+--- a/src/Plugin/Preprocess/Comment.php
++++ b/src/Plugin/Preprocess/Comment.php
+@@ -18,7 +18,9 @@
+    * {@inheritdoc}
+    */
+   public function preprocessVariables(Variables $variables) {
+-    $variables['author'] = \Drupal::service('renderer')->render($elements);
++    // The author name is built below. Core's rendered username is replaced,
++    // so start empty (this used to render an undefined variable, i.e. NULL).
++    $variables['author'] = '';
+     $owner = $variables['comment']->getOwner();
+     if (empty($variables['author']) && $owner->id() === 0) {
+       $variables['author'] = $this->t('Anonymous');

@@ -416,6 +416,9 @@
             "drupalwxt/wxt": {
                 "local - wxt_core: undefined #access key on revision_information (D11.3 warning)": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/wxt-core-revision_access-undefined-key.patch"
             },
+            "drupalwxt/wxt_bootstrap": {
+                "local - Comment preprocess renders undefined var (Renderer::render NULL deprecation)": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/wxt_bootstrap-comment_render_null.patch"
+            },
             "drupal/layout_builder_st": {
                 "3592219 - extend core ClassResolver": "https://git.drupalcode.org/-/project/60458/uploads/b57c08b430a136185f1fe8bcfc036b53/layout_builder_st-3592219-extend-core-class-resolver.upstream.patch"
             },
