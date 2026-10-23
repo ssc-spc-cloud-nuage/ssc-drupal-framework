@@ -432,7 +432,7 @@
                 "3594656  - settingsForm returns whole Views form, pollutes formatter settings": "https://git.drupalcode.org/-/project/66010/uploads/da891d162ea27bc523bfbe91157bef3d/address_static_map-settings_form_element.patch"
             },
             "drupal/ckeditor_codemirror": {
-                "local - library path check independent of cwd": "./patches/ckeditor_codemirror-library_path.patch"
+                "local - library path check independent of cwd": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/ckeditor_codemirror-library_path.patch"
             }
         },
         "patches-ignore": {
