@@ -4,8 +4,13 @@
  * Topic node template.
  *
  * WxT 6.x ships node--topic.html.twig in wxt_bootstrap, which wraps content in
- * an extra .container and breaks full-width sections. Hand back to whichever
- * node--full template the active theme provides (pre-WxT 6 behaviour).
+ * an extra .container and breaks full-width sections. Because node--topic
+ * outranks node--VIEW_MODE for every view mode, hand back to whichever
+ * node--VIEW_MODE (e.g. node--full, node--card) or plain node template the
+ * active theme provides (pre-WxT 6 behaviour).
  */
 #}
-{% include 'node--full.html.twig' %}
+{% include [
+  'node--' ~ view_mode|replace({'_': '-'}) ~ '.html.twig',
+  'node.html.twig',
+] %}
