@@ -76,7 +76,7 @@ class LanguageSwitcherBlock extends LanguageBlock {
       $group_url = $group ? $group_other->toUrl()->toString() : NULL;
       $report_path = $route_match->getParameter('pbi_report_path');
       $translated_path = $this->getTranslatedPath($report_path, $switch);
-      $links->links[$switch]['url'] = Url::fromUri("internal:$group_url" . ($switch == 'fr' ? '/rapports' : '/reports') . "/{$translated_path}");
+      $links->links[$switch]['url'] = Url::fromUri("internal:$group_url" . ($switch == 'fr' ? '/rapport' : '/report') . "/{$translated_path}");
     }
 
     // If there is no switch version then use original language.
