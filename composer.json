@@ -329,6 +329,9 @@
             "drupal/feeds": {
                 "3261687 - A stray renderRoot() invocation is causing bubbling of attached assets to break": "https://www.drupal.org/files/issues/2022-04-22/feeds-renderRoot-issue-3261687-5.patch"
             },
+            "drupal/flag": {
+                "3630623 - Empty flag element rendered for anonymous users without flag permission (in 5.2.x, remove on 5.2.0+)": "https://git.drupalcode.org/project/flag/-/commit/32fda595.diff"
+            },
             "drupal/group": {
                 "3336280 - Fixes /admin/content page in certain scenarios.": "https://git.drupalcode.org/project/group/-/merge_requests/121.patch"
             },
