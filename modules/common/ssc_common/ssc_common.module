@@ -1093,8 +1093,6 @@ function ssc_common_page_attachments(array &$page): void {
  * around items that have commas in their title.
  */
 function ssc_common_field_widget_single_element_form_alter(array &$element, FormStateInterface $form_state, array $context): void {
-  $entity = $context['items']->getEntity();
-
   // Find any entity_autocomplete elements inside this field widget.
   _add_autocomplete_quote_validator($element);
 }
