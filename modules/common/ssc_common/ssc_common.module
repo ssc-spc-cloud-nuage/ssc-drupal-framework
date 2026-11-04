@@ -25,6 +25,8 @@ use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\row\EntityRow;
 use Drupal\views\ViewExecutable;
+use Drupal\Core\Entity\ContentEntityInterface;
+
 
 $path_to_common = \Drupal::service('extension.list.module')->getPath('ssc_common');
 require_once($path_to_common . '/ssc_common.tokens.inc');
@@ -897,8 +899,7 @@ function ssc_common_views_data_alter(array &$data): void {
 function ssc_common_multiple_field_remove_button_field_types_alter(array &$fieldTypes): void {
   $fieldTypes[] = 'daterange';
 }
-function ssc_common_node_presave(Node $node): void {
-
+function replace_safelink_with_directlink(ContentEntityInterface $entity){
   $field_types_to_check = [
     "link",
     "text_long",
@@ -911,6 +912,35 @@ function ssc_common_node_presave(Node $node): void {
     "comment",
     "string"
   ];
+
+  // Loop through all fields we want to validate for.
+  foreach ($entity->getFields() as $field_name => $field) {
+    $field_type = $field->getFieldDefinition()->getType();
+
+    if (in_array($field_type,$field_types_to_check)) {
+      $node_field = $entity->get($field_name);
+      $field_value = $node_field->value;
+
+      // Verify our field has a safelink first.
+      if($field_value){
+        if (str_contains($field_value,'safelink')) {
+          // Use our function to extract the absolute url from the safelink and update the existing content with the direct link
+          $node_value_fixed = preg_replace_callback('/https?:\/\/[^\s"\'<>]+/',function($matches){
+            $safelink = $matches[0];
+            $query = parse_url($safelink, PHP_URL_QUERY);
+            parse_str($query ?? '', $params);
+            return $params['url'] ?? $safelink;
+          },$field_value);
+
+          $entity->set($field_name,['value'=>$node_value_fixed, 'format'=>$entity->get($field_name)->format]);
+        }
+      }
+    }
+
+  }
+}
+function ssc_common_node_presave(Node $node): void {
+
   switch ($node->bundle()) {
     case 'event':
       // Loop through each session and get dates to determine overall range
@@ -962,59 +992,12 @@ function ssc_common_node_presave(Node $node): void {
       }
     }
   }
-
-  // Loop through all fields we want to validate for.
-  foreach ($node->getFields() as $field_name => $field) {
-    $field_type = $field->getFieldDefinition()->getType();
-
-    if (in_array($field_type,$field_types_to_check)) {
-      $node_field = $node->get($field_name);
-      $field_value = $node_field->value;
-
-      // Verify our field has a safelink first.
-      if (str_contains($field_value,'safelink')) {
-        // Use our function to extract the absolute url from the safelink and update the existing content with the direct link
-        $node_value_fixed = replace_safelink_with_directlink($field_value);
-        $node->set($field_name,['value'=>$node_value_fixed,'format'=>$node->get($field_name)->format]);
-      }
-    }
-
-  }
-
+  replace_safelink_with_directlink($node);
 }
 
 function ssc_common_paragraph_presave($para) {
 
-  $field_types_to_check = [
-    "link",
-    "text_long",
-    "text",
-    "string",
-    "string_long",
-    "text_with_summary",
-    "entity_reference",
-    "entity_reference_revisions",
-    "comment",
-    "string"
-  ];
-
-  // Loop through all fields we want to validate for.
-  foreach ($para->getFields() as $field_name => $field) {
-    $field_type = $field->getFieldDefinition()->getType();
-
-    if (in_array($field_type,$field_types_to_check)) {
-      $node_field = $para->get($field_name);
-      $field_value = $node_field->value;
-
-      // Verify our field has a safelink first.
-      if (str_contains($field_value,'safelink')) {
-        // Use our function to extract the absolute url from the safelink and update the existing content with the direct link
-        $node_value_fixed = replace_safelink_with_directlink($field_value);
-        $para->set($field_name,['value'=>$node_value_fixed,'format'=>$para->get($field_name)->format]);
-      }
-    }
-
-  }
+  replace_safelink_with_directlink($para);
   // Only look at Reference (internal) paragraphs.
   if ($para->getType() != 'reference_internal') return;
 
