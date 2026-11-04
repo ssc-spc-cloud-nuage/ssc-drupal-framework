@@ -1,4 +1,3 @@
-
 <?php
 
 /**
@@ -319,6 +318,23 @@ function ssc_common_form_sitewide_alert_add_form_alter(&$form, FormStateInterfac
   }
 
   // Move parts to Sidebar - allowed by this: https://www.drupal.org/project/drupal/issues/2893740
+  // The D11 patch is opt-in (ContentEntityFormWithSidebar) and SitewideAlertForm
+  // extends ContentEntityForm, so opt in here the same way the subclass does:
+  // use the sidebar template, turn the vertical tabs into the sidebar container
+  // and put revision information in the meta box at its top.
+  $form['#theme'] = ['content_entity_form_with_sidebar'];
+  $form['advanced']['#type'] = 'container';
+  $form['advanced']['#accordion'] = TRUE;
+  $form['advanced']['#attributes']['class'][] = 'entity-meta';
+  $form['meta'] = [
+    '#type' => 'container',
+    '#group' => 'advanced',
+    '#weight' => -10,
+    '#attributes' => ['class' => ['entity-meta__header']],
+  ];
+  $form['revision_information']['#type'] = 'container';
+  $form['revision_information']['#group'] = 'meta';
+
   $form['dismissible']['#group'] = 'revision_information';
   $form['status']['#group'] = 'revision_information';
   $form["dismissible_ignore_previous"]["#group"] = 'revision_information';
@@ -776,8 +792,8 @@ function ssc_common_views_post_build(ViewExecutable $view): void {
 }
 
 /**
-* Implements hook_preprocess_views_view_field().
-*/
+ * Implements hook_preprocess_views_view_field().
+ */
 function ssc_common_preprocess_views_view_field(array &$variables): void {
   // Target specific view and field.
   $variables['#cache']['contexts'][] = 'languages:language_content';
@@ -881,19 +897,6 @@ function ssc_common_views_data_alter(array &$data): void {
 function ssc_common_multiple_field_remove_button_field_types_alter(array &$fieldTypes): void {
   $fieldTypes[] = 'daterange';
 }
-function replace_safelink_with_directlink(string $node_value): string{
-
-  $node_value = preg_replace_callback('/https?:\/\/[^\s"\'<>]+/',function($matches){
-      $safelink = $matches[0];
-      $query = parse_url($safelink, PHP_URL_QUERY);
-      parse_str($query ?? '', $params);
-      return $params['url'] ?? $safelink;
-  },$node_value);
-
-  return $node_value;
-}
-
-
 function ssc_common_node_presave(Node $node): void {
 
   $field_types_to_check = [
@@ -1022,7 +1025,6 @@ function ssc_common_paragraph_presave($para) {
   }
 }
 
-
 function ssc_common_cron(): void {
   // Expire Featured News posts.
   _expire_featured_posts_cron();
@@ -1147,15 +1149,11 @@ function ssc_common_page_attachments(array &$page): void {
 
 /**
  * Implements hook_field_widget_single_element_form_alter().
+ *
+ * Fixes the issue where EntityRef autocomplete widget double wraps double quotes
+ * around items that have commas in their title.
  */
 function ssc_common_field_widget_single_element_form_alter(array &$element, FormStateInterface $form_state, array $context): void {
-  $entity = $context['items']->getEntity();
-
-  // Only alter fields belonging to paragraph entities.
-  if (!$entity instanceof ParagraphInterface) {
-    return;
-  }
-
   // Find any entity_autocomplete elements inside this field widget.
   _add_autocomplete_quote_validator($element);
 }
