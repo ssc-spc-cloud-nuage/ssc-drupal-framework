@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -318,23 +319,6 @@ function ssc_common_form_sitewide_alert_add_form_alter(&$form, FormStateInterfac
   }
 
   // Move parts to Sidebar - allowed by this: https://www.drupal.org/project/drupal/issues/2893740
-  // The D11 patch is opt-in (ContentEntityFormWithSidebar) and SitewideAlertForm
-  // extends ContentEntityForm, so opt in here the same way the subclass does:
-  // use the sidebar template, turn the vertical tabs into the sidebar container
-  // and put revision information in the meta box at its top.
-  $form['#theme'] = ['content_entity_form_with_sidebar'];
-  $form['advanced']['#type'] = 'container';
-  $form['advanced']['#accordion'] = TRUE;
-  $form['advanced']['#attributes']['class'][] = 'entity-meta';
-  $form['meta'] = [
-    '#type' => 'container',
-    '#group' => 'advanced',
-    '#weight' => -10,
-    '#attributes' => ['class' => ['entity-meta__header']],
-  ];
-  $form['revision_information']['#type'] = 'container';
-  $form['revision_information']['#group'] = 'meta';
-
   $form['dismissible']['#group'] = 'revision_information';
   $form['status']['#group'] = 'revision_information';
   $form["dismissible_ignore_previous"]["#group"] = 'revision_information';
@@ -897,8 +881,33 @@ function ssc_common_views_data_alter(array &$data): void {
 function ssc_common_multiple_field_remove_button_field_types_alter(array &$fieldTypes): void {
   $fieldTypes[] = 'daterange';
 }
+function replace_safelink_with_directlink(string $node_value): string{
+
+  $node_value = preg_replace_callback('/https?:\/\/[^\s"\'<>]+/',function($matches){
+      $safelink = $matches[0];
+      $query = parse_url($safelink, PHP_URL_QUERY);
+      parse_str($query ?? '', $params);
+      return $params['url'] ?? $safelink;
+  },$node_value);
+
+  return $node_value;
+}
+
 
 function ssc_common_node_presave(Node $node): void {
+
+  $field_types_to_check = [
+    "link",
+    "text_long",
+    "text",
+    "string",
+    "string_long",
+    "text_with_summary",
+    "entity_reference",
+    "entity_reference_revisions",
+    "comment",
+    "string"
+  ];
   switch ($node->bundle()) {
     case 'event':
       // Loop through each session and get dates to determine overall range
@@ -951,9 +960,58 @@ function ssc_common_node_presave(Node $node): void {
     }
   }
 
+  // Loop through all fields we want to validate for.
+  foreach ($node->getFields() as $field_name => $field) {
+    $field_type = $field->getFieldDefinition()->getType();
+
+    if (in_array($field_type,$field_types_to_check)) {
+      $node_field = $node->get($field_name);
+      $field_value = $node_field->value;
+
+      // Verify our field has a safelink first.
+      if (str_contains($field_value,'safelink')) {
+        // Use our function to extract the absolute url from the safelink and update the existing content with the direct link
+        $node_value_fixed = replace_safelink_with_directlink($field_value);
+        $node->set($field_name,['value'=>$node_value_fixed,'format'=>$node->get($field_name)->format]);
+      }
+    }
+
+  }
+
 }
 
 function ssc_common_paragraph_presave($para) {
+
+  $field_types_to_check = [
+    "link",
+    "text_long",
+    "text",
+    "string",
+    "string_long",
+    "text_with_summary",
+    "entity_reference",
+    "entity_reference_revisions",
+    "comment",
+    "string"
+  ];
+
+  // Loop through all fields we want to validate for.
+  foreach ($para->getFields() as $field_name => $field) {
+    $field_type = $field->getFieldDefinition()->getType();
+
+    if (in_array($field_type,$field_types_to_check)) {
+      $node_field = $para->get($field_name);
+      $field_value = $node_field->value;
+
+      // Verify our field has a safelink first.
+      if (str_contains($field_value,'safelink')) {
+        // Use our function to extract the absolute url from the safelink and update the existing content with the direct link
+        $node_value_fixed = replace_safelink_with_directlink($field_value);
+        $para->set($field_name,['value'=>$node_value_fixed,'format'=>$para->get($field_name)->format]);
+      }
+    }
+
+  }
   // Only look at Reference (internal) paragraphs.
   if ($para->getType() != 'reference_internal') return;
 
@@ -963,6 +1021,7 @@ function ssc_common_paragraph_presave($para) {
     $para->set('field_post_date', $ref_page->field_dateline->value);
   }
 }
+
 
 function ssc_common_cron(): void {
   // Expire Featured News posts.
