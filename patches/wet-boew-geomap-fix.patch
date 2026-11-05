@@ -1,5 +1,5 @@
 diff --git a/src/plugins/deps/geomap-lib.js b/src/plugins/deps/geomap-lib.js
-index 380135441..af81c9c78 100644
+index ec1b2aeb7..515ced182 100644
 --- a/src/plugins/deps/geomap-lib.js
 +++ b/src/plugins/deps/geomap-lib.js
 @@ -2434,7 +2434,7 @@ MapLayer.prototype.addToLegend = function() {
@@ -11,7 +11,7 @@ index 380135441..af81c9c78 100644
  		$li = $( "<li class='checkbox gc-chckbxrdio geomap-lgnd-layer'>" )
  			.append( $chkBox, $label, "<div id='sb_" + this.id + "'></div>" );
  	} else {
-@@ -2597,7 +2597,7 @@ Geomap.prototype.addTabularData = function() {
+@@ -2598,7 +2598,7 @@ Geomap.prototype.addTabularData = function() {
  				tdChkBox = trElmsInd.insertCell( 0 );
  
  				// Use large checkboxes if the map has the large-checkboxes class
@@ -20,7 +20,7 @@ index 380135441..af81c9c78 100644
  					tdChkBox.innerHTML = addLrgChkBox( this, vectorFeature );
  				} else {
  					tdChkBox.innerHTML = addChkBox( this, vectorFeature );
-@@ -2734,7 +2734,7 @@ MapLayer.prototype.populateDataTable = function() {
+@@ -2735,7 +2735,7 @@ MapLayer.prototype.populateDataTable = function() {
  	// Create the table body rows
  	// for ( var i = 0; i < features.length || ( function() { refreshPlugins( _this.map ); return false; }() ); i += 1 ) {
  	for ( var i = 0; i < features.length; i += 1 ) {
