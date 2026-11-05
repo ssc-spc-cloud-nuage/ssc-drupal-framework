@@ -1,4 +1,4 @@
-diff --git a/src/plugins/deps/geomap-lib.js b/src/plugins/deps/geomap-lib.js
+diff --git a/js/deps/geomap-lib.js b/js/deps/geomap-lib.js
 index ec1b2aeb7..515ced182 100644
 --- a/src/plugins/deps/geomap-lib.js
 +++ b/src/plugins/deps/geomap-lib.js
