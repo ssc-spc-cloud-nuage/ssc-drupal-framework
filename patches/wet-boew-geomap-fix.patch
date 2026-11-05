@@ -1,7 +1,7 @@
 diff --git a/js/deps/geomap-lib.js b/js/deps/geomap-lib.js
 index ec1b2aeb7..515ced182 100644
---- a/src/plugins/deps/geomap-lib.js
-+++ b/src/plugins/deps/geomap-lib.js
+--- a/js/deps/geomap-lib.js
++++ b/js/deps/geomap-lib.js
 @@ -2434,7 +2434,7 @@ MapLayer.prototype.addToLegend = function() {
  	} );
  
