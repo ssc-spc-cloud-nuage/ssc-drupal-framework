@@ -436,6 +436,9 @@
             },
             "drupal/ckeditor_codemirror": {
                 "local - library path check independent of cwd": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/ckeditor_codemirror-library_path.patch"
+            },
+            "wet-boew/wet-boew": {
+                "local - fix geomap error": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/wet-boew-geomap-fix.patch"
             }
         },
         "patches-ignore": {

@@ -1,0 +1,31 @@
+diff --git a/src/plugins/deps/geomap-lib.js b/src/plugins/deps/geomap-lib.js
+index 380135441..af81c9c78 100644
+--- a/src/plugins/deps/geomap-lib.js
++++ b/src/plugins/deps/geomap-lib.js
+@@ -2434,7 +2434,7 @@ MapLayer.prototype.addToLegend = function() {
+ 	} );
+ 
+ 	// Display large checkboxes if class is present
+-	if ( this.map.mapDiv.context.classList.contains( "large-checkboxes" ) ) {
++	if ( this.map.mapDiv[0].classList.contains( "large-checkboxes" ) ) {
+ 		$li = $( "<li class='checkbox gc-chckbxrdio geomap-lgnd-layer'>" )
+ 			.append( $chkBox, $label, "<div id='sb_" + this.id + "'></div>" );
+ 	} else {
+@@ -2597,7 +2597,7 @@ Geomap.prototype.addTabularData = function() {
+ 				tdChkBox = trElmsInd.insertCell( 0 );
+ 
+ 				// Use large checkboxes if the map has the large-checkboxes class
+-				if ( this.mapDiv.context.classList.contains( "large-checkboxes" ) ) {
++				if ( this.mapDiv[0].classList.contains( "large-checkboxes" ) ) {
+ 					tdChkBox.innerHTML = addLrgChkBox( this, vectorFeature );
+ 				} else {
+ 					tdChkBox.innerHTML = addChkBox( this, vectorFeature );
+@@ -2734,7 +2734,7 @@ MapLayer.prototype.populateDataTable = function() {
+ 	// Create the table body rows
+ 	// for ( var i = 0; i < features.length || ( function() { refreshPlugins( _this.map ); return false; }() ); i += 1 ) {
+ 	for ( var i = 0; i < features.length; i += 1 ) {
+-		if ( _this.map.mapDiv.context.classList.contains( "large-checkboxes" ) ) {
++		if ( _this.map.mapDiv[0].classList.contains( "large-checkboxes" ) ) {
+ 			body += "<tr><td>" + addLrgChkBox( _this, features[ i ] );
+ 		} else {
+ 			body += "<tr><td>" + addChkBox( _this, features[ i ] );
