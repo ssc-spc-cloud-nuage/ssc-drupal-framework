@@ -907,10 +907,6 @@ function replace_safelink_with_directlink(ContentEntityInterface $entity){
     "string",
     "string_long",
     "text_with_summary",
-    "entity_reference",
-    "entity_reference_revisions",
-    "comment",
-    "string"
   ];
 
   // Loop through all fields we want to validate for.
@@ -919,26 +915,44 @@ function replace_safelink_with_directlink(ContentEntityInterface $entity){
 
     if (in_array($field_type,$field_types_to_check)) {
       $node_field = $entity->get($field_name);
-      $field_value = $node_field->value;
+
+      $field_value = null;
+
+      // Used to determine if we're getting the uri property or value.
+      if ($field_type == 'link') {
+        $field_value = $node_field->uri;
+      } else {
+        $field_value = $node_field->value;
+      }
+
 
       // Verify our field has a safelink first.
-      if($field_value){
-        if (str_contains($field_value,'safelink')) {
+      if ($field_value) {
+        if (str_contains($field_value, 'safelink')) {
           // Use our function to extract the absolute url from the safelink and update the existing content with the direct link
-          $node_value_fixed = preg_replace_callback('/https?:\/\/[^\s"\'<>]+/',function($matches){
+
+          $node_value_fixed = preg_replace_callback('/https?:\/\/[^\s"\'<>]+/', function($matches){
             $safelink = $matches[0];
             $query = parse_url($safelink, PHP_URL_QUERY);
             parse_str($query ?? '', $params);
             return $params['url'] ?? $safelink;
-          },$field_value);
+          }, $field_value);
 
-          $entity->set($field_name,['value'=>$node_value_fixed, 'format'=>$entity->get($field_name)->format]);
+          if ($field_type == "link") {
+            $entity->set($field_name, ['uri'=>$node_value_fixed, 'title' => $node_field->title]);
+          } else {
+            $entity->set($field_name, ['value'=>$node_value_fixed]);
+          }
         }
       }
     }
 
   }
 }
+function ssc_common_comment_presave($comment){
+  replace_safelink_with_directlink($comment);
+}
+
 function ssc_common_node_presave(Node $node): void {
 
   switch ($node->bundle()) {
