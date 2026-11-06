@@ -25,6 +25,8 @@ use Drupal\user\UserInterface;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\row\EntityRow;
 use Drupal\views\ViewExecutable;
+use Drupal\Core\Entity\ContentEntityInterface;
+
 
 $path_to_common = \Drupal::service('extension.list.module')->getPath('ssc_common');
 require_once($path_to_common . '/ssc_common.tokens.inc');
@@ -792,8 +794,8 @@ function ssc_common_views_post_build(ViewExecutable $view): void {
 }
 
 /**
-* Implements hook_preprocess_views_view_field().
-*/
+ * Implements hook_preprocess_views_view_field().
+ */
 function ssc_common_preprocess_views_view_field(array &$variables): void {
   // Target specific view and field.
   $variables['#cache']['contexts'][] = 'languages:language_content';
@@ -897,8 +899,58 @@ function ssc_common_views_data_alter(array &$data): void {
 function ssc_common_multiple_field_remove_button_field_types_alter(array &$fieldTypes): void {
   $fieldTypes[] = 'daterange';
 }
+function replace_safelink_with_directlink(ContentEntityInterface $entity){
+  $field_types_to_check = [
+    "link",
+    "text_long",
+    "text",
+    "string",
+    "string_long",
+    "text_with_summary",
+  ];
+
+  // Loop through all fields we want to validate for.
+  foreach ($entity->getFields() as $field_name => $field) {
+    $field_type = $field->getFieldDefinition()->getType();
+    if (in_array($field_type,$field_types_to_check)) {
+      $node_field = $entity->get($field_name);
+      $field_value = null;
+
+      // Used to determine if we're getting the uri property or value.
+      if ($field_type == 'link') {
+        $field_value = $node_field->uri;
+      } else {
+        $field_value = $node_field->value;
+      }
+
+      // Verify our field has a safelink first.
+      if ($field_value) {
+        if (str_contains($field_value, 'safelink')) {
+          // Use our function to extract the absolute url from the safelink and update the existing content with the direct link
+          $node_value_fixed = preg_replace_callback('/https?:\/\/[^\s"\'<>]+/', function($matches){
+            $safelink = $matches[0];
+            $query = parse_url($safelink, PHP_URL_QUERY);
+            parse_str($query ?? '', $params);
+            return $params['url'] ?? $safelink;
+          }, $field_value);
+
+          if ($field_type == "link") {
+            $entity->set($field_name, ['uri'=>$node_value_fixed, 'title' => $node_field->title]);
+          } else {
+            $entity->set($field_name, ['value'=>$node_value_fixed]);
+          }
+        }
+      }
+    }
+
+  }
+}
+function ssc_common_comment_presave($comment){
+  replace_safelink_with_directlink($comment);
+}
 
 function ssc_common_node_presave(Node $node): void {
+
   switch ($node->bundle()) {
     case 'event':
       // Loop through each session and get dates to determine overall range
@@ -950,10 +1002,12 @@ function ssc_common_node_presave(Node $node): void {
       }
     }
   }
-
+  replace_safelink_with_directlink($node);
 }
 
 function ssc_common_paragraph_presave($para) {
+
+  replace_safelink_with_directlink($para);
   // Only look at Reference (internal) paragraphs.
   if ($para->getType() != 'reference_internal') return;
 
