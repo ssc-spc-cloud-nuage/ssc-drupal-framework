@@ -912,10 +912,8 @@ function replace_safelink_with_directlink(ContentEntityInterface $entity){
   // Loop through all fields we want to validate for.
   foreach ($entity->getFields() as $field_name => $field) {
     $field_type = $field->getFieldDefinition()->getType();
-
     if (in_array($field_type,$field_types_to_check)) {
       $node_field = $entity->get($field_name);
-
       $field_value = null;
 
       // Used to determine if we're getting the uri property or value.
@@ -925,12 +923,10 @@ function replace_safelink_with_directlink(ContentEntityInterface $entity){
         $field_value = $node_field->value;
       }
 
-
       // Verify our field has a safelink first.
       if ($field_value) {
         if (str_contains($field_value, 'safelink')) {
           // Use our function to extract the absolute url from the safelink and update the existing content with the direct link
-
           $node_value_fixed = preg_replace_callback('/https?:\/\/[^\s"\'<>]+/', function($matches){
             $safelink = $matches[0];
             $query = parse_url($safelink, PHP_URL_QUERY);
