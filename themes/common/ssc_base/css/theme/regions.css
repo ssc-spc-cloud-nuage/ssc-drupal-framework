@@ -28,13 +28,17 @@
 /**
  * Conditionally remove the the default header/footer margin
  */
-/* Event pages */
-.page-node-type-event {
+/* Blog post pages */
+.page-node-type-blog-post {
   --size-footer-margin: 0;
 }
 /* Campaign pages */
 .page-node-type-campaign {
   --size-header-margin: 0;
+  --size-footer-margin: 0;
+}
+/* Event pages */
+.page-node-type-event {
   --size-footer-margin: 0;
 }
 /* Landing pages */
