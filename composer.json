@@ -95,7 +95,7 @@
         "drupal/linkchecker": "^2.1@beta",
         "drupal/linkchecker_summary_mail": "^2.0@beta",
         "drupal/log_stdout": "^3.0",
-        "drupal/mail_redirect": "^4.2.6",
+        "drupal/mail_redirect": "^4.3.0",
         "drupal/masquerade": "^2.0",
         "drupal/maxlength": "^3",
         "drupal/media_library_form_element": "^2.1",
@@ -351,7 +351,8 @@
             },
             "drupal/message": {
                 "2981259 - allow setting token contexts": "https://www.drupal.org/files/issues/2018-06-24/allow_token_contexts-3.patch",
-                "local - allow inline styles (3183734 reworked for 2981259)": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/message-allow_inline_styles.patch"
+                "local - allow inline styles (3183734 reworked for 2981259)": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/message-allow_inline_styles.patch",
+                "3533284 - twig support": "https://www.drupal.org/files/issues/2026-03-03/message-twig_support-3533284-10.patch"
             },
             "drupal/message_notify": {
                 "3211901 - allow sending headers": "https://www.drupal.org/files/issues/2022-05-26/allow-sending-headers-3211901-8.patch",
