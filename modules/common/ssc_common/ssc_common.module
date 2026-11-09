@@ -935,9 +935,9 @@ function replace_safelink_with_directlink(ContentEntityInterface $entity){
           }, $field_value);
 
           if ($field_type == "link") {
-            $entity->set($field_name, ['uri'=>$node_value_fixed, 'title' => $node_field->title]);
+            $entity->get($field_name)->uri = $node_value_fixed;
           } else {
-            $entity->set($field_name, ['value'=>$node_value_fixed]);
+            $entity->get($field_name)->value = $node_value_fixed;
           }
         }
       }
