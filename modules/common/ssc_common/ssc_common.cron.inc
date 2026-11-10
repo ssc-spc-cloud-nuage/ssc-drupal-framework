@@ -1,6 +1,8 @@
 <?php
 
 use Drupal\block_content\Entity\BlockContent;
+use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\node\Entity\Node;
 use Drupal\paragraphs\Entity\Paragraph;
 
@@ -106,4 +108,39 @@ function _expire_home_promo_cron() {
   // Set layout.
   $block->set('layout_selection', $new_layout);
   $block->save();
+}
+
+/**
+ * Sets active Sitewide Alerts whose scheduled end date has passed to inactive.
+ *
+ * The sitewide_alert module only hides expired alerts at display time and
+ * leaves them active, so do the cleanup here.
+ */
+function _expire_sitewide_alerts_cron(): void {
+  $storage = \Drupal::entityTypeManager()->getStorage('sitewide_alert');
+
+  // Daterange values are stored in UTC as Y-m-d\TH:i:s.
+  $now = (new DrupalDateTime('now', DateTimeItemInterface::STORAGE_TIMEZONE))
+    ->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
+
+  $ids = $storage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('status', 1)
+    ->condition('scheduled_alert', 1)
+    ->condition('scheduled_date.end_value', $now, '<=')
+    ->execute();
+
+  if (empty($ids)) {
+    return;
+  }
+
+  /** @var \Drupal\sitewide_alert\Entity\SitewideAlertInterface $alert */
+  foreach ($storage->loadMultiple($ids) as $alert) {
+    $alert->setUnpublished()->save();
+  }
+
+  \Drupal::logger('ssc_common')->notice('Set @count expired sitewide alert(s) to inactive: @ids', [
+    '@count' => count($ids),
+    '@ids' => implode(', ', $ids),
+  ]);
 }

@@ -1000,6 +1000,9 @@ function ssc_common_cron(): void {
 
   // Schedule Home Promo blocks.
   _expire_home_promo_cron();
+
+  // Set expired Sitewide Alerts to inactive.
+  _expire_sitewide_alerts_cron();
 }
 
 /*
