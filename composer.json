@@ -111,7 +111,7 @@
         "drupal/openid_connect": "3.x-dev",
         "drupal/openid_connect_windows_aad": "^2",
         "drupal/optional_end_date": "^1.4",
-        "drupal/page_manager": "4.0",
+        "drupal/page_manager": "4.1.0",
         "drupal/rabbit_hole": "^1.0",
         "drupal/readmore": "^2",
         "drupal/realname": "^2.0",
@@ -375,8 +375,7 @@
                 "3273039 - user photo submodule": "https://www.drupal.org/files/issues/2025-11-05/openid_connect_windows_aad-User_photo_submodule-3273039-11.patch"
             },
             "drupal/page_manager": {
-                "3176661 - support page titles": "https://git.drupalcode.org/project/page_manager/-/merge_requests/45.diff",
-                "3438993 - mandatory parameters missing for route entity.page.devel_load": "https://www.drupal.org/files/issues/2024-08-14/page-manager-3438993-MR34-24.patch"
+                "3176661 - support page titles (MR 45 pinned to 4cc3f624)": "https://git.drupalcode.org/project/page_manager/-/compare/ba6b2d90a5a8ce07584dc17deb3240a73f46b061...4cc3f6241cb0787f65efd3d0a8a4e0ae94238b80?format=diff"
             },
             "drupal/paragraphs": {
                 "3068944 - paragraphs to follow translation setting for showing fields": "https://www.drupal.org/files/issues/2021-05-05/paragraphWidget-multilanguage-enable-buton.patch",
