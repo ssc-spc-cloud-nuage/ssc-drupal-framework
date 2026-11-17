@@ -344,7 +344,8 @@
                 "local - modify anchors": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/lb-tabs_custom.patch"
             },
             "drupal/linkchecker": {
-                "3366753 - Filter out para rev results from report": "https://www.drupal.org/files/issues/2025-03-07/3366753-minimal.patch"
+                "3366753 - Filter out para rev results from report (moved from ssc-drupal-framework so it applies first)": "https://www.drupal.org/files/issues/2025-03-07/3366753-minimal.patch",
+                "local - cache field settings, skip parent lookup for unscanned fields": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/linkchecker-paragraph-save-performance.patch"
             },
             "drupal/masquerade": {
                 "local - better unlink link in block": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/masquerade-better_unlink.patch"
@@ -379,7 +380,8 @@
             },
             "drupal/paragraphs": {
                 "3068944 - paragraphs to follow translation setting for showing fields": "https://www.drupal.org/files/issues/2021-05-05/paragraphWidget-multilanguage-enable-buton.patch",
-                "2887353 - module to sync paragraph translations": "https://www.drupal.org/files/issues/2022-07-26/paragraphs-translation-sync-2887353-54.patch"
+                "2887353 - module to sync paragraph translations": "https://www.drupal.org/files/issues/2022-07-26/paragraphs-translation-sync-2887353-54.patch",
+                "3638963 - left join hiding items for anon": "https://www.drupal.org/files/issues/2026-11-17/3638963-3-left-join-access-alter.patch"
             },
             "drupal/readmore": {
                 "2185649 - reduce effect": "https://www.drupal.org/files/issues/2021-12-02/remove_slide_effect-2185649-5.patch",
