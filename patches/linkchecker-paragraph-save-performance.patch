@@ -1,0 +1,58 @@
+diff --git a/src/LinkExtractorService.php b/src/LinkExtractorService.php
+--- a/src/LinkExtractorService.php
++++ b/src/LinkExtractorService.php
+@@ -72,6 +72,13 @@ class LinkExtractorService {
+    */
+   protected $pos;
+
++  /**
++   * Linkchecker field settings, keyed by entity type, bundle and field name.
++   *
++   * @var array
++   */
++  protected $fieldScanSettings = [];
++
+   /**
+    * Constructs a new LinkExtractor object.
+    */
+@@ -133,13 +140,25 @@ public function extractFromField(FieldItemListInterface $fieldItemList) {
+     $urls = [];
+
+     $entity = $fieldItemList->getEntity();
+-    $entityBundle = $fieldItemList->getEntity()->bundle();
+-    $fieldConfig = $fieldItemList->getFieldDefinition()
+-      ->getConfig($entityBundle);
+-
+-    $scan = $fieldConfig->getThirdPartySetting('linkchecker', 'scan', FALSE);
++    $entityBundle = $entity->bundle();
++    $fieldDefinition = $fieldItemList->getFieldDefinition();
++    // Field settings are looked up for every field of every saved entity, and
++    // a missing base field override is not statically cached by the config
++    // factory, so memoize the scan settings per entity type, bundle and field.
++    $settingsKey = $entity->getEntityTypeId() . ':' . $entityBundle . ':' . $fieldDefinition->getName();
++    if (!isset($this->fieldScanSettings[$settingsKey])) {
++      $fieldConfig = $fieldDefinition->getConfig($entityBundle);
++      $this->fieldScanSettings[$settingsKey] = [
++        'scan' => (bool) $fieldConfig->getThirdPartySetting('linkchecker', 'scan', FALSE),
++        'extractor' => $fieldConfig->getThirdPartySetting('linkchecker', 'extractor', NULL),
++      ];
++    }
++    $scan = $this->fieldScanSettings[$settingsKey]['scan'];
+     $isOutdatedParagraph = FALSE;
+-    if ($entity instanceof ParagraphInterface) {
++    // Only resolve the paragraph's parent hierarchy when the field is actually
++    // scanned. The check walks the parent's reference field for every field of
++    // every paragraph, which is quadratic for hosts with many paragraphs.
++    if ($scan && $entity instanceof ParagraphInterface) {
+       $hierarchy = [];
+       $parentEntity = $this->getParentEntity($entity, $hierarchy);
+       $isOutdatedParagraph = empty($parentEntity) || !$this->isReferencedInCurrentRevision($parentEntity, $hierarchy);
+@@ -156,7 +175,7 @@ public function extractFromField(FieldItemListInterface $fieldItemList) {
+         $baseContentUrl = NULL;
+       }
+
+-      $extractorName = $fieldConfig->getThirdPartySetting('linkchecker', 'extractor', NULL);
++      $extractorName = $this->fieldScanSettings[$settingsKey]['extractor'];
+       /** @var \Drupal\linkchecker\Plugin\LinkExtractorInterface $extractor */
+       $extractor = $this->extractorManager->createInstance($extractorName);
+       $urls = $extractor->extract($fieldItemList->getValue());
