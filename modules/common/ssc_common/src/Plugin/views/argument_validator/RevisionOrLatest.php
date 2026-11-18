@@ -2,6 +2,7 @@
 
 namespace Drupal\ssc_common\Plugin\views\argument_validator;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\node\Entity\Node;
 use Drupal\views\Plugin\views\argument_validator\ArgumentValidatorPluginBase;
 
@@ -34,9 +35,23 @@ class RevisionOrLatest extends ArgumentValidatorPluginBase {
       $this->argument->argument = $this->getCurrentRevision($args[0]);
       return TRUE;
     }
-    // If Revision page, return VID from URL
+    // Handle Revision page.
     if ($argument == 'revisions') {
-      $this->argument->argument = $url[4];
+      // Get default VID from URL.
+      $vid = $url[4];
+
+      // Set VID to right revision ID on diff page.
+      $route_match = \Drupal::routeMatch();
+      $route_name = $route_match->getRouteName();
+      $is_diff_route = $route_name === 'diff.revisions_diff';
+      if ($is_diff_route) {
+        $right_revision = $route_match->getParameter('right_revision');
+        $vid = $right_revision instanceof EntityInterface
+          ? $right_revision->getRevisionId()
+          : (is_numeric($right_revision) ? $right_revision : NULL);
+      }
+
+      $this->argument->argument = $vid;
       return TRUE;
     }
     // If Latest Revision page, return latest vid
