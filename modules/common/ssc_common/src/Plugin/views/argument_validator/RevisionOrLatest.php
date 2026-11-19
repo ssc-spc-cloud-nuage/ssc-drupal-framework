@@ -2,7 +2,7 @@
 
 namespace Drupal\ssc_common\Plugin\views\argument_validator;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\node\Entity\Node;
 use Drupal\views\Plugin\views\argument_validator\ArgumentValidatorPluginBase;
 
@@ -46,9 +46,12 @@ class RevisionOrLatest extends ArgumentValidatorPluginBase {
       $is_diff_route = $route_name === 'diff.revisions_diff';
       if ($is_diff_route) {
         $right_revision = $route_match->getParameter('right_revision');
-        $vid = $right_revision instanceof EntityInterface
+        $vid = $right_revision instanceof RevisionableInterface
           ? $right_revision->getRevisionId()
-          : (is_numeric($right_revision) ? $right_revision : NULL);
+          : (is_scalar($right_revision) && ctype_digit((string) $right_revision)
+            ? (int) $right_revision
+            : NULL
+          );
       }
 
       $this->argument->argument = $vid;
