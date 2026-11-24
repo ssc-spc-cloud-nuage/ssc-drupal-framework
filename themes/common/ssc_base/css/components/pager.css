@@ -47,9 +47,10 @@
       color: var(--clr-ssc-black);
     }
     .is-active & {
-      background-color: var(--clr-accent-page);
+      --clr-btn-bg: var(--clr-accent-page);
+      --clr-btn-text: var(--clr-ssc-white);
+
       border-color: transparent;
-      color: var(--clr-ssc-white);
       cursor: default;
       pointer-events: none;
     }
