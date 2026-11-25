@@ -293,6 +293,11 @@
                 "local - core HACK to handle daterange nontranslated bug": "https://raw.githubusercontent.com/ssc-spc-cloud-nuage/ssc-drupal-framework/main/patches/core-HACK-handle_nontranslated_daterange_fields.patch",
                 "2916876 - LB block visiblity": "https://www.drupal.org/files/issues/2025-07-23/2916876-3091898-11.2.2-262_0.patch"
             },
+            "drupal/azure_key_vault": {
+                "3595736 - allow Key machine names with underscores (separate Azure secret name)": "https://git.drupalcode.org/-/project/72403/uploads/eb62fe5c0b916426e4aa3c59e1edf59f/azure_key_vault-secret-name-underscores.patch",
+                "3595734 - settings schema: password/key types do not exist, use string": "https://git.drupalcode.org/-/project/72403/uploads/a87df1f65e472e9d434945a4657ddc6a/azure_key_vault-settings-schema-types.patch",
+                "3595735 - client ID field is a password field, use textfield": "https://git.drupalcode.org/-/project/72403/uploads/67b137e8d68b76052d99f599ff9328eb/azure_key_vault-client-id-textfield.patch"
+            },
             "drupal/bg_image_formatter": {
                 "3254830 - add parent entity id token": "https://www.drupal.org/files/issues/2021-12-17/entity_id_token-3254830-6.patch"
             },
